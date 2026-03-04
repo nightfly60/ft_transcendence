@@ -1,0 +1,36 @@
+services:
+  mariadb:
+    build: ./requirements/mariadb
+    container_name: mariadb
+    env_file:
+      - .env
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    networks:
+      - transcendence_network
+
+  nginx:
+    build: ./requirements/nginx
+    container_name: nginx
+    env_file:
+      - .env
+    ports:
+      - "${NGINX_PORT}:443"
+    volumes:
+      - ./data:/var/www/html
+    restart: always
+    networks:
+      - transcendence_network
+
+volumes:
+  db_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/${LOGIN}/data/db_data
+
+networks:
+  transcendence_network:
+    driver: bridge
