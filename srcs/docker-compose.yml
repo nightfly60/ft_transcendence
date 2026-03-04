@@ -43,6 +43,14 @@ services:
     networks:
       - transcendence_network
 
+angular:
+  build: ./requirements/angular
+  container_name: angular
+  volumes:
+    - ./requirements/angular/src:/app/src  # hot-reload
+  networks:
+    - transcendence_network
+
   python:
     build: ./requirements/python
     container_name: python
