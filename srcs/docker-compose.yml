@@ -17,11 +17,34 @@ services:
       - .env
     ports:
       - "${NGINX_PORT}:443"
+      - "${VITE_PORT}:5173"
     volumes:
       - ./data:/var/www/html
     restart: always
     networks:
       - transcendence_network
+
+  nodejs:
+    build: ./requirements/nodejs
+    container_name: nodejs
+    env_file:
+      - .env
+    restart: always
+    volumes:
+      - ./requirements/nodejs/src:/app/src
+      - vite_cache:/app/node_modules/.vite
+    ports:
+      - "${APP_PORT}:3000"
+    networks:
+      - transcendence_network
+
+  python:
+    build: ./requirements/python
+    container_name: python
+    env_file:
+      - .env
+    networks:
+      - transcendence_network      
 
 volumes:
   db_data:
@@ -30,12 +53,12 @@ volumes:
       type: none
       o: bind
       device: /home/${LOGIN}/data/db_data
-  web_data:
+  vite_cache:
       driver: local
       driver_opts:
         type: none
         o: bind
-        device: /home/${LOGIN}/data/web_data
+        device: /home/${LOGIN}/data/vite_cache
 
 networks:
   transcendence_network:
