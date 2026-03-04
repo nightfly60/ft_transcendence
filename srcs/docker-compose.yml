@@ -30,6 +30,12 @@ volumes:
       type: none
       o: bind
       device: /home/${LOGIN}/data/db_data
+  web_data:
+      driver: local
+      driver_opts:
+        type: none
+        o: bind
+        device: /home/${LOGIN}/data/web_data
 
 networks:
   transcendence_network:
