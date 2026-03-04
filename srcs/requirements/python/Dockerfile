@@ -9,4 +9,4 @@ RUN adduser --disabled-password appuser
 USER appuser
 
 # Démarrage en shell interactif pour que tu puisses utiliser Python
-CMD ["python3"]
+CMD ["python3", "-c", "import signal; signal.pause()"]
