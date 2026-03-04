@@ -30,10 +30,10 @@ RUN mkdir -p /etc/ssl/private /etc/ssl/certs
 RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
     -keyout /etc/ssl/private/private-key.pem \
     -out /etc/ssl/certs/selfsigned-cert.pem \
-    -subj "/CN=localhost"
+    -subj "/CN=chess42.fr"
 
 # Copier la config nginx dans le container
-COPY conf/nginx.conf /etc/nginx/nginx.conf
+COPY nginx/conf/nginx.conf /etc/nginx/nginx.conf
 
 # Copier Angular dans Nginx
 COPY --chown=nginx:nginx --from=builder /app/dist/*/browser /usr/share/nginx/html
