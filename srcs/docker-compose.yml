@@ -11,16 +11,20 @@ services:
       - transcendence_network
 
   nginx:
-    build: ./requirements/nginx
+    build:
+      context: ./requirements
+      dockerfile: ./nginx/Dockerfile
     container_name: nginx
     env_file:
       - .env
     ports:
+      - "80:80"
       - "${NGINX_PORT}:443"
-      - "${VITE_PORT}:5173"
     volumes:
       - ./data:/var/www/html
     restart: always
+    depends_on:
+      - nodejs
     networks:
       - transcendence_network
 
@@ -35,6 +39,7 @@ services:
       - vite_cache:/app/node_modules/.vite
     ports:
       - "${APP_PORT}:3000"
+      - "${VITE_PORT}:5173"
     networks:
       - transcendence_network
 
