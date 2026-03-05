@@ -11,9 +11,7 @@ services:
       - transcendence_network
 
   nginx:
-    build:
-      context: .
-      dockerfile: ./nginx/Dockerfile
+    build: ./nginx
     container_name: nginx
     env_file:
       - .env
@@ -32,8 +30,6 @@ services:
     container_name: angular
     volumes:
       - ./angular/src:/app/src
-    ports:
-      - "4200:4200"
     networks:
       - transcendence_network
 
