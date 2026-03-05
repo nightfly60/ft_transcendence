@@ -31,18 +31,18 @@ export class ChatBox implements AfterViewChecked {
       this.scrollToBottom();
     }
   
-    sendMessage(): void {
-      const text = this.inputText.trim();
-      if (!text) return;
+    // sendMessage(): void {
+    //   const text = this.inputText.trim();
+    //   if (!text) return;
   
-      this.messages.push({
-        text,
-        type: 'outgoing',
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      });
+    //   this.messages.push({
+    //     text,
+    //     type: 'outgoing',
+    //     timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    //   });
   
-      this.inputText = '';
-    }
+    //   this.inputText = '';
+    // }
   
     private scrollToBottom(): void {
       try {
