@@ -1,0 +1,72 @@
+.footer {
+  background: rgba(10, 10, 20, 0.95);
+  border-top: 1px solid rgba(232, 201, 109, 0.1);
+  font-family: 'Georgia', serif;
+
+  .footer-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .brand-icon {
+      font-size: 22px;
+      color: #e8c96d;
+    }
+
+    .brand-name {
+      font-size: 16px;
+      font-weight: bold;
+      color: #e8c96d;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+  }
+
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px 24px;
+
+    a {
+      color: #6a6a8a;
+      text-decoration: none;
+      font-size: 13px;
+      letter-spacing: 1px;
+      transition: color 0.2s;
+
+      &:hover {
+        color: #e8c96d;
+      }
+    }
+  }
+
+  .footer-copy {
+    font-size: 12px;
+    color: #3a3a5a;
+    margin: 0;
+    text-align: center;
+  }
+
+  @media (max-width: 480px) {
+    .footer-content {
+      padding: 24px 16px;
+      gap: 14px;
+    }
+
+    .footer-brand .brand-name {
+      font-size: 14px;
+      letter-spacing: 2px;
+    }
+  }
+}

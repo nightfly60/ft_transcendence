@@ -1,0 +1,13 @@
+<div class="mini-board">
+  <div class="board-grid">
+    @for (row of boardRows; track row) {
+      @for (col of boardCols; track col) {
+        <div class="cell" [class.light]="(row + col) % 2 === 0" [class.dark]="(row + col) % 2 !== 0">
+          @if (getPiece(row, col)) {
+            <span class="mini-piece">{{ getPiece(row, col) }}</span>
+          }
+        </div>
+      }
+    }
+  </div>
+</div>
