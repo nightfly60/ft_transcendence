@@ -3,10 +3,7 @@ import cors from 'cors';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { registerGameEvents } from './sockets/game.js';
-<<<<<<< HEAD
 import userRouter from './routes/user.js';
-=======
->>>>>>> origin/anas
 
 const app = express();
 const httpServer = createServer(app);
@@ -26,11 +23,8 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok' });
 });
 
-<<<<<<< HEAD
 app.use('/users', userRouter);
 
-=======
->>>>>>> origin/anas
 io.on('connection', (socket) => {
   registerGameEvents(io, socket);
 });
