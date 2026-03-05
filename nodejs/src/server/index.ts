@@ -3,6 +3,9 @@ import cors from 'cors';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { registerGameEvents } from './sockets/game.js';
+import userRouter from './routes/user.js';
+import profileRouter from './routes/profile.js';
+import pool from './db.js';
 
 const app = express();
 const httpServer = createServer(app);
@@ -21,6 +24,9 @@ app.use(express.json());
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok' });
 });
+
+app.use('/users', userRouter);
+app.use('/profile', profileRouter); 
 
 io.on('connection', (socket) => {
   registerGameEvents(io, socket);

@@ -1,0 +1,10 @@
+@if (data) {
+  <h1>{{ username }}</h1>
+  <p>elo : {{ data.elo }}</p>
+  <p>xp : {{ data.xp }}</p>
+  <p>bio : {{ data.bio }}</p>
+} @else if (error) {
+  <p>{{ error }}</p>
+} @else {
+  <p>Chargement...</p>
+}
