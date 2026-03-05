@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-home-mini-board',
-  imports: [NgClass],
+  imports: [],
   templateUrl: './mini-board.component.html',
   styleUrl: './mini-board.component.scss',
 })

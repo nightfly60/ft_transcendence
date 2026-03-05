@@ -5,6 +5,7 @@ import { SocketService } from '../services/socket.service';
   selector: 'app-game',
   standalone: true,
   templateUrl: './game.component.html',
+  styleUrl: './game.component.scss',
 })
 export class GameComponent implements OnInit, OnDestroy {
   gameId = 'partie-1';
@@ -16,7 +17,6 @@ export class GameComponent implements OnInit, OnDestroy {
 
     this.socket.onMove(({ from, to }) => {
       console.log(`Adversaire joue : ${from} → ${to}`);
-      // TODO: mettre à jour l'échiquier ici
     });
   }
 
