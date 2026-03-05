@@ -2,7 +2,7 @@ all:
 	mkdir -p /home/$(USER)/data
 	mkdir -p /home/$(USER)/data/db_data
 	mkdir -p /home/$(USER)/data/vite_cache
-	cd srcs/ && docker compose up
+	cd srcs/ && docker compose up --build
 
 down:
 	cd srcs/ && docker compose down
