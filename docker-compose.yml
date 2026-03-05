@@ -25,16 +25,6 @@ services:
     networks:
       - transcendence_network
 
-  angular:
-    build: ./angular
-    container_name: angular
-    volumes:
-      - ./angular/src:/app/src
-    ports:
-      - "4200:4200"
-    networks:
-      - transcendence_network
-
   nodejs:
     build: ./nodejs
     container_name: nodejs
@@ -47,6 +37,14 @@ services:
     ports:
       - "${APP_PORT}:3000"
       - "${VITE_PORT}:5173"
+    networks:
+      - transcendence_network
+
+  angular:
+    build: ./angular
+    container_name: angular
+    volumes:
+      - ./angular/src:/app/src  # hot-reload
     networks:
       - transcendence_network
 
@@ -64,13 +62,13 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: /home/${LOGIN}/data/db_data
+      device: /home/${LOGIN}/volumes/db_data
   vite_cache:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/${LOGIN}/data/vite_cache
+      device: /home/${LOGIN}/volumes/vite_cache
 
 networks:
   transcendence_network:
