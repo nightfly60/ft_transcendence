@@ -4,7 +4,7 @@ all:
 	mkdir -p /home/$(USER)/volumes/vite_cache
 	cd nodejs && npm install
 	cd angular && npm install
-	docker compose up
+	docker compose up --build
 
 down:
 	docker compose down
