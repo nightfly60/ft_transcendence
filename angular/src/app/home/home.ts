@@ -1,8 +1,11 @@
 import { Component } from '@angular/core';
+import { LogoComponent } from './logo/logo.component';
+import { MenuCardsComponent } from './menu-cards/menu-cards.component';
+import { MiniBoardComponent } from './mini-board/mini-board.component';
 
 @Component({
   selector: 'app-home',
-  imports: [],
+  imports: [LogoComponent, MenuCardsComponent, MiniBoardComponent],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })

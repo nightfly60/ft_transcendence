@@ -1,0 +1,56 @@
+.mini-board {
+  .board-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 40px);
+    grid-template-rows: repeat(8, 40px);
+    border: 2px solid #e8c96d;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(232, 201, 109, 0.2);
+
+    .cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &.light {
+        background: #f0d9b5;
+      }
+
+      &.dark {
+        background: #b58863;
+      }
+
+      .mini-piece {
+        font-size: 22px;
+        line-height: 1;
+        color: #1a1a1a;
+        text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.4);
+        cursor: default;
+        user-select: none;
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    .board-grid {
+      grid-template-columns: repeat(8, 32px);
+      grid-template-rows: repeat(8, 32px);
+
+      .cell .mini-piece {
+        font-size: 17px;
+      }
+    }
+  }
+
+  @media (max-width: 360px) {
+    .board-grid {
+      grid-template-columns: repeat(8, 28px);
+      grid-template-rows: repeat(8, 28px);
+
+      .cell .mini-piece {
+        font-size: 15px;
+      }
+    }
+  }
+}
