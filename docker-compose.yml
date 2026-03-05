@@ -27,6 +27,16 @@ services:
     networks:
       - transcendence_network
 
+  angular:
+    build: ./angular
+    container_name: angular
+    volumes:
+      - ./angular/src:/app/src
+    ports:
+      - "4200:4200"
+    networks:
+      - transcendence_network
+
   nodejs:
     build: ./nodejs
     container_name: nodejs
