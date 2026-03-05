@@ -19,7 +19,7 @@ export class GameComponent implements OnInit, OnDestroy {
   constructor(private socket: SocketService, private http: HttpClient) {}
 
   ngOnInit() {
-    this.user$ = this.http.get<User>('http://localhost:3000/users/2');
+    this.user$ = this.http.get<User>('/api/users/2');
 
     this.socket.joinGame(this.gameId);
 
