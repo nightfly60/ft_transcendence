@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS Game (
 );
 
 -- Table Achievements
-CREATE TABLE IF NOT EXISTS Achievments (
+CREATE TABLE IF NOT EXISTS Achievements (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255),
     objective BIGINT,
@@ -90,14 +90,14 @@ CREATE TABLE IF NOT EXISTS User_Game (
     FOREIGN KEY(id_player_second) REFERENCES \`User\`(id)
 );
 
--- Table User_Achievments
-CREATE TABLE IF NOT EXISTS User_achievments (
+-- Table User_Achievements
+CREATE TABLE IF NOT EXISTS User_achievements (
     id_user INT NOT NULL,
-    id_achievment INT NOT NULL,
+    id_achievement INT NOT NULL,
     type VARCHAR(255),
-    PRIMARY KEY(id_user, id_achievment),
+    PRIMARY KEY(id_user, id_achievement),
     FOREIGN KEY(id_user) REFERENCES \`User\`(id),
-    FOREIGN KEY(id_achievment) REFERENCES Achievments(id)
+    FOREIGN KEY(id_achievement) REFERENCES Achievements(id)
 );
 EOSQL
 

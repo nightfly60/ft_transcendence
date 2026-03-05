@@ -30,7 +30,7 @@ INSERT INTO Profile (xp, path_img, bio, elo, id_user) VALUES
 (1100, '/avatars/judy.png',    'Aime les longues parties',          1100, 10);
 
 -- Achievements
-INSERT INTO Achievments (name, objective, description) VALUES
+INSERT INTO Achievements (name, objective, description) VALUES
 ('Premier sang',   1,   'Gagner votre première partie'),
 ('En série',       5,   'Gagner 5 parties de suite'),
 ('Centenaire',     100, 'Jouer 100 parties'),
@@ -79,8 +79,8 @@ INSERT INTO friends (id_user_1, id_user_2) VALUES
 (8, 1),
 (9, 10);
 
--- User_Achievments
-INSERT INTO User_achievments (id_user, id_achievment, type) VALUES
+-- User_Achievements
+INSERT INTO User_achievements (id_user, id_achievement, type) VALUES
 (1, 1, 'bronze'),
 (1, 5, 'silver'),
 (2, 1, 'bronze'),

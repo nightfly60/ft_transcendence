@@ -1,1 +1,40 @@
-<p>chat-box works!</p>
+<!DOCTYPE html>
+<!-- Write your comments here -->
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<title>Chat</title>
+	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+</head>
+<body>
+	<div class="chat-window">
+		<div class="chat-messages" id="messages">
+			<div class="message incoming">
+				<div class="bubble">Hey! How's it going?</div><!-- placeholder -->
+				<div class="timestamp">10:42 AM</div><!-- placeholder -->
+			</div>
+			<div class="message outgoing">
+				<div class="bubble">Pretty good! Just working on a project.</div>
+				<div class="timestamp">10:43 AM</div>
+			</div>
+		</div>
+		<div class="chat-input-area">
+			<div class="input-wrap">
+				<input type="text"
+				class="chat-input"
+				id="chatInput"
+				placeholder="Type a message…"
+				autocomplete="off"
+				/>
+			</div>
+			<button class="send-btn" id="sendBtn" title="Send">
+				<svg viewBox="0 0 24 24">
+					<line x1="22" y1="2" x2="11" y2="13"></line>
+					<polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+				</svg>
+			</button>
+		</div>
+	</div>
+</body>
