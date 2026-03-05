@@ -11,9 +11,7 @@ services:
       - transcendence_network
 
   nginx:
-    build:
-      context: .
-      dockerfile: ./nginx/Dockerfile
+    build: ./nginx
     container_name: nginx
     env_file:
       - .env
