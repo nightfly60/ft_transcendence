@@ -66,13 +66,13 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: /home/${LOGIN}/data/db_data
+      device: /home/${LOGIN}/volumes/db_data
   vite_cache:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/${LOGIN}/data/vite_cache
+      device: /home/${LOGIN}/volumes/vite_cache
 
 networks:
   transcendence_network:
