@@ -1,0 +1,53 @@
+.logo-area {
+  text-align: center;
+
+  .chess-icon {
+    margin-bottom: 12px;
+
+    .piece.king {
+      font-size: 64px;
+      color: #e8c96d;
+      text-shadow: 0 0 20px rgba(232, 201, 109, 0.6);
+      display: inline-block;
+      animation: float 3s ease-in-out infinite;
+    }
+  }
+
+  .title {
+    font-size: 52px;
+    font-weight: bold;
+    color: #e8c96d;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    text-shadow: 0 0 30px rgba(232, 201, 109, 0.4);
+    margin: 0 0 8px;
+  }
+
+  .subtitle {
+    font-size: 16px;
+    color: #8a8aaa;
+    letter-spacing: 3px;
+    margin: 0;
+  }
+
+  @media (max-width: 480px) {
+    .chess-icon .piece.king {
+      font-size: 48px;
+    }
+
+    .title {
+      font-size: 32px;
+      letter-spacing: 4px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      letter-spacing: 2px;
+    }
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
