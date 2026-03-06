@@ -4,13 +4,10 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { registerGameEvents } from './sockets/game.js';
 import userRouter from './routes/user.js';
-<<<<<<< HEAD
-=======
 import profileRouter from './routes/profile.routes.js';
 import pool from './db.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
->>>>>>> elena
 
 const app = express();
 const httpServer = createServer(app);
