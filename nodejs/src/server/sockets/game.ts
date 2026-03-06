@@ -14,5 +14,5 @@ export function registerGameEvents(io: Server, socket: Socket): void {
 
   socket.on('disconnect', () => {
     console.log(`Player disconnected: ${socket.id}`);
-  });ouerCoup($event.from, $event.to)
+  });
 }
