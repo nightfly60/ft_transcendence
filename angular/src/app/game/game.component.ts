@@ -19,10 +19,16 @@ export class GameComponent implements OnInit, OnDestroy {
   gameId = 'partie-1';
   user$!: Observable<User>;
   selectedMode: GameMode | null = null;
+  cells: { light: boolean }[] = [];
 
   constructor(private socket: SocketService, private http: HttpClient) {}
 
   ngOnInit() {
+    for (let r = 0; r < 12; r++) {
+      for (let c = 0; c < 12; c++) {
+        this.cells.push({ light: (r + c) % 2 === 0 });
+      }
+    }
     this.user$ = this.http.get<User>('/api/users/2');
     this.socket.joinGame(this.gameId);
     this.socket.onMove(({ from, to }) => {

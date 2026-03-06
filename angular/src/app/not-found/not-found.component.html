@@ -1,10 +1,46 @@
-<div class="not-found">
-  <div class="board-bg"></div>
-  <div class="content">
-    <div class="error-code">404</div>
-    <div class="piece">&#9822;</div>
-    <h1>Page introuvable</h1>
-    <p>Cette case n'existe pas sur l'échiquier.</p>
-    <a routerLink="/" class="btn-home">Retour à l'accueil</a>
+<div class="page-wrapper">
+
+  <!-- pieces qui flottent -->
+  <div class="floating-piece">♜</div>
+  <div class="floating-piece">♝</div>
+  <div class="floating-piece">♛</div>
+  <div class="floating-piece">♞</div>
+  <div class="floating-piece">♟</div>
+  <div class="floating-piece">♚</div>
+
+  <!-- DAMIER DE FOND -->
+  <div class="chessboard-bg">
+    <div
+      *ngFor="let cell of cells"
+      [style.background]="cell.light ? '#f5f0e8' : 'transparent'">
+    </div>
   </div>
+
+  <!-- CONTENU -->
+  <div class="container">
+
+    <!-- LOGO CAVALIER -->
+    <div class="knight-wrap">
+      <img class="knight-svg" src="https://i.ibb.co/KpsxjP5R/unnamed-removebg-preview-1.png" alt="Cavalier"/>
+    </div>
+
+    <div class="gold-line"></div>
+
+    <!-- 404 -->
+    <div class="error-code" data-code="404">404</div>
+
+    <!-- TITRE -->
+    <p class="title">Chess 42 - Page introuvable</p>
+
+    <!-- SÉPARATEUR -->
+    <div class="ornament">♞</div>
+
+    <!-- DESCRIPTION -->
+    <p class="description">Cette case n'existe pas sur l'échiquier.</p>
+
+    <!-- BOUTON -->
+    <a routerLink="/" class="btn">Retourner à l'accueil</a>
+
+  </div>
+
 </div>
