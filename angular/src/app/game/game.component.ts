@@ -4,28 +4,38 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { SocketService } from '../services/socket.service';
 import { User } from '../models/user.model';
+import { GameModeSelectComponent, GameMode } from './game-mode-select/game-mode-select.component';
+import { GameHeaderComponent } from './game-header/game-header.component';
+import { GameBoardComponent } from './game-board/game-board.component';
 
 @Component({
   selector: 'app-game',
   standalone: true,
-  imports: [AsyncPipe],
+  imports: [AsyncPipe, GameModeSelectComponent, GameHeaderComponent, GameBoardComponent],
   templateUrl: './game.component.html',
   styleUrl: './game.component.scss',
 })
 export class GameComponent implements OnInit, OnDestroy {
   gameId = 'partie-1';
   user$!: Observable<User>;
+  selectedMode: GameMode | null = null;
 
   constructor(private socket: SocketService, private http: HttpClient) {}
 
   ngOnInit() {
     this.user$ = this.http.get<User>('/api/users/2');
-
     this.socket.joinGame(this.gameId);
-
     this.socket.onMove(({ from, to }) => {
       console.log(`Adversaire joue : ${from} → ${to}`);
     });
+  }
+
+  selectMode(mode: GameMode) {
+    this.selectedMode = mode;
+  }
+
+  goBack() {
+    this.selectedMode = null;
   }
 
   jouerCoup(from: string, to: string) {

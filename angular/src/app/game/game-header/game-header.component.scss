@@ -1,0 +1,40 @@
+.game-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 24px;
+  background: #1e1e2e;
+  border-bottom: 1px solid #2d2d42;
+}
+
+.back-btn {
+  background: transparent;
+  border: 1px solid #2d2d42;
+  color: #94a3b8;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: border-color 0.2s, color 0.2s;
+
+  &:hover {
+    border-color: #7c3aed;
+    color: #fff;
+  }
+}
+
+.mode-badge {
+  background: #7c3aed;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 99px;
+  text-transform: uppercase;
+}
+
+.player-info {
+  margin-left: auto;
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
