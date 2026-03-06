@@ -3,7 +3,6 @@ import { GameComponent } from './game/game.component';
 import { Home } from './home/home';
 import { ErrorPageComponent } from './error-page/error-page';
 import { ProfileComponent } from './profile/profile';
-import { NotFoundComponent } from './not-found/not-found.component';
 import { LoginPage } from './login-page/login-page';
 import { authGuard } from './shared/interceptors/auth-interceptor';
 
