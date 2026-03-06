@@ -25,6 +25,19 @@ export class ProfileComponent implements OnInit {
   get xpInLevel(): number    { return (this.data?.xp ?? 0) % this.XP_PER_LEVEL; }
   get xpPercent(): number    { return (this.xpInLevel / this.XP_PER_LEVEL) * 100; }
 
+  showAll: boolean = false;
+
+  get visibleAchievements() {
+  return this.showAll 
+  	? this.data.achievements 
+	: this.data.achievements?.slice(0, 3);
+  }
+
+  toggleAchievements() {
+	this.showAll = !this.showAll;
+	this.cdr.markForCheck();
+  }
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,

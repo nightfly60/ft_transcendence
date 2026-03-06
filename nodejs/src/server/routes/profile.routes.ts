@@ -39,12 +39,20 @@ router.get('/:id', async (req: Request, res: Response) => {
 	JOIN Game g ON g.id = ug.id
 	WHERE ug.id_player_one = ? OR ug.id_player_second = ?`,
 	[userId, userId, userId, userId]
-);
+  );
 
   const [friends]: any = await pool.query(
 	'SELECT COUNT(*) AS nb_friends FROM friends WHERE id_user_1 = ? OR id_user_2 = ?',
 	[userId, userId]
-);
+  );
+
+  const [achievements]: any = await pool.query(
+    `SELECT a.name, a.description, ua.type
+     FROM User_achievments ua
+     JOIN Achievments a ON a.id = ua.id_achievment
+     WHERE ua.id_user = ?`,
+    [userId]
+  );
 
   res.status(200).json({
 	...profileRows[0], // .. = spread operator pour envoyer chaque elem
@@ -53,6 +61,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 	// ...statsRows[0],
 	nb_friends: friends[0].nb_friends,
 	username: username[0].username,
+	achievements: achievements,
   });
 });
 
