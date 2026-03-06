@@ -1,5 +1,6 @@
 import { Component, Output, EventEmitter } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -8,22 +9,28 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrl: './navbar.component.scss',
 })
 export class NavbarComponent {
-  @Output() loginRequested = new EventEmitter<void>();
+	@Output() loginRequested = new EventEmitter<void>();
+	isLoggedIn = false;
+	menuOpen = false;
 
-  isLoggedIn = false;
-  username = '';
-  menuOpen = false;
+	constructor(private router: Router, public auth: AuthService) {
+		this.isLoggedIn = this.auth.isLoggedIn();
+		const token = localStorage.getItem('token');
+		if (token) {
+			const payload = JSON.parse(atob(token.split('.')[1]));
+		}
+	}
 
-  toggleMenu(): void {
-    this.menuOpen = !this.menuOpen;
-  }
+	toggleMenu(): void {
+		this.menuOpen = !this.menuOpen;
+	}
 
-  openLogin(): void {
-    this.loginRequested.emit();
-  }
+	openLogin(): void {
+		this.router.navigate(['/login']);
+	}
 
-  logout(): void {
-    this.isLoggedIn = false;
-    this.username = '';
-  }
+	logout(): void {
+		this.auth.logout();
+		this.isLoggedIn = false;
+	}
 }
