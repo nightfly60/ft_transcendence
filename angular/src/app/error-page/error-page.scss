@@ -9,34 +9,8 @@ $gold-dark:  #7a5c18;
 $font-display: 'Tangerine', cursive; // pour le 404
 $font-body:    'Cormorant Garamond', serif; // tout le reste
 
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html, body {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
 :host {
   display: block;
-  width: 100%;
-  height: 100%;
-}
-
-body {
-  background-color: $black;
-  color: $white;
-  font-family: $font-body;
-  min-height: 100vh;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
 }
 
 // page panel principal
@@ -44,12 +18,8 @@ body {
   background-color: $black;
   color: $white;
   font-family: $font-body;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
+  position: relative;
+  min-height: calc(100vh - 68px);
   display: flex;
   align-items: center;
   justify-content: center;
