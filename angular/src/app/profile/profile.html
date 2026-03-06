@@ -18,9 +18,9 @@
       <div class="avatar-ring">
         <img
           class="avatar-img"
-          [src]="'https://localhost:8443' + data.path_img"
+          [src]="data.path_img"
           alt="Avatar"
-		  (error)="$any($event.target).src = 'https://localhost:8443/avatars/default-avatar.png'"
+		  (error)="$any($event.target).src = '/avatars/default-avatar.png'"
         />
       </div>
 
