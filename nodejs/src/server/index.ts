@@ -4,6 +4,7 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { registerGameEvents } from './sockets/game.js';
 import authRouter from './routes/auth.routes';
+import { requireAuth } from './middleware/auth.middleware.js';
 
 const app = express();
 const httpServer = createServer(app);
