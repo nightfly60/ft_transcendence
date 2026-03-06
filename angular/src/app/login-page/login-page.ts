@@ -33,7 +33,7 @@ export class LoginPage {
 		}).subscribe({
 			next: (res) => {
 				this.auth.login(res.token);
-				this.router.navigate(['/home']);
+				this.router.navigate(['/']);
 			},
 			error: (err) => {
 				console.log("ERROR", err);
