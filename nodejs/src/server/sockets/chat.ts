@@ -7,11 +7,11 @@ interface ChatMessage {
 }
 
 interface ClientToServerEvents {
-  get_message: (text: string) => void;
+  "get_message": (text: string) => void;
 }
 
 interface ServerToClientEvents {
-  send_message: (data: ChatMessage) => void;
+  "send_message": (data: ChatMessage) => void;
 }
 
 export function registerChatEvents(

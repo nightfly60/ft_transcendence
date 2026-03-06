@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { GameComponent } from './game/game.component';
+import { ChatBox } from './chat-box/chat-box';
 import { Home } from './home/home';
 import { ErrorPageComponent } from './error-page/error-page';
 import { ProfileComponent } from './profile/profile';
