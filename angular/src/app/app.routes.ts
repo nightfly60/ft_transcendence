@@ -5,7 +5,7 @@ import { ProfileComponent } from './pages/profile/profile';
 
 export const routes: Routes = [
   { path: 'game', component: GameComponent },
-  { path: 'profile/:profile', component: ProfileComponent },
+  { path: 'profile/:id', component: ProfileComponent },
 
   { path: '404', component: ErrorPageComponent, data: { code: 404 } },
   { path: '403', component: ErrorPageComponent, data: { code: 403 } },

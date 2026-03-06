@@ -4,27 +4,28 @@ import pool from '../db.js';
 const router = Router();
 
 // recuperation de l'id
-router.get('/:username', async (req: Request, res: Response) => {
-  const [rows]: any = await pool.query(
-    'SELECT id FROM `User` WHERE username = ?',
-    [req.params.username]
-  );
-  if (rows.length === 0) {
-    res.status(404).json({ error: 'User not found' });
+router.get('/:id', async (req: Request, res: Response) => {
+  const userId = parseInt(req.params['id'] as string);
+
+  if (isNaN(userId)) {
+    res.status(400).json({ error: 'Invalid ID' });
     return;
   }
 
-  // recuperation des infos du profil ( id | xp | path_img | bio | elo)
-  const [profileRows]: any = await pool.query(
-	'SELECT * FROM `Profile` WHERE id = ?',
-	[rows[0].id]
+  const [username]: any = await pool.query(
+    'SELECT username AS username FROM `User` WHERE id = ?',
+    [userId]
   );
+
+  const [profileRows]: any = await pool.query(
+    'SELECT * FROM `Profile` WHERE id = ?',
+    [userId]
+  );
+
   if (profileRows.length === 0) {
     res.status(404).json({ error: 'Profile not found' });
     return;
   }
-
-  const userId = rows[0].id;
 
   // recuperation des stats (nb_parties et surtout winrate)
   const [statsRows]: any = await pool.query(
@@ -51,6 +52,7 @@ router.get('/:username', async (req: Request, res: Response) => {
 	winrate: statsRows[0].winrate ?? 0,
 	// ...statsRows[0],
 	nb_friends: friends[0].nb_friends,
+	username: username[0].username,
   });
 });
 

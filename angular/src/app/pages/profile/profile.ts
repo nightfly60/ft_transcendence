@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
 })
 export class ProfileComponent implements OnInit {
   data: any = null;
-  username = 'Anonyme';
+  id: string = '';
 
   readonly XP_PER_LEVEL = 1000;
 
@@ -32,14 +32,14 @@ export class ProfileComponent implements OnInit {
     private cdr: ChangeDetectorRef
   ) {}
 
-  ngOnInit() {
-    const username = this.route.snapshot.paramMap.get('profile');
-    if (username) this.username = username;
-    else this.router.navigate(['/404']);
-
-    this.http.get(`/api/profile/${username}`).subscribe({
-      next: (data) => { this.data = data; this.cdr.markForCheck(); },
-      error: (err)  => { this.router.navigate([`/${err.status}`]); this.cdr.markForCheck(); },
-    });
-  }
+	ngOnInit() {
+	const id = this.route.snapshot.paramMap.get('id') as string;
+	if (id) this.id = id;
+	else this.router.navigate(['/404']);
+	
+	this.http.get(`/api/profile/${id}`).subscribe({
+		next: (data) => { this.data = data; this.cdr.markForCheck(); },
+		error: (err) => { this.router.navigate([`/${err.status}`]); this.cdr.markForCheck(); },
+	});
+	}
 }
