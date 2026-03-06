@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { GameComponent } from './game/game.component';
 import { Home } from './home/home';
 import { ErrorPageComponent } from './error-page/error-page';
-import { ProfileComponent } from './pages/profile/profile';
+import { ProfileComponent } from './profile/profile';
 
 export const routes: Routes = [
   { path: '', component: Home },
