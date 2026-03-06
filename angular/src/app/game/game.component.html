@@ -1,4 +1,14 @@
-<p>Partie : {{ gameId }}</p>
-<p>Joueur : {{ (user$ | async)?.username }}</p>
-
-<button (click)="jouerCoup('e2', 'e4')">Jouer e2 → e4</button>
+@if (!selectedMode) {
+  <app-game-mode-select (modeSelected)="selectMode($event)" />
+} @else {
+  <app-game-header
+    [mode]="selectedMode"
+    [username]="(user$ | async)?.username ?? ''"
+    (back)="goBack()"
+  />
+  <app-game-board
+    [gameId]="gameId"
+    [mode]="selectedMode"
+    (movePlayed)="jouerCoup($event.from, $event.to)"
+  />
+}

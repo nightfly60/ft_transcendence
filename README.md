@@ -6,3 +6,5 @@ Si tu veux mettre le domain name et pas localhost -> sudo nano /etc/hosts et ajo
     ->docker compose up --build angular  
  pour  lance cmd dams conteneur
     ->docker exec -it angular cmd
+
+docker exec -i mariadb mysql -uroot -prootpass transcendence < mariadb/tools/seed.sql
