@@ -23,12 +23,9 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
     # Création root, base et user
     mysql <<-EOSQL
         ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';
-
         CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`;
         CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';
-
         GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'%';
-
         FLUSH PRIVILEGES;
 EOSQL
 
@@ -97,7 +94,7 @@ CREATE TABLE IF NOT EXISTS User_achievements (
     type VARCHAR(255),
     PRIMARY KEY(id_user, id_achievement),
     FOREIGN KEY(id_user) REFERENCES \`User\`(id),
-    FOREIGN KEY(id_achievement) REFERENCES Achievements(id)
+    FOREIGN KEY(id_achievment) REFERENCES Achievements(id)
 );
 EOSQL
 
