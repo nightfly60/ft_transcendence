@@ -47,8 +47,8 @@ services:
       - ./angular/src:/app/src  # hot-reload
     networks:
       - transcendence_network
-    # env_file:
-    #   - .env
+    env_file:
+      - .env
 
   python:
     build: ./python
