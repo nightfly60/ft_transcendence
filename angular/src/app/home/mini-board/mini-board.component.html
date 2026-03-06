@@ -4,7 +4,7 @@
       @for (col of boardCols; track col) {
         <div class="cell" [class.light]="(row + col) % 2 === 0" [class.dark]="(row + col) % 2 !== 0">
           @if (getPiece(row, col)) {
-            <span class="mini-piece">{{ getPiece(row, col) }}</span>
+            <span class="mini-piece" [class.white]="isWhite(getPiece(row, col))">{{ getDisplayPiece(getPiece(row, col)) }}</span>
           }
         </div>
       }
