@@ -23,12 +23,9 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
     # Création root, base et user
     mysql <<-EOSQL
         ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';
-
         CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`;
         CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';
-
         GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'%';
-
         FLUSH PRIVILEGES;
 EOSQL
 
@@ -65,7 +62,7 @@ CREATE TABLE IF NOT EXISTS Game (
 );
 
 -- Table Achievements
-CREATE TABLE IF NOT EXISTS Achievments (
+CREATE TABLE IF NOT EXISTS Achievements (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255),
     objective BIGINT,
@@ -90,14 +87,14 @@ CREATE TABLE IF NOT EXISTS User_Game (
     FOREIGN KEY(id_player_second) REFERENCES \`User\`(id)
 );
 
--- Table User_Achievments
-CREATE TABLE IF NOT EXISTS User_achievments (
+-- Table User_Achievements
+CREATE TABLE IF NOT EXISTS User_achievements (
     id_user INT NOT NULL,
     id_achievment INT NOT NULL,
     type VARCHAR(255),
     PRIMARY KEY(id_user, id_achievment),
     FOREIGN KEY(id_user) REFERENCES \`User\`(id),
-    FOREIGN KEY(id_achievment) REFERENCES Achievments(id)
+    FOREIGN KEY(id_achievment) REFERENCES Achievements(id)
 );
 EOSQL
 
