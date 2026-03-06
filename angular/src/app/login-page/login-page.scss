@@ -1,0 +1,126 @@
+.page {
+  min-height: 100vh;
+  background: #0a0a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card {
+  background: #13132a;
+  border: 1px solid rgba(232, 201, 109, 0.25);
+  border-radius: 16px;
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 420px;
+  font-family: 'Georgia', serif;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+}
+
+.card-header {
+  text-align: center;
+  margin-bottom: 28px;
+
+  .icon {
+    font-size: 52px;
+    color: #e8c96d;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  h2 {
+    color: #e8c96d;
+    font-size: 22px;
+    margin: 0;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 24px;
+
+  button {
+    flex: 1;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    color: #6a6a8a;
+    font-size: 14px;
+    padding: 10px;
+    cursor: pointer;
+    font-family: 'Georgia', serif;
+    letter-spacing: 1px;
+    transition: color 0.2s;
+
+    &.active {
+      color: #e8c96d;
+      border-bottom-color: #e8c96d;
+    }
+
+    &:hover:not(.active) { color: #d4d4e8; }
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    label {
+      font-size: 12px;
+      color: #8a8aaa;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    input {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: #d4d4e8;
+      font-size: 14px;
+      font-family: 'Georgia', serif;
+      outline: none;
+      transition: border-color 0.2s;
+
+      &:focus { border-color: rgba(232, 201, 109, 0.4); }
+      &::placeholder { color: #3a3a5a; }
+    }
+  }
+
+  .btn-submit {
+    margin-top: 8px;
+    background: rgba(232, 201, 109, 0.15);
+    border: 1px solid rgba(232, 201, 109, 0.5);
+    color: #e8c96d;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: 'Georgia', serif;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+
+    &:hover { background: rgba(232, 201, 109, 0.25); }
+  }
+}
+
+.field-error {
+  font-size: 12px;
+  color: #f44336;
+  margin-top: 2px;
+}
+
+input.error {
+  border-color: rgba(244, 67, 54, 0.6);
+}
