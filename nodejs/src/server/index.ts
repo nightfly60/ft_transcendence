@@ -24,10 +24,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.use('/avatars', (req, res, next) => {
-  console.log('Avatar request:', req.url);
-  next();
+    console.log('Avatar request:', req.url);
+    console.log('Looking in:', path.join(__dirname, 'public/avatars'));
+    next();
 }, express.static(path.join(__dirname, 'public/avatars')));
-
 
 console.log('Serving avatars from:', path.join(__dirname, 'public/avatars'));
 

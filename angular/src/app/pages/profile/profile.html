@@ -1,11 +1,79 @@
-@if (data) {
-  <h1>{{ username }}</h1>
-  <p>elo : {{ data.elo }}</p>
-  <p>xp : {{ data.xp }}</p>
-  <p>bio : {{ data.bio }}</p>
- <p>bio : {{ data.bio }}</p>
-} @else if (error) {
-  <p>{{ error }}</p>
-} @else {
-  <p>Chargement...</p>
-}
+<div class="page-wrapper">
+
+  <div class="floating-piece">♜</div>
+  <div class="floating-piece">♝</div>
+  <div class="floating-piece">♛</div>
+  <div class="floating-piece">♞</div>
+  <div class="floating-piece">♟</div>
+  <div class="floating-piece">♚</div>
+
+  <div class="chessboard-bg">
+    <div *ngFor="let cell of cells" [style.background]="cell.light ? '#f5f0e8' : 'transparent'"></div>
+  </div>
+
+  <div class="profile-page" *ngIf="data">
+
+    <!-- header -> profile -->
+    <header class="profile-header">
+      <div class="avatar-ring">
+        <img
+          class="avatar-img"
+          [src]="'https://localhost:8443' + data.path_img"
+          alt="Avatar"
+		  (error)="$any($event.target).src = 'https://localhost:8443/avatars/default-avatar.png'"
+        />
+      </div>
+
+      <div class="header-info">
+        <h1 class="username">{{ username }}</h1>
+        <p class="bio">{{ data.bio || 'Pas d\'info.' }}</p>
+      </div>
+
+      <div class="header-elo">
+        <span class="elo-label">ELO</span>
+        <span class="elo-value">{{ data.elo }}</span>
+      </div>
+    </header>
+
+    <div class="gold-separator"></div>
+
+    <!-- Les stats -> statsRows -->
+    <section class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-icon">♟</span>
+		<span class="stat-value">{{ data.nb_parties ?? 0 }}</span>
+        <span class="stat-label">Parties jouées</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">⚔</span>
+        <span class="stat-value">{{ (data.winrate ?? 15) }}%</span>
+        <span class="stat-label">Victoires</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">♞</span>
+        <span class="stat-value">{{ data.nb_friends ?? 0 }}</span>
+        <span class="stat-label">Amis</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">★</span>
+        <span class="stat-value">{{ level }}</span>
+        <span class="stat-label">Niveau</span>
+      </div>
+    </section>
+
+    <!-- l'xp avec progression + niveau -->
+    <section class="xp-section">
+      <div class="xp-meta">
+        <span class="xp-label">Progression - Niveau {{ level }}</span>
+        <span class="xp-total">{{ data.xp }} XP</span>
+      </div>
+      <div class="xp-track">
+        <div class="xp-fill" [style.width.%]="xpPercent"></div>
+        <div class="xp-glow" [style.width.%]="xpPercent"></div>
+        <span class="xp-marker">{{ xpInLevel }} / {{ XP_PER_LEVEL }}</span>
+      </div>
+    </section>
+
+  </div>
+</div>
+
