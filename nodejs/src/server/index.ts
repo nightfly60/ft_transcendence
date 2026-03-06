@@ -39,8 +39,8 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok' });
 });
 
-app.use('/users', userRouter, requireAuth);
-app.use('/profile', profileRouter, requireAuth); 
+app.use('/users', requireAuth, userRouter);
+app.use('/profile', requireAuth, profileRouter); 
 
 io.on('connection', (socket) => {
   registerGameEvents(io, socket);
