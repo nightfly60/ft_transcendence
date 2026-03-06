@@ -4,6 +4,13 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { registerGameEvents } from './sockets/game.js';
 import userRouter from './routes/user.js';
+<<<<<<< HEAD
+=======
+import profileRouter from './routes/profile.routes.js';
+import pool from './db.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+>>>>>>> elena
 
 const app = express();
 const httpServer = createServer(app);
@@ -16,6 +23,17 @@ const io = new Server(httpServer, {
   },
 });
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use('/avatars', (req, res, next) => {
+    console.log('Avatar request:', req.url);
+    console.log('Looking in:', path.join(__dirname, 'public/avatars'));
+    next();
+}, express.static(path.join(__dirname, 'public/avatars')));
+
+console.log('Serving avatars from:', path.join(__dirname, 'public/avatars'));
+
 app.use(cors());
 app.use(express.json());
 
@@ -24,6 +42,7 @@ app.get('/health', (_req, res) => {
 });
 
 app.use('/users', userRouter);
+app.use('/profile', profileRouter); 
 
 io.on('connection', (socket) => {
   registerGameEvents(io, socket);
