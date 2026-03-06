@@ -100,7 +100,7 @@ router.post('/login', async (req, res) => {
 				process.env.JWT_SECRET || "02a70f0b6ea2556ea2afa6309aafa9ab8d87b7f049eef3d51e808c27057c4421",
 				{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
 			);
-			res.status(200).json({ message: 'Connecté', userID: user.id, token: token});
+			res.status(200).json({ message: 'Connecté', token: token});
 			return ;
 		}
 		else
