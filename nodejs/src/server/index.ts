@@ -8,10 +8,15 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import authRouter from './routes/auth.routes';
 import { requireAuth } from './middleware/auth.middleware.js';
+import passport from 'passport';
+
+await import('./strategies/google');
 
 const app = express();
 const httpServer = createServer(app);
 const PORT = process.env.APP_PORT || 3000;
+
+app.use(passport.initialize());
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

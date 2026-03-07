@@ -4,6 +4,7 @@
 	  <span class="icon">&#9812;</span>
 	  <h2>Transcendence</h2>
 	</div>
+	<button (click)="googleAuth()">Google Authentification</button>
 	<div class="tabs">
 	  <button [class.active]="tab === 'login'" (click)="tab = 'login'">Se connecter</button>
 	  <button [class.active]="tab === 'register'" (click)="tab = 'register'">S'inscrire</button>
