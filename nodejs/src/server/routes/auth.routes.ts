@@ -49,7 +49,7 @@ router.post('/register', async (req, res) => {
 	{
 		if (err.code === 'ER_DUP_ENTRY')
 		{
-			res.status(400).json( {error: 'Email ou Username déjà utilisé' });
+			res.status(400).json( {error: 'Email déjà utilisé' });
 			return ;
 		}
 
