@@ -21,8 +21,8 @@ app.use('/avatars', (req, res, next) => {
     console.log('Looking in:', path.join(__dirname, 'public/avatars'));
     next();
 }, express.static(path.join(__dirname, 'public/avatars')));
-console.log('Serving avatars from:', path.join(__dirname, 'public/avatars'));
 
+console.log('Serving avatars from:', path.join(__dirname, 'public/avatars'));
 
 app.use(cors());
 app.use(express.json());
@@ -30,8 +30,6 @@ app.use('/users', requireAuth, userRouter);
 app.use('/profile', requireAuth, profileRouter); 
 app.use('/auth', authRouter);
 initSockets(httpServer);
-
-
 
 httpServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
