@@ -57,12 +57,12 @@ export class ChatBox implements AfterViewChecked { //pretty sure this does nothi
     }
 }
 
-export class NewChatBox implements OnInit {
-  gameId = 'partie-1'; //placeholder
-  user$!: Observable<User>;
+// export class NewChatBox implements OnInit {
+//   gameId = 'partie-1'; //placeholder
+//   user$!: Observable<User>;
   
-  constructor(private socket: SocketService, private http: HttpClient) {} // ?
-  ngOnInit() {
+//   constructor(private socket: SocketService, private http: HttpClient) {} // ?
+//   ngOnInit() {
     
-  }
-}
+//   }
+// }
