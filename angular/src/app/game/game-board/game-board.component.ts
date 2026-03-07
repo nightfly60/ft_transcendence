@@ -47,6 +47,22 @@ export class GameBoardComponent {
   selected = signal<[number, number] | null > (null)
   validMoves =  signal<[number,number][]>([])
   turn = signal<PieceColor>('w');
+  rows  = [0,1,2,3,4,5,6,7];
+  cols  = [0,1,2,3,4,5,6,7];
+  files = ['a','b','c','d','e','f','g','h'];
+
+  moveHistory = signal<string[]>([]);
+  movePairs   = () => [];
+  captured    = signal<Piece[]>([]);
+
+isLight(r: number, c: number)   { return (r + c) % 2 === 0; }
+symbol(piece: Piece | null)     { return piece ? SYMBOLS[piece.color][piece.type] : ''; }
+isSelected(r: number, c: number){ return false; }
+isLastMove(r: number, c: number){ return false; }
+isValidMove(r: number, c: number){ return false; }
+capturedSymbols(color: PieceColor){ return ''; }
+clickSquare(r: number, c: number){}
+resetGame(){}
 
   private case_exist(row: number, col: number):boolean
   {
@@ -58,5 +74,9 @@ export class GameBoardComponent {
   }
   private isEnemy(board: Board, piece: Piece, row: number, col: number): boolean {
   return board[row][col] !== null && board[row][col]?.color !== piece.color;
-}
+  }
+
+  private is_deplacable(board: Board, piece: Piece, row: number, col: number): boolean {
+  return this.case_exist(row, col) && (this.case_empty(board, row, col) || this.isEnemy(board, piece, row, col));
+  }
 }
