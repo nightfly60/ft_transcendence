@@ -3,6 +3,20 @@
 
 USE `transcendence`;
 
+<<<<<<< HEAD
+-- Clear existing data (order respects foreign keys)
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE User_achievements;
+TRUNCATE TABLE User_Game;
+TRUNCATE TABLE friends;
+TRUNCATE TABLE Game;
+TRUNCATE TABLE Achievements;
+TRUNCATE TABLE Profile;
+TRUNCATE TABLE `User`;
+SET FOREIGN_KEY_CHECKS = 1;
+
+=======
+>>>>>>> anas
 -- Users
 INSERT INTO `User` (mail, two_fa, language, password, username) VALUES
 ('alice@example.com',   FALSE, 'fr', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/APlbT/oS', 'Alice'),
@@ -30,7 +44,11 @@ INSERT INTO Profile (xp, path_img, bio, elo, id_user) VALUES
 (1100, '/avatars/judy.png',    'Aime les longues parties',          1100, 10);
 
 -- Achievements
+<<<<<<< HEAD
+INSERT INTO Achievements (name, objective, description) VALUES
+=======
 INSERT INTO Achievments (name, objective, description) VALUES
+>>>>>>> anas
 ('Premier sang',   1,   'Gagner votre première partie'),
 ('En série',       5,   'Gagner 5 parties de suite'),
 ('Centenaire',     100, 'Jouer 100 parties'),
@@ -80,7 +98,7 @@ INSERT INTO friends (id_user_1, id_user_2) VALUES
 (9, 10);
 
 -- User_Achievments
-INSERT INTO User_achievments (id_user, id_achievment, type) VALUES
+INSERT INTO User_achievements (id_user, id_achievment, type) VALUES
 (1, 1, 'bronze'),
 (1, 5, 'silver'),
 (2, 1, 'bronze'),
