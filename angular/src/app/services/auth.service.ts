@@ -38,4 +38,11 @@ export class AuthService {
 		const payload = JSON.parse(atob(token.split('.')[1]));
 		return payload.id ?? '';
 	}
+
+	getAvatarUrl(): string {
+		const token = localStorage.getItem('token');
+		if (!token) return '/avatars/default-avatar.png';
+		const payload = JSON.parse(atob(token.split('.')[1]));
+		return payload.path_img ?? '/avatars/default-avatar.png';
+	}
 }

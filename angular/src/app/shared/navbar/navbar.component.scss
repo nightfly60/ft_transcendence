@@ -139,10 +139,13 @@ $font-body:  'Cormorant Garamond', serif;
     align-items: center;
     gap: 12px;
 
-    .user-avatar {
-      font-size: 22px;
-      color: $gold;
-    }
+	.user-avatar {
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	object-fit: cover;
+	border: 1px solid rgba($gold, 0.4);
+	}
 
     .user-name {
       font-family: $font-body;

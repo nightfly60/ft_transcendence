@@ -87,45 +87,42 @@ export class ProfileEditComponent implements OnInit {
 	save() {
 		this.saving = true;
 		this.cdr.markForCheck();
-
-	this.http.patch<{ token: string }>(`/api/profile-edit/${this.id}`, {
-		username: this.username.trim(),
-		bio: this.bio?.trim() || null,
-	}).subscribe({
-		next: (res: any) => {
-			if (res.token)
-				this.auth.login(res.token);
-
-			if (this.selectedFile)
-			{
+		this.http.patch<{ token: string }>(`/api/profile-edit/${this.id}`, {
+			username: this.username.trim(),
+			bio: this.bio?.trim() || null,
+		}).subscribe({
+			next: (patchRes: any) => {
+			if (patchRes.token)
+				this.auth.login(patchRes.token);
+			if (this.selectedFile) {
 				const formData = new FormData();
 				formData.append('avatar', this.selectedFile);
 				this.http.post(`/api/profile-edit/avatar/${this.id}`, formData).subscribe({
-					next: () => {
-						this.saving = false;
-						this.goBack();
-					},
-					error: (err) => {
-						this.saving = false;
-						console.error('Erreur sauvegarde', err);
-						this.cdr.markForCheck();
-					}
+				next: (postRes: any) => {
+					if (postRes.token)
+					this.auth.login(postRes.token);
+					this.saving = false;
+					this.goBack();
+				},
+				error: (err) => {
+					this.saving = false;
+					console.error('Erreur sauvegarde', err);
+					this.cdr.markForCheck();
+				}
 				});
-			}
-			else
-			{
+			} else {
 				this.saving = false;
 				this.goBack();
 				this.cdr.markForCheck();
 			}
-		},
-		error: (err) => {
+			},
+			error: (err) => {
 			this.saving = false;
 			console.log('Erreur de sauvegarde');
 			this.cdr.markForCheck();
-		}
-	})
-  }
+			}
+		});
+	}
 
 	goBack() {
 		window.location.href = `/profile/${this.id}`;
