@@ -1,0 +1,49 @@
+@if (isOpen) {
+  <div class="modal-overlay" (click)="onOverlayClick($event)">
+    <div class="modal">
+      <button class="modal-close" (click)="close()">&#10005;</button>
+
+      <div class="modal-header">
+        <span class="modal-icon">&#9812;</span>
+        <h2>Connexion</h2>
+      </div>
+
+      <div class="modal-tabs">
+        <button [class.active]="tab === 'login'" (click)="tab = 'login'">Se connecter</button>
+        <button [class.active]="tab === 'register'" (click)="tab = 'register'">S'inscrire</button>
+      </div>
+
+      @if (tab === 'login') {
+        <form class="modal-form" (ngSubmit)="onLogin()">
+          <div class="field">
+            <label>Email</label>
+            <input type="email" [(ngModel)]="email" name="email" placeholder="votre@email.com" required />
+          </div>
+          <div class="field">
+            <label>Mot de passe</label>
+            <input type="password" [(ngModel)]="password" name="password" placeholder="••••••••" required />
+          </div>
+          <button type="submit" class="btn-submit">Connexion</button>
+        </form>
+      }
+
+      @if (tab === 'register') {
+        <form class="modal-form" (ngSubmit)="onRegister()">
+          <div class="field">
+            <label>Pseudo</label>
+            <input type="text" [(ngModel)]="username" name="username" placeholder="ChessPlayer42" required />
+          </div>
+          <div class="field">
+            <label>Email</label>
+            <input type="email" [(ngModel)]="email" name="email" placeholder="votre@email.com" required />
+          </div>
+          <div class="field">
+            <label>Mot de passe</label>
+            <input type="password" [(ngModel)]="password" name="password" placeholder="••••••••" required />
+          </div>
+          <button type="submit" class="btn-submit">Creer un compte</button>
+        </form>
+      }
+    </div>
+  </div>
+}

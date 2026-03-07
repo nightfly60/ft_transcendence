@@ -5,9 +5,10 @@ import { Server } from 'socket.io';
 import { registerGameEvents } from './sockets/game.js';
 import userRouter from './routes/user.js';
 import profileRouter from './routes/profile.routes.js';
-import pool from './db.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import authRouter from './routes/auth.routes';
+import { requireAuth } from './middleware/auth.middleware.js';
 
 const app = express();
 const httpServer = createServer(app);
@@ -38,12 +39,14 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok' });
 });
 
-app.use('/users', userRouter);
-app.use('/profile', profileRouter); 
+app.use('/users', requireAuth, userRouter);
+app.use('/profile', requireAuth, profileRouter); 
 
 io.on('connection', (socket) => {
   registerGameEvents(io, socket);
 });
+
+app.use('/auth', authRouter);
 
 httpServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

@@ -1,0 +1,257 @@
+$black:      #0a0a0a;
+$white:      #f5f0e8;
+$cream:      #e8dfc8;
+$gold:       #c9a84c;
+$gold-light: #e8c060;
+$muted:      #a09070;
+$font-body:  'Cormorant Garamond', serif;
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  height: 68px;
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba($gold, 0.2);
+  font-family: $font-body;
+
+  // ligne or en bas
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba($gold, 0.5), transparent);
+    pointer-events: none;
+  }
+
+  @media (max-width: 768px) {
+    padding: 0 20px;
+  }
+}
+
+// BRAND
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  text-decoration: none;
+
+  .brand-icon {
+    font-size: 26px;
+    color: $gold;
+    filter: drop-shadow(0 0 8px rgba($gold, 0.4));
+    line-height: 1;
+  }
+
+  .brand-name {
+    font-family: $font-body;
+    font-size: 1.35rem;
+    font-style: italic;
+    font-weight: 400;
+    color: $gold;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+}
+
+// LIENS
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  a {
+    font-family: $font-body;
+    color: $cream;
+    text-decoration: none;
+    font-size: 0.95rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: color 0.2s, text-shadow 0.2s;
+    text-shadow: 0 0 12px rgba($gold, 0.25);
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: $gold;
+      transform: scaleX(0);
+      transition: transform 0.2s ease;
+    }
+
+    &:hover,
+    &.active {
+      color: $gold;
+      text-shadow: 0 0 16px rgba($gold, 0.5);
+
+      &::after {
+        transform: scaleX(1);
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+// ACTIONS
+.navbar-actions {
+  .btn-login {
+    background: transparent;
+    border: 1px solid rgba($gold, 0.45);
+    color: $gold;
+    padding: 8px 22px;
+    font-family: $font-body;
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.25s;
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+
+    &:hover {
+      background: $gold;
+      color: $black;
+    }
+  }
+
+  .user-menu {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .user-avatar {
+      font-size: 22px;
+      color: $gold;
+    }
+
+    .user-name {
+      font-family: $font-body;
+      font-style: italic;
+      color: $cream;
+      font-size: 1rem;
+      letter-spacing: 0.05em;
+    }
+
+    .btn-logout {
+      background: none;
+      border: 1px solid rgba($muted, 0.3);
+      color: $muted;
+      padding: 6px 14px;
+      font-family: $font-body;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+      clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%);
+
+      &:hover {
+        border-color: rgba($gold, 0.4);
+        color: $gold;
+      }
+    }
+  }
+}
+
+// HAMBURGER
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 4px;
+
+  span {
+    display: block;
+    width: 22px;
+    height: 1px;
+    background: $gold;
+    transition: all 0.3s;
+  }
+
+  @media (max-width: 768px) {
+    display: flex;
+  }
+}
+
+// MENU MOBILE
+.mobile-menu {
+  display: none;
+
+  @media (max-width: 768px) {
+    &.open {
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 68px;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.97);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba($gold, 0.15);
+      padding: 8px 0 20px;
+      z-index: 199;
+
+      a {
+        font-family: $font-body;
+        color: $cream;
+        text-decoration: none;
+        font-size: 1.1rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 16px 28px;
+        transition: all 0.2s;
+        border-left: 2px solid transparent;
+
+        &:hover,
+        &.active {
+          color: $cream;
+          border-left-color: $gold;
+          background: rgba($gold, 0.04);
+        }
+      }
+
+      .mobile-login {
+        margin: 16px 28px 0;
+        background: transparent;
+        border: 1px solid rgba($gold, 0.4);
+        color: $gold;
+        padding: 12px;
+        font-family: $font-body;
+        font-size: 0.95rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        cursor: pointer;
+        clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+        transition: all 0.2s;
+
+        &:hover {
+          background: $gold;
+          color: $black;
+        }
+      }
+    }
+  }
+}
