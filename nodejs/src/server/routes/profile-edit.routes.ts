@@ -79,26 +79,32 @@ router.patch('/:id', async (req: Request, res: Response) => {
 			'UPDATE `Profile` SET bio = ? WHERE id_user = ?',
 			[bio?.trim() || null, userId]
 		);
-
+		
 		await pool.query(
 			'UPDATE `User` SET username = ? WHERE id = ?',
 			[username.trim(), userId]
 		);
-
+		
 		const [user]: any = await pool.query(
 			'SELECT id, username, mail, language FROM `User` WHERE id = ?',
 			[userId]
 		);
 
+		const [profile]: any = await pool.query(
+			'SELECT path_img FROM `Profile` WHERE id_user = ?',
+			[userId]
+		);
+
 		const tokens = jwt.sign(
-			{
-				id: user[0].id,
-				email: user[0].mail,
-				username: user[0].username,
-				language: user[0].language
-			},
-			process.env.JWT_SECRET || "02a70f0b6ea2556ea2afa6309aafa9ab8d87b7f049eef3d51e808c27057c4421",
-			{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
+		{
+			id: user[0].id,
+			email: user[0].mail,
+			username: user[0].username,
+			language: user[0].language,
+			path_img: profile[0].path_img ?? null
+		},
+		process.env.JWT_SECRET || "02a70f0b6ea2556ea2afa6309aafa9ab8d87b7f049eef3d51e808c27057c4421",
+		{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
 		);
 
 		res.status(200).json({message: 'Profil mis à jour', token: tokens});
