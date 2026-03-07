@@ -7,8 +7,11 @@ RUN mkdir -p /var/lib/mysql /run/mysqld \
 
 COPY conf/my.cnf /etc/my.cnf
 
+COPY tools/transcendence.sh /etc/transcendence.sh
+
 COPY tools/entrypoint.sh /usr/local/bin/entrypoint.sh
 
 RUN chmod +x /usr/local/bin/entrypoint.sh
+RUN chmod +x /etc/transcendence.sh
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

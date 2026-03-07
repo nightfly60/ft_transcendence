@@ -59,7 +59,10 @@ export class LoginPage {
 			password: this.password,
 			username: this.username,
 		}).subscribe({
-			next: () => this.tab = 'login',
+			next: () => {
+				this.tab = 'login',
+				this.cd.detectChanges();
+			},
 			error: (err) => {
 				console.log("ERROR", err);
 				const msg: string = err.error?.error ?? 'Erreur serveur';
