@@ -2,15 +2,12 @@
 
   <div class="board-section">
 
-    <!-- Joueur Noirs -->
     <div class="player-panel" [class.active]="turn() === 'b'">
       <span class="player-icon">♚</span>
       <span class="player-name">Noirs</span>
       <span class="captured">{{ capturedSymbols('w') }}</span>
       <span class="turn-pill">Tour</span>
     </div>
-
-    <!-- Plateau -->
     <div class="board-wrap">
       <div class="row-coords">
         @for (r of rows; track r) {
@@ -57,7 +54,6 @@
       </div>
     </div>
 
-    <!-- Joueur Blancs -->
     <div class="player-panel" [class.active]="turn() === 'w'">
       <span class="player-icon">♔</span>
       <span class="player-name">Blancs</span>
@@ -67,7 +63,7 @@
 
   </div>
 
-  <!-- Panneau latéral -->
+
   <div class="side-panel">
 
     <div class="history-box">
