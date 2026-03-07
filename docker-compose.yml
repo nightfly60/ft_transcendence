@@ -4,6 +4,8 @@ services:
     container_name: mariadb
     env_file:
       - .env
+    ports:
+      - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
     restart: always
@@ -25,14 +27,6 @@ services:
     networks:
       - transcendence_network
 
-  angular:
-    build: ./angular
-    container_name: angular
-    volumes:
-      - ./angular/src:/app/src
-    networks:
-      - transcendence_network
-
   nodejs:
     build: ./nodejs
     container_name: nodejs
@@ -47,6 +41,16 @@ services:
       - "${VITE_PORT}:5173"
     networks:
       - transcendence_network
+
+  angular:
+    build: ./angular
+    container_name: angular
+    volumes:
+      - ./angular/src:/app/src  # hot-reload
+    networks:
+      - transcendence_network
+    env_file:
+      - .env
 
   python:
     build: ./python

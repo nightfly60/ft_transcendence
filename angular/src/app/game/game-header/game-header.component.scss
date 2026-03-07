@@ -1,0 +1,53 @@
+$black:     #0a0a0a;
+$gold:      #c9a84c;
+$gold-light: #e8c060;
+$cream:     #e8dfc8;
+$muted:     #a09070;
+$font-body: 'Cormorant Garamond', serif;
+
+.game-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 24px;
+  background: rgba(0, 0, 0, 0.6);
+  border-bottom: 1px solid rgba($gold, 0.25);
+  font-family: $font-body;
+}
+
+.back-btn {
+  background: transparent;
+  border: 1px solid rgba($gold, 0.35);
+  color: $muted;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-family: $font-body;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  transition: border-color 0.2s, color 0.2s;
+
+  &:hover {
+    border-color: $gold;
+    color: $cream;
+  }
+}
+
+.mode-badge {
+  background: $gold;
+  color: $black;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+}
+
+.player-info {
+  margin-left: auto;
+  color: $muted;
+  font-family: $font-body;
+  font-size: 1rem;
+  font-style: italic;
+  letter-spacing: 0.03em;
+}

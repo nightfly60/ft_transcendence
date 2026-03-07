@@ -1,0 +1,174 @@
+$black: #0a0a0a;
+$white: #f5f0e8;
+$gold:  #c9a84c;
+$font:  'Cormorant Garamond', serif;
+
+.page {
+  min-height: 100vh;
+  background: $black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  // noise texture
+  &::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.4;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  // vignette
+  &::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.88) 100%);
+    z-index: 1;
+    pointer-events: none;
+  }
+}
+
+.card {
+  position: relative;
+  z-index: 2;
+  background: $black;
+  border: 1px solid rgba($gold, 0.5);
+  border-radius: 4px;
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 420px;
+  font-family: $font;
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.7),
+    0 0 40px rgba($gold, 0.08),
+    inset 0 1px 0 rgba($gold, 0.1);
+}
+
+.card-header {
+  text-align: center;
+  margin-bottom: 28px;
+
+  .icon {
+    font-size: 52px;
+    color: $gold;
+    display: block;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 12px rgba($gold, 0.5));
+  }
+
+  h2 {
+    color: $white;
+    font-size: 28px;
+    font-weight: 300;
+    margin: 0;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    text-shadow: 0 0 20px rgba($gold, 0.3);
+  }
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid rgba($white, 0.2);
+  margin-bottom: 28px;
+
+  button {
+    flex: 1;
+    background: none;
+    border: none;
+    border-bottom: 1px solid transparent;
+    margin-bottom: -1px;
+    color: rgba($white, 0.75);
+    font-size: 13px;
+    padding: 10px;
+    cursor: pointer;
+    font-family: $font;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.2s, text-shadow 0.2s;
+
+    &.active {
+      color: $gold;
+      border-bottom-color: $gold;
+      text-shadow: 0 0 16px rgba($gold, 0.5);
+    }
+
+    &:hover:not(.active) {
+      color: rgba($white, 0.7);
+      text-shadow: 0 0 12px rgba($gold, 0.25);
+    }
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    label {
+      font-size: 11px;
+      color: rgba($white, 0.75);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    input {
+      background: rgba($white, 0.07);
+      border: 1px solid rgba($white, 0.25);
+      border-radius: 2px;
+      padding: 10px 14px;
+      color: $white;
+      font-size: 15px;
+      font-family: $font;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+
+      &:focus {
+        border-color: rgba($gold, 0.5);
+        box-shadow: 0 0 12px rgba($gold, 0.15);
+      }
+      &::placeholder { color: rgba($white, 0.35); }
+
+      &.error { border-color: rgba(#f44336, 0.6); }
+    }
+  }
+
+  .btn-submit {
+    margin-top: 8px;
+    background: transparent;
+    border: 1px solid rgba($gold, 0.5);
+    color: $gold;
+    padding: 12px;
+    border-radius: 2px;
+    font-size: 13px;
+    font-family: $font;
+    cursor: pointer;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    transition: all 0.2s;
+
+    &:hover {
+      background: rgba($gold, 0.1);
+      border-color: $gold;
+      box-shadow: 0 0 18px rgba($gold, 0.2);
+      text-shadow: 0 0 12px rgba($gold, 0.4);
+    }
+  }
+}
+
+.field-error {
+  font-size: 12px;
+  color: #f44336;
+  margin-top: 2px;
+  letter-spacing: 0.5px;
+}
