@@ -45,7 +45,9 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   jouerCoup(from: string, to: string) {
-    this.socket.sendMove(this.gameId, from, to);
+    if (this.selectedMode !== 'solo') {
+      this.socket.sendMove(this.gameId, from, to);
+    }
   }
 
   ngOnDestroy() {
