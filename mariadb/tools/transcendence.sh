@@ -71,3 +71,5 @@ CREATE TABLE IF NOT EXISTS User_achievements (
     FOREIGN KEY(id_achievment) REFERENCES Achievements(id)
 );
 EOSQL
+
+echo "BASE DE DONNEE A JOUR ET VIDE"

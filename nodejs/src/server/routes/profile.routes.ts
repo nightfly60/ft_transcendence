@@ -18,7 +18,7 @@ router.get('/:id', async (req: Request, res: Response) => {
   );
 
   const [profileRows]: any = await pool.query(
-    'SELECT * FROM `Profile` WHERE user_id = ?',
+    'SELECT * FROM `Profile` WHERE id_user = ?',
     [userId]
   );
 
