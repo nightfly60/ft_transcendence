@@ -40,7 +40,7 @@ router.post('/register', async (req, res) => {
 
 		const [profile_result]: any = await pool.query(
 			'INSERT INTO `Profile` (id_user, elo, xp) VALUES (?, ?, ?)',
-			[user_result.insertId, Number(process.env.BASE_ELO), 0]
+			[user_result.insertId, Number(process.env.BASE_ELO) || 400, 0]
 		);
 
 		res.status(201).json({ id: user_result.insertId, username, email });
