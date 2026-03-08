@@ -26,13 +26,19 @@
 
       <div class="header-info">
         <h1 class="username">{{ data.username }}</h1>
-        <p class="bio">{{ data.bio || 'Pas d\'info.' }}</p>
+        <p class="bio">{{ data.bio || 'Pas d\'information.' }}</p>
       </div>
 
       <div class="header-elo">
         <span class="elo-label">ELO</span>
         <span class="elo-value">{{ data.elo }}</span>
       </div>
+
+	  <div class="header-actions" *ngIf="auth.getUserId() === data.id">
+		<button class="edit-btn" (click)="goToEdit()">
+			✎ Modifier le profil
+		</button>
+	  </div>
     </header>
 
     <div class="gold-separator"></div>

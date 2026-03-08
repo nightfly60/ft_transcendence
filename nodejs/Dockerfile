@@ -71,53 +71,57 @@ FROM build-deps AS development
 ENV NODE_ENV=development \
     NPM_CONFIG_LOGLEVEL=warn
 
+RUN apk add --no-cache su-exec
+
 # Copy source files
 COPY . .
 
 # Ensure all directories have proper permissions
 RUN mkdir -p /app/node_modules/.vite && \
     chown -R nodejs:nodejs /app/node_modules/.vite && \
-    chmod -R 755 /app/node_modules/.vite
+    chmod -R 755 /app/node_modules/.vite && \
+	mkdir -p /app/src/server/public/avatars
 
-# Switch to non-root user
-USER nodejs
+COPY --chown=nodejs:nodejs entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-# Expose ports
+# Ne pas mettre USER nodejs ici
 EXPOSE 3000 5173 9229
 
-# Start development server
+ENTRYPOINT ["/entrypoint.sh"]
+
 CMD ["npm", "run", "dev:docker"]
 
 # ========================================
 # Production Stage
 # ========================================
-# ARG NODE_VERSION=24.11.1-alpine
-# FROM node:${NODE_VERSION} AS production
+ARG NODE_VERSION=24.11.1-alpine
+FROM node:${NODE_VERSION} AS production
 
-# # Set working directory
-# WORKDIR /app
+# Set working directory
+WORKDIR /app
 
-# # Create non-root user for security
-# RUN addgroup -g 1001 -S nodejs && \
-#     adduser -S nodejs -u 1001 -G nodejs && \
-#     chown -R nodejs:nodejs /app
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001 -G nodejs && \
+    chown -R nodejs:nodejs /app
 
-# # Set optimized environment variables
-# ENV NODE_ENV=production \
-#     NODE_OPTIONS="--max-old-space-size=256 --no-warnings" \
-#     NPM_CONFIG_LOGLEVEL=silent
+# Set optimized environment variables
+ENV NODE_ENV=production \
+    NODE_OPTIONS="--max-old-space-size=256 --no-warnings" \
+    NPM_CONFIG_LOGLEVEL=silent
 
-# # Copy production dependencies from deps stage
-# COPY --from=deps --chown=nodejs:nodejs /app/node_modules ./node_modules
-# COPY --from=deps --chown=nodejs:nodejs /app/package*.json ./
-# # Copy built application from build stage
-# COPY --from=build --chown=nodejs:nodejs /app/dist ./dist
+# Copy production dependencies from deps stage
+COPY --from=deps --chown=nodejs:nodejs /app/node_modules ./node_modules
+COPY --from=deps --chown=nodejs:nodejs /app/package*.json ./
+# Copy built application from build stage
+COPY --from=build --chown=nodejs:nodejs /app/dist ./dist
 
-# # Switch to non-root user for security
-# USER nodejs
+# Switch to non-root user for security
+USER nodejs
 
-# # Expose port
-# EXPOSE 3000
+# Expose port
+EXPOSE 3000
 
-# # Start production server
-# CMD ["node", "dist/server.js"]
+# Start production server
+CMD ["node", "dist/server.js"]
