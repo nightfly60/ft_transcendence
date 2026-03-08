@@ -13,6 +13,7 @@ import friendsRouter from './routes/friends.routes.js';
 import passport from 'passport';
 
 await import('./strategies/google');
+await import('./strategies/intra42');
 
 const app = express();
 const httpServer = createServer(app);
