@@ -21,7 +21,19 @@ export class MiniBoardComponent {
     ['♖', '♘', '♗', '♕', '♔', '♗', '♘', '♖'],
   ];
 
+  private whiteToFilled: Record<string, string> = {
+    '♔': '♚', '♕': '♛', '♖': '♜', '♗': '♝', '♘': '♞', '♙': '♟',
+  };
+
   getPiece(row: number, col: number): string {
     return this.initialBoard[row][col];
+  }
+
+  getDisplayPiece(piece: string): string {
+    return this.whiteToFilled[piece] ?? piece;
+  }
+
+  isWhite(piece: string): boolean {
+    return piece in this.whiteToFilled;
   }
 }

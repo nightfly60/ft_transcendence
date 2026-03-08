@@ -2,6 +2,7 @@ all:
 	mkdir -p /home/$(USER)/volumes
 	mkdir -p /home/$(USER)/volumes/db_data
 	mkdir -p /home/$(USER)/volumes/vite_cache
+	mkdir -p /home/$(USER)/volumes/avatars
 	cd nodejs && npm install
 	cd angular && npm install
 	docker compose up --build
@@ -18,7 +19,8 @@ status:
 fclean:
 	docker compose down --rmi all --volumes --remove-orphans
 	rm -rf nodejs/node_modules angular/node_modules
-	rm -rf /home/$(USER)/volumes/db_data/* /home/$(USER)/volumes/vite_cache/*
+	docker run --rm -v /home/$(USER)/volumes/db_data:/data alpine sh -c "rm -rf /data/*"
+	docker run --rm -v /home/$(USER)/volumes/vite_cache:/data alpine sh -c "rm -rf /data/*"
 
 re: fclean all
 

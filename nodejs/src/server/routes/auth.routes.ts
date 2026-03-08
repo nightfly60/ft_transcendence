@@ -2,6 +2,7 @@ import { Router } from 'express';
 import pool from '../db.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import passport from 'passport';
 
 const router = Router();
 
@@ -40,18 +41,23 @@ router.post('/register', async (req, res) => {
 
 		const [profile_result]: any = await pool.query(
 			'INSERT INTO `Profile` (id_user, elo, xp) VALUES (?, ?, ?)',
-			[user_result.insertId, Number(process.env.BASE_ELO), 0]
+			[user_result.insertId, Number(process.env.BASE_ELO) || 400, 0]
 		);
 
-		res.status(201).json({ id: user_result.insertId, username, email });
+		res.status(201).json({ message: 'Nouvel utilisateur enregistré' });
 
 	} catch (err: any)
 	{
 		if (err.code === 'ER_DUP_ENTRY')
 		{
-			res.status(400).json( {error: 'Email ou Username déjà utilisé' });
+			res.status(400).json( {error: 'Email déjà utilisé' });
 			return ;
 		}
+
+		await pool.query(
+			'DELETE FROM `User` WHERE mail=?',
+			[email]
+		);
 
 		console.error(err);
 		res.status(500).json({ error: 'Erreur Serveur' });
@@ -60,10 +66,6 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', async (req, res) => {
 	const { password, email } = req.body;
-
-	console.log("==== DATAS RECUS =====");
-	console.log("mail: ", email);
-	console.log("password: ", password);
 
 	if (!validateEmail(email)) {
 		res.status(400).json({ error: 'Adresse Email incorrecte' });
@@ -90,17 +92,23 @@ router.post('/login', async (req, res) => {
 		const isPasswordValid = await bcrypt.compare(password, user.password);
 		if (isPasswordValid)
 		{
+			const [profile]: any = await pool.query(
+				'SELECT path_img FROM `Profile` WHERE id_user = ?',
+				[user.id]
+			);
+
 			const token = jwt.sign(
 				{
 					id: user.id,
 					email: user.mail,
 					username: user.username,
-					language: user.language
+					language: user.language,
+					path_img: profile[0].path_img
 				},
 				process.env.JWT_SECRET || "02a70f0b6ea2556ea2afa6309aafa9ab8d87b7f049eef3d51e808c27057c4421",
 				{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
 			);
-			res.status(200).json({ message: 'Connecté', userID: user.id, token: token});
+			res.status(200).json({ message: 'Connecté', token: token});
 			return ;
 		}
 		else
@@ -115,5 +123,64 @@ router.post('/login', async (req, res) => {
 		res.status(500).json({ error: 'Erreur Serveur' });
 	}
 });
+
+router.get('/google', passport.authenticate('google'), (req, res) => {
+	res.send(200);
+})
+
+router.get('/google/redirect', passport.authenticate('google', {session: false}), (req, res) => {
+	const user = req.user;
+
+	if (user.id == null)
+	{
+		res.send(500);
+		return ;
+	}
+
+	const token = jwt.sign(
+	{
+		id: user.id,
+		email: user.mail,
+		username: user.username,
+		language: user.language || 'fr',
+		path_img: user.profile_image
+	},
+	process.env.JWT_SECRET || "02a70f0b6ea2556ea2afa6309aafa9ab8d87b7f049eef3d51e808c27057c4421",
+	{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
+	);
+
+	res.redirect(`/?token=${token}`);
+	// res.status(200).json({ message: 'Connecté', token: token});
+	return ;
+})
+
+router.get('/intra42', passport.authenticate('intra42'), (req, res) => {
+	res.send(200);
+})
+
+router.get('/intra42/redirect', passport.authenticate('intra42', {session: false}), (req, res) => {
+	const user = req.user;
+
+	if (user.id == null)
+	{
+		res.send(500);
+		return ;
+	}
+
+	const token = jwt.sign(
+	{
+		id: user.id,
+		email: user.mail,
+		username: user.username,
+		language: user.language || 'fr',
+		path_img: user.profile_image
+	},
+	process.env.JWT_SECRET || "02a70f0b6ea2556ea2afa6309aafa9ab8d87b7f049eef3d51e808c27057c4421",
+	{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
+	);
+
+	res.redirect(`/?token=${token}`);
+	return ;
+})
 
 export default router;

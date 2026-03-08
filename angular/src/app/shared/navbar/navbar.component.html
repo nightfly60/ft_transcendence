@@ -1,14 +1,13 @@
 <nav class="navbar">
   <div class="navbar-brand">
-    <span class="brand-icon">&#9812;</span>
     <span class="brand-name">Transcendance</span>
   </div>
 
   <ul class="navbar-links">
     <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Accueil</a></li>
     <li><a routerLink="/game" routerLinkActive="active">Jouer</a></li>
-    <li><a routerLink="/training" routerLinkActive="active">Entrainement</a></li>
     <li><a routerLink="/ranking" routerLinkActive="active">Classement</a></li>
+    <li><a [routerLink]="['/profile', auth.getUserId()]" routerLinkActive="active">Mon Profil</a></li>
     <li><a routerLink="/chat-box" routerLinkActive="active">Chat</a></li>
   </ul>
 
@@ -17,8 +16,12 @@
       <button class="btn-login" (click)="openLogin()">Se connecter</button>
     } @else {
       <div class="user-menu">
-        <span class="user-avatar">&#9818;</span>
-        <span class="user-name">{{ auth.getUsername() }}</span>
+        <img
+          [src]="auth.getAvatarUrl()"
+          class="user-avatar"
+          (error)="$any($event.target).src = '/avatars/default-avatar.png'"
+        />
+        <span class="user-name">{{ auth.username() }}</span>
         <button class="btn-logout" (click)="logout()">Deconnexion</button>
       </div>
     }
@@ -34,7 +37,7 @@
 <div class="mobile-menu" [class.open]="menuOpen">
   <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="menuOpen = false">Accueil</a>
   <a routerLink="/game" routerLinkActive="active" (click)="menuOpen = false">Jouer</a>
-  <a routerLink="/training" routerLinkActive="active" (click)="menuOpen = false">Entrainement</a>
+  <a [routerLink]="['/profile', auth.getUserId()]" routerLinkActive="active" (click)="menuOpen = false">Mon Profil</a>
   <a routerLink="/ranking" routerLinkActive="active" (click)="menuOpen = false">Classement</a>
   @if (!auth.isLoggedIn()) {
     <button class="mobile-login" (click)="openLogin(); menuOpen = false">Se connecter</button>

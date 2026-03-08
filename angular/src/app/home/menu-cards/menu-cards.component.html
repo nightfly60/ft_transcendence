@@ -1,25 +1,25 @@
 <div class="menu-cards">
-  <div class="card primary" routerLink="/game" style="cursor: pointer;">
-    <span class="card-icon">&#9813;</span>
-    <h2>Jouer</h2>
-    <p>Lancez une nouvelle partie</p>
-  </div>
+	<div class="card primary" routerLink="/game" style="cursor: pointer;">
+		<span class="card-icon">&#9813;</span>
+		<h2>Jouer</h2>
+		<p>Lancez une nouvelle partie</p>
+	</div>
 
-  <div class="card">
-    <span class="card-icon">&#9816;</span>
-    <h2>Entrainement</h2>
-    <p>Exercices et puzzles</p>
-  </div>
+	<div class="card" [routerLink]="['/profile', auth.getUserId()]" style="cursor: pointer;">
+		<span class="card-icon">&#9816;</span>
+		<h2>Profil</h2>
+		<p>Voir et configurez votre profil</p>
+	</div>
 
-  <div class="card">
-    <span class="card-icon">&#9814;</span>
-    <h2>Classement</h2>
-    <p>Voir le leaderboard</p>
-  </div>
+	<div class="card">
+		<span class="card-icon">&#9814;</span>
+		<h2>Classement</h2>
+		<p>Voir le leaderboard</p>
+	</div>
 
-  <div class="card">
-    <span class="card-icon">&#9815;</span>
-    <h2>Parametres</h2>
-    <p>Configurer votre profil</p>
-  </div>
+	<div class="card">
+		<span class="card-icon">&#9815;</span>
+		<h2>Parametres</h2>
+		<p>Parametrez votre compte</p>
+	</div>
 </div>
