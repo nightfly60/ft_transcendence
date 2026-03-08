@@ -92,4 +92,8 @@ export class LoginPage {
 		// });
 		window.location.href = '/api/auth/google';
 	}
+
+	intra42Auth(): void {
+		window.location.href = '/api/auth/intra42';
+	}
 }
