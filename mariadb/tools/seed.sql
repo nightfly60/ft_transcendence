@@ -3,7 +3,6 @@
 
 USE `transcendence`;
 
-<<<<<<< HEAD
 -- Clear existing data (order respects foreign keys)
 SET FOREIGN_KEY_CHECKS = 0;
 TRUNCATE TABLE User_achievements;
@@ -15,8 +14,6 @@ TRUNCATE TABLE Profile;
 TRUNCATE TABLE `User`;
 SET FOREIGN_KEY_CHECKS = 1;
 
-=======
->>>>>>> anas
 -- Users
 INSERT INTO `User` (mail, two_fa, language, password, username) VALUES
 ('alice@example.com',   FALSE, 'fr', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/APlbT/oS', 'Alice'),
@@ -44,19 +41,14 @@ INSERT INTO Profile (xp, path_img, bio, elo, id_user) VALUES
 (1100, '/avatars/judy.png',    'Aime les longues parties',          1100, 10);
 
 -- Achievements
-<<<<<<< HEAD
-INSERT INTO Achievements (name, objective, description) VALUES
-=======
-INSERT INTO Achievments (name, objective, description) VALUES
->>>>>>> anas
-('Premier sang',   1,   'Gagner votre première partie'),
-('En série',       5,   'Gagner 5 parties de suite'),
-('Centenaire',     100, 'Jouer 100 parties'),
-('Sans pitié',     3,   'Gagner 3 parties sans perdre un seul point'),
-('Vétéran',        50,  'Jouer 50 parties'),
-('Elite',          10,  'Atteindre un elo de 1500'),
-('Clutch',         1,   'Gagner une partie en revenant de 0-5'),
-('Marathonien',    20,  'Jouer 20 parties en une seule journée');
+INSERT INTO Achievements (name, objective, description, type) VALUES
+('Premier sang',   1,   'Gagner votre première partie', 'win'),
+('Conquérant',     5,   'Gagner 5 parties', 'win'),
+('Centenaire',     100, 'Jouer 100 parties', 'game'),
+('Vétéran',        50,  'Jouer 50 parties', 'game'),
+('Elite',          1500,  'Atteindre un elo de 1500', 'elo'),
+('Clutch',         10,   'Gagner une partie en moins de 10 coups', 'under_cut'),
+('Marathonien',    80,  'Jouer une partie de plus de 80 coups', 'upper_cut');
 
 -- Games (id_winner référence un User existant)
 INSERT INTO Game (nb_cuts, timestamp, id_winner) VALUES
@@ -97,20 +89,20 @@ INSERT INTO friends (id_user_1, id_user_2) VALUES
 (8, 1),
 (9, 10);
 
--- User_Achievments
-INSERT INTO User_achievements (id_user, id_achievment, type) VALUES
-(1, 1, 'bronze'),
-(1, 5, 'silver'),
-(2, 1, 'bronze'),
-(3, 1, 'gold'),
-(3, 2, 'gold'),
-(3, 5, 'gold'),
-(6, 1, 'gold'),
-(6, 2, 'gold'),
-(6, 3, 'gold'),
-(6, 6, 'gold'),
-(9, 1, 'silver'),
-(9, 5, 'silver'),
-(5, 1, 'silver'),
-(5, 4, 'bronze'),
-(7, 1, 'bronze');
+-- User_Achievements
+INSERT INTO User_achievements (id_user, id_achievement, type) VALUES
+(1, 1, '100'),
+(1, 5, '50'),
+(2, 1, '100'),
+(3, 1, '20'),
+(3, 2, '100'),
+(3, 5, '100'),
+(6, 1, '100'),
+(6, 2, '100'),
+(6, 3, '100'),
+(6, 6, '100'),
+(9, 1, '90'),
+(9, 5, '100'),
+(5, 1, '100'),
+(5, 4, '10'),
+(7, 1, '15');

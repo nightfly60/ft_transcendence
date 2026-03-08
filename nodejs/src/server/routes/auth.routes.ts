@@ -96,12 +96,18 @@ router.post('/login', async (req, res) => {
 		const isPasswordValid = await bcrypt.compare(password, user.password);
 		if (isPasswordValid)
 		{
+			const [profile]: any = await pool.query(
+				'SELECT path_img FROM `Profile` WHERE id_user = ?',
+				[user.id]
+			);
+
 			const token = jwt.sign(
 				{
 					id: user.id,
 					email: user.mail,
 					username: user.username,
-					language: user.language
+					language: user.language,
+					path_img: profile[0].path_img
 				},
 				process.env.JWT_SECRET || "02a70f0b6ea2556ea2afa6309aafa9ab8d87b7f049eef3d51e808c27057c4421",
 				{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
