@@ -193,6 +193,34 @@ $font-body:  'Cormorant Garamond', serif;
   line-height: 1;
 }
 
+.header-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+
+  @media (max-width: 480px) { justify-content: center; }
+}
+
+.edit-btn {
+  background: transparent;
+  border: 1px solid rgba($gold, 0.35);
+  color: $gold;
+  font-family: $font-body;
+  font-size: 0.88rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 0.6rem 1.4rem;
+  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  cursor: pointer;
+  transition: background 0.3s, border-color 0.3s;
+
+  &:hover {
+    background: rgba($gold, 0.08);
+    border-color: rgba($gold, 0.7);
+  }
+}
+
 // separateur
 .gold-separator {
   height: 1px;
@@ -308,7 +336,7 @@ $font-body:  'Cormorant Garamond', serif;
   letter-spacing: 0.05em;
 }
 
-// achivements
+// achievements
 .achievements-section {
   margin-top: 3rem;
 }
