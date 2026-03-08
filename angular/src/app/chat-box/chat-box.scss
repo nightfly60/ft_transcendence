@@ -41,54 +41,6 @@
       backdrop-filter: blur(12px);
     }
 
-    /* Header */
-    .chat-header {
-      padding: 16px 20px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-shrink: 0;
-      background: rgba(255, 255, 255, 0.03);
-    }
-
-    .avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 2px;
-      background: linear-gradient(135deg, #c9a96e, #e8d5a3);
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      line-height: 1;
-    }
-
-    .header-info .name {
-      font-size: 14px;
-      font-weight: 600;
-      color: #e8d5a3;
-      letter-spacing: 0.04em;
-    }
-
-    .header-info .status {
-      font-size: 11px;
-      color: rgba(255, 255, 255, 0.35);
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-family: 'Georgia', serif;
-      font-style: italic;
-    }
-
-    .status-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #4ade80;
-    }
-
     /* Messages */
     .chat-messages {
       flex: 1;

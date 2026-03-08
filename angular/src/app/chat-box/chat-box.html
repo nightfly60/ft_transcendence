@@ -10,7 +10,7 @@
 </head>
 <body>
 	<div class="chat-window">
-		<div class="chat-messages" id="messages">
+		<div class="chat-messages" id="messages" #messagesContainer>
 			<div class="message incoming">
 				<div class="bubble">Hey! How's it going?</div><!-- placeholder -->
 				<div class="timestamp">10:42 AM</div><!-- placeholder -->
@@ -19,6 +19,13 @@
 				<div class="bubble">Pretty good! Just working on a project.</div>
 				<div class="timestamp">10:43 AM</div>
 			</div>
+			 <!-- need dynamic style if incoming or outgoing-->
+			 @for (message of messages; track message.timestamp) {
+				<div class="message outgoing">
+					<div class="bubble">{{ message.message }}</div>
+					<div class="timestamp">{{ message.timestamp | date: 'H:mm'}}</div>
+				</div>
+			}
 		</div>
 		<div class="chat-input-area">
 			<div class="input-wrap">
@@ -27,9 +34,10 @@
 				id="chatInput"
 				placeholder="Type a message…"
 				autocomplete="off"
+				[(ngModel)]="message" (keyup.enter)="sendMessage()"
 				/>
 			</div>
-			<button class="send-btn" id="sendBtn" title="Send">
+			<button class="send-btn" id="sendBtn" title="Send" (click)="sendMessage()">
 				<svg viewBox="0 0 24 24">
 					<line x1="22" y1="2" x2="11" y2="13"></line>
 					<polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
