@@ -144,6 +144,36 @@ $font-body:  'Cormorant Garamond', serif;
   line-height: 1;
 }
 
+.online-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 0.5rem;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #666;
+  display: inline-block;
+  transition: background 0.3s;
+
+  &.online {
+    background: #4caf50;
+    box-shadow: 0 0 6px #4caf50;
+  }
+}
+
+.status-text {
+  font-size: 0.8rem;
+  color: #aaa;
+
+  &.online {
+    color: #4caf50;
+  }
+}
+
 .bio {
   font-size: clamp(1.2rem, 2.3vw, 1.5rem);
   color: $muted;

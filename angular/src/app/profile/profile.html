@@ -26,6 +26,10 @@
 
 		<div class="header-info">
 			<h1 class="username">{{ data.username }}</h1>
+			<div class="online-status">
+				<span class="status-dot" [class.online]="isOnline"></span>
+				<span class="status-text" [class.online]="isOnline">{{ isOnline ? 'En ligne' : 'Hors ligne' }}</span>
+			</div>
 			<p class="bio">{{ data.bio || 'Pas d\'information.' }}</p>
 		</div>
 
@@ -35,12 +39,12 @@
 		</div>
 
 		<div class="header-actions">
-		<!-- Bouton modifier si c'est TON profil -->
+		<!-- modifier si c'est mon profile -->
 		<ng-container *ngIf="auth.getUserId() === data.id">
 			<button class="edit-btn" (click)="goToEdit()">✎ Modifier le profil</button>
 		</ng-container>
 
-		<!-- Bouton ami si c'est le profil de quelqu'un d'autre -->
+		<!-- ami si c'est le profie de quelqu'un d'autre -->
 		<ng-container *ngIf="auth.getUserId() !== data.id">
 			<button 
 			class="friend-btn"

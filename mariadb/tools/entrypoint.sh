@@ -38,7 +38,8 @@ CREATE TABLE IF NOT EXISTS \`User\` (
     two_fa BOOLEAN DEFAULT FALSE,
     language VARCHAR(10),
     password VARCHAR(255) NOT NULL,
-    username VARCHAR(255)
+    username VARCHAR(255),
+	last_seen DATETIME DEFAULT NULL
 );
 
 -- Table Profile
