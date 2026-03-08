@@ -35,7 +35,7 @@ app.use(express.urlencoded({ limit: '5mb', extended: true }));
 
 app.use('/users', requireAuth, userRouter);
 app.use('/profile', requireAuth, profileRouter); 
-app.use('/profile-edit', profileEditRouter);
+app.use('/profile-edit', requireAuth, profileEditRouter);
 app.use('/friends', requireAuth, friendsRouter)
 
 app.use('/auth', authRouter);
