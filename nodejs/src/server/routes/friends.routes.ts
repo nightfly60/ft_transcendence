@@ -17,9 +17,8 @@ router.get('/status/:targetId', requireAuth, async (req, res) => {
 	try
 	{
 		const [rows]: any = await pool.query(
-			`SELECT * FROM friends WHERE (id_user_1 = ? AND id_user_2 = ?)
-			OR (id_user_1 = ? AND id_user_2 = ?)`,
-			[userId, targetId, targetId, userId]
+			`SELECT * FROM friends WHERE (id_user_1 = ? AND id_user_2 = ?)`,
+			[userId, targetId]
 		);
 		res.json({ isFriend: rows.length > 0 });
 	}
@@ -41,9 +40,8 @@ router.post('/add/:targetId', requireAuth, async (req, res) => {
 	try
 	{
 		const [existing]: any = await pool.query(
-			`SELECT * FROM friends WHERE (id_user_1 = ? AND id_user_2 = ?)
-			OR (id_user_1 = ? AND id_user_2 = ?)`,
-			[userId, targetId, targetId, userId]
+			`SELECT * FROM friends WHERE (id_user_1 = ? AND id_user_2 = ?)`,
+			[userId, targetId]
 		);
 
 		if (existing.length > 0)
@@ -70,11 +68,33 @@ router.delete('/remove/:targetId', requireAuth, async (req, res) => {
 	try
 	{
 		await pool.query(
-			`DELETE FROM friends WHERE (id_user_1 = ? AND id_user_2 = ?)
-			OR (id_user_2 = ? AND id_user_1 = ?)`,
-			[userId, targetId, targetId, userId]
+			`DELETE FROM friends WHERE (id_user_1 = ? AND id_user_2 = ?)`,
+			[userId, targetId]
 		);
 		res.json({message: 'Ami supprimé'});
+	}
+	catch (err)
+	{
+		res.status(500).json({error: 'Erreur serveur'});
+	}
+});
+
+router.get('/online/:targetId', requireAuth, async (req, res) => {
+	const targetId = parseInt(req.params['targetId'] as string);
+
+	try
+	{
+		const [rows]: any = await pool.query(
+			`SELECT last_seen FROM User WHERE id = ?`,
+			[targetId]
+		);
+		if (!rows.length)
+			return res.status(500).json({error: 'Utilisateur non trouve'});
+
+		const last_seen = new Date(rows[0].last_seen);
+		const diffSeconds = (Date.now() - last_seen.getTime()) / 1000;
+		const isOnline = diffSeconds < 60; // en ligne si actif les X dernieres secondes
+		res.json({isOnline, last_seen: rows[0].last_seen})
 	}
 	catch (err)
 	{
