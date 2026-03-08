@@ -43,15 +43,20 @@ router.post('/register', async (req, res) => {
 			[user_result.insertId, Number(process.env.BASE_ELO) || 400, 0]
 		);
 
-		res.status(201).json({ id: user_result.insertId, username, email });
+		res.status(201).json({ message: 'Nouvel utilisateur enregistré' });
 
 	} catch (err: any)
 	{
 		if (err.code === 'ER_DUP_ENTRY')
 		{
-			res.status(400).json( {error: 'Email ou Username déjà utilisé' });
+			res.status(400).json( {error: 'Email déjà utilisé' });
 			return ;
 		}
+
+		await pool.query(
+			'DELETE FROM `User` WHERE mail=?',
+			[email]
+		);
 
 		console.error(err);
 		res.status(500).json({ error: 'Erreur Serveur' });
