@@ -48,9 +48,10 @@ router.get('/:id', async (req: Request, res: Response) => {
 
   const [achievements]: any = await pool.query(
     `SELECT a.name, a.description, ua.type
-     FROM User_achievments ua
-     JOIN Achievments a ON a.id = ua.id_achievment
-     WHERE ua.id_user = ?`,
+     FROM User_achievements ua
+     JOIN Achievements a ON a.id = ua.id_achievement
+     WHERE ua.id_user = ?
+	 AND ua.type = 100`,
     [userId]
   );
 
