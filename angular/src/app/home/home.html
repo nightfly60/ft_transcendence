@@ -1,9 +1,25 @@
-<div class="chess-home">
-  <div class="board-bg"></div>
+<div class="page-wrapper">
+
+  <!-- pieces qui flottent -->
+  <div class="floating-piece">♜</div>
+  <div class="floating-piece">♝</div>
+  <div class="floating-piece">♛</div>
+  <div class="floating-piece">♞</div>
+  <div class="floating-piece">♟</div>
+  <div class="floating-piece">♚</div>
+
+  <!-- DAMIER DE FOND -->
+  <div class="chessboard-bg">
+    <div
+      *ngFor="let cell of cells"
+      [style.background]="cell.light ? '#f5f0e8' : 'transparent'">
+    </div>
+  </div>
 
   <div class="content">
     <app-home-logo />
     <app-home-menu-cards />
     <app-home-mini-board />
   </div>
+
 </div>

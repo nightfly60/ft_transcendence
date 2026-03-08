@@ -38,7 +38,8 @@ CREATE TABLE IF NOT EXISTS \`User\` (
     two_fa BOOLEAN DEFAULT FALSE,
     language VARCHAR(10),
     password VARCHAR(255) NOT NULL,
-    username VARCHAR(255)
+    username VARCHAR(255),
+	last_seen DATETIME DEFAULT NULL
 );
 
 -- Table Profile
@@ -66,6 +67,7 @@ CREATE TABLE IF NOT EXISTS Achievements (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255),
     objective BIGINT,
+	type VARCHAR(255),
     description TEXT
 );
 
@@ -94,7 +96,7 @@ CREATE TABLE IF NOT EXISTS User_achievements (
     type VARCHAR(255),
     PRIMARY KEY(id_user, id_achievement),
     FOREIGN KEY(id_user) REFERENCES \`User\`(id),
-    FOREIGN KEY(id_achievment) REFERENCES Achievements(id)
+    FOREIGN KEY(id_achievement) REFERENCES Achievements(id)
 );
 EOSQL
 
