@@ -66,6 +66,7 @@ CREATE TABLE IF NOT EXISTS Achievements (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255),
     objective BIGINT,
+	type VARCHAR(255),
     description TEXT
 );
 
