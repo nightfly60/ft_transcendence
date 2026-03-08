@@ -3,6 +3,17 @@
 
 USE `transcendence`;
 
+-- Clear existing data (order respects foreign keys)
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE User_achievements;
+TRUNCATE TABLE User_Game;
+TRUNCATE TABLE friends;
+TRUNCATE TABLE Game;
+TRUNCATE TABLE Achievements;
+TRUNCATE TABLE Profile;
+TRUNCATE TABLE `User`;
+SET FOREIGN_KEY_CHECKS = 1;
+
 -- Users
 INSERT INTO `User` (mail, two_fa, language, password, username) VALUES
 ('alice@example.com',   FALSE, 'fr', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/APlbT/oS', 'Alice'),

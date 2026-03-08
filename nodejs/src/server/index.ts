@@ -9,10 +9,15 @@ import { fileURLToPath } from 'url';
 import authRouter from './routes/auth.routes';
 import { requireAuth } from './middleware/auth.middleware.js';
 import profileEditRouter from './routes/profile-edit.routes.js'
+import passport from 'passport';
+
+await import('./strategies/google');
 
 const app = express();
 const httpServer = createServer(app);
 const PORT = process.env.APP_PORT || 3000;
+
+app.use(passport.initialize());
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -32,6 +37,7 @@ app.use('/profile', requireAuth, profileRouter);
 app.use('/profile-edit', profileEditRouter);
 
 app.use('/auth', authRouter);
+initSockets(httpServer);
 
 httpServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

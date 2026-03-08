@@ -76,4 +76,20 @@ export class LoginPage {
 			}
 		});
 	}
+
+	googleAuth(): void {
+		// this.http.get<{ token: string }>('/api/auth/google', {}).subscribe({
+		// 	next: (res) => {
+		// 		this.auth.login(res.token);
+		// 		this.router.navigate(['/']);
+		// 	},
+		// 	error: (err) => {
+		// 		console.log("ERROR", err);
+		// 		const msg: string = err.error?.error ?? 'Erreur serveur';
+		// 		this.passError = msg;
+		// 		this.cd.detectChanges();
+		// 	}
+		// });
+		window.location.href = '/api/auth/google';
+	}
 }

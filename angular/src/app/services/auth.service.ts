@@ -1,7 +1,10 @@
 import { Injectable, signal } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+	constructor(private router: Router) {}
+
 	isLoggedIn = signal(!!localStorage.getItem('token'));
 	username = signal(this.getUsername());
 
@@ -44,5 +47,15 @@ export class AuthService {
 		if (!token) return '/avatars/default-avatar.png';
 		const payload = JSON.parse(atob(token.split('.')[1]));
 		return payload.path_img ?? '/avatars/default-avatar.png';
+	}
+
+	handleTokenFromUrl() {
+		const params = new URLSearchParams(window.location.search);
+		const token = params.get('token');
+
+		if (token) {
+		localStorage.setItem('token', token);
+		window.location.href = '/';
+		}
 	}
 }
