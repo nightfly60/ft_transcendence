@@ -16,6 +16,8 @@ export class ProfileComponent implements OnInit {
 	data: any = null;
 	id: string = '';
 	isFriend: boolean = false;
+	isOnline: boolean = false;
+	private pollingInterval: any = null;
 
 	readonly XP_PER_LEVEL = 1000;
 	cells = Array.from({ length: 144 }, (_, i) => ({
@@ -65,6 +67,7 @@ export class ProfileComponent implements OnInit {
 			if (this.auth.getUserId() !== data.id) {
 				this.checkFriendStatus(data.id);
 			}
+			this.startPolling(data.id);
 			this.cdr.markForCheck();
 			},
 			error: (err) => { this.router.navigate([`/${err.status}`]); this.cdr.markForCheck(); },
@@ -75,6 +78,20 @@ export class ProfileComponent implements OnInit {
 	checkFriendStatus(targetId: number) {
 		this.http.get<{isFriend: boolean}>(`/api/friends/status/${targetId}`).subscribe({
 		next: (res) => { this.isFriend = res.isFriend; this.cdr.markForCheck(); },
+		error: () => {}
+		});
+	}
+
+	startPolling(targetId: number) {
+		this.checkOnlineStatus(targetId);
+		this.pollingInterval = setInterval(() => {
+			this.checkOnlineStatus(targetId);
+		}, 1000 * 10);
+	}
+
+	checkOnlineStatus(targetId: number) {
+		this.http.get<{ isOnline: boolean }>(`/api/friends/online/${targetId}`).subscribe({
+		next: (res) => { this.isOnline = res.isOnline; this.cdr.markForCheck(); },
 		error: () => {}
 		});
 	}
