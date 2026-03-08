@@ -28,7 +28,9 @@ services:
       - transcendence_network
 
   nodejs:
-    build: ./nodejs
+    build:
+      context: ./nodejs
+      target: development
     container_name: nodejs
     env_file:
       - .env
@@ -53,13 +55,13 @@ services:
     env_file:
       - .env
 
-  python:
-    build: ./python
-    container_name: python
-    env_file:
-      - .env
-    networks:
-      - transcendence_network
+  # python:
+  #   build: ./python
+  #   container_name: python
+  #   env_file:
+  #     - .env
+  #   networks:
+  #     - transcendence_network
 
 volumes:
   db_data:
