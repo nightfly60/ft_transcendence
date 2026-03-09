@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import { createServer } from 'http';
 import { initSockets } from './sockets/index.js';
-import { registerChatEvents } from './sockets/chat.js';
 import userRouter from './routes/user.js';
 import profileRouter from './routes/profile.routes.js';
 import path from 'path';
@@ -39,17 +38,6 @@ app.use('/users', requireAuth, userRouter);
 app.use('/profile', requireAuth, profileRouter); 
 app.use('/profile-edit', requireAuth, profileEditRouter);
 app.use('/friends', requireAuth, friendsRouter)
-
-io.on('connection', (socket) => {
-  //check user auth before socket creation
-  socket.on('join_game', (gameId: string) => {
-    socket.join(gameId);                          //add user to game room
-    socket.data.gameId = gameId;                  //store gameId directly in socket
-    console.log(`${socket.id} joined game ${gameId}`);
-  });
-  registerGameEvents(io, socket);
-  registerChatEvents(io, socket);
-});
 
 app.use('/auth', authRouter);
 initSockets(httpServer);
