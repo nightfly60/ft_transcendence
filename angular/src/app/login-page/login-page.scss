@@ -1,6 +1,7 @@
 $black: #0a0a0a;
 $white: #f5f0e8;
 $gold:  #c9a84c;
+$red:   #dd0000;
 $font:  'Cormorant Garamond', serif;
 
 .page {
@@ -167,10 +168,10 @@ $font:  'Cormorant Garamond', serif;
 }
 
 .field-error {
-  font-size: 12px;
-  color: #f44336;
-  margin-top: 2px;
-  letter-spacing: 0.5px;
+	color: $red;
+	font-family: 'Google Sans', Roboto, sans-serif;
+	font-size: 14px;
+	font-weight: 500;
 }
 
 .google-btn {
