@@ -25,11 +25,11 @@
         [username]="(user$ | async)?.username ?? ''"
         (back)="goBack()"
       />
-      <app-chess
-        [gameId]="gameId"
-        [mode]="selectedMode"
-        (movePlayed)="jouerCoup($event.from, $event.to)"
-      />
+      @if (selectedMode === 'solo') {
+        <app-chess-solo />
+      } @else if (selectedMode === 'multi') {
+        <app-chess-multi />
+      }
     }
   </div>
 
