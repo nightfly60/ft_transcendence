@@ -1,6 +1,28 @@
 import passport, { Profile } from 'passport';
 import OAuth2Strategy, { VerifyCallback } from 'passport-oauth2';
 import pool from '../db.js';
+import axios from "axios";
+import { writeFile } from "fs/promises";
+import path from "path";
+
+async function downloadImage(url: string, userId: string): Promise<string> {
+	const response = await axios.get(url, { 
+		responseType: "arraybuffer"
+	});
+	if (response.data.byteLength === 0) {
+		throw new Error("Empty response — URL invalide ou accès refusé");
+	}
+	const contentType = response.headers["content-type"] || "";
+	const ext = contentType.includes("png")  ? ".png"
+			: contentType.includes("jpeg") ? ".jpg"
+			: contentType.includes("webp") ? ".webp"
+			: contentType.includes("gif")  ? ".gif"
+			: path.extname(new URL(url).pathname) || ".jpg";
+
+	await writeFile(`/app/src/server/public/avatars/avatar_${userId}${ext}`, Buffer.from(response.data));
+
+	return `/avatars/avatar_${userId}${ext}`;
+}
 
 passport.use('intra42', new OAuth2Strategy(
 	{
@@ -19,6 +41,7 @@ passport.use('intra42', new OAuth2Strategy(
 			})
 
 			const data = await res.json();
+			const image_url = data.image.versions.small || null;
 
 			var user = {
 				mail: data.email,
@@ -43,9 +66,13 @@ passport.use('intra42', new OAuth2Strategy(
 						[data.email, '', data.login, 'fr']
 					);
 
+					var file = null
+					if (image_url)
+						file = await downloadImage(image_url, user_result.insertId);
+
 					const [profile_result]: any = await pool.query(
-						'INSERT INTO `Profile` (id_user, elo, xp) VALUES (?, ?, ?)',
-						[user_result.insertId, Number(process.env.BASE_ELO) || 400, 0]
+						'INSERT INTO `Profile` (id_user, elo, xp, path_img) VALUES (?, ?, ?, ?)',
+						[user_result.insertId, Number(process.env.BASE_ELO) || 400, 0, file]
 					);
 				} catch (err: any)
 				{
