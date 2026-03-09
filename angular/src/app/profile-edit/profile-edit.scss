@@ -1,6 +1,7 @@
 $black:      #0a0a0a;
 $white:      #f5f0e8;
 $cream:      #e8dfc8;
+$red:		 #dd0000;
 $gold:       #c9a84c;
 $gold-light: #e8c060;
 $gold-dark:  #7a5c18;
@@ -329,4 +330,11 @@ $font-body:  'Cormorant Garamond', serif;
 @keyframes blink {
   0%, 80%, 100% { opacity: 0; }
   40%           { opacity: 1; }
+}
+
+.field-error {
+	color: $red;
+	font-family: 'Google Sans', Roboto, sans-serif;
+	font-size: 14px;
+	font-weight: 500;
 }

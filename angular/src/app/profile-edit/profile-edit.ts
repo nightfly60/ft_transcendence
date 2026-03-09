@@ -25,6 +25,9 @@ export class ProfileEditComponent implements OnInit {
 	previewUrl: string | null = null;
 	selectedFile: File | null = null;
 
+	username_error: string = '';
+	bio_error: string = '';
+
 	saving: boolean = false;
 
 	cells = Array.from({ length: 144 }, (_, i) => ({
@@ -65,9 +68,9 @@ export class ProfileEditComponent implements OnInit {
 		});
 	}
 
-  triggerFileInput() {
-	this.fileInput.nativeElement.click();
-  }
+	triggerFileInput() {
+		this.fileInput.nativeElement.click();
+	}
 
 	onFileSelected(event: Event) {
 		const input = event.target as HTMLInputElement;
@@ -85,6 +88,8 @@ export class ProfileEditComponent implements OnInit {
 	}
 
 	save() {
+		this.bio_error = '';
+		this.username_error = '';
 		this.saving = true;
 		this.cdr.markForCheck();
 		this.http.patch<{ token: string }>(`/api/profile-edit/${this.id}`, {
@@ -117,9 +122,14 @@ export class ProfileEditComponent implements OnInit {
 			}
 			},
 			error: (err) => {
-			this.saving = false;
-			console.log('Erreur de sauvegarde');
-			this.cdr.markForCheck();
+				const msg: string = err.error?.error ?? 'Erreur serveur';
+				if (msg.includes('bio'))
+					this.bio_error = msg;
+				else
+					this.username_error = msg;
+				this.saving = false;
+				console.log('Erreur de sauvegarde');
+				this.cdr.markForCheck();
 			}
 		});
 	}
