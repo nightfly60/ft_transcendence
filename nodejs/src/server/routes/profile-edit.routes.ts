@@ -89,7 +89,7 @@ router.patch('/:id', async (req: Request, res: Response) => {
 		res.status(400).json({error: 'Username invalide'});
 		return ;
 	}
-	if (bio.length > 200)
+	if (bio && bio.length > 200)
 	{
 		res.status(400).json({error: 'Bio trop longue'});
 		return ;
