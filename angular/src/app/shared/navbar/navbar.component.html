@@ -12,12 +12,12 @@
   </ul>
 
   <div class="navbar-actions">
-    @if (!isLoggedIn) {
+    @if (!auth.isLoggedIn()) {
       <button class="btn-login" (click)="openLogin()">Se connecter</button>
     } @else {
       <div class="user-menu">
         <span class="user-avatar">&#9818;</span>
-        <span class="user-name">{{ username }}</span>
+        <span class="user-name">{{ auth.getUsername() }}</span>
         <button class="btn-logout" (click)="logout()">Deconnexion</button>
       </div>
     }
@@ -35,7 +35,7 @@
   <a routerLink="/game" routerLinkActive="active" (click)="menuOpen = false">Jouer</a>
   <a routerLink="/training" routerLinkActive="active" (click)="menuOpen = false">Entrainement</a>
   <a routerLink="/ranking" routerLinkActive="active" (click)="menuOpen = false">Classement</a>
-  @if (!isLoggedIn) {
+  @if (!auth.isLoggedIn()) {
     <button class="mobile-login" (click)="openLogin(); menuOpen = false">Se connecter</button>
   }
 </div>

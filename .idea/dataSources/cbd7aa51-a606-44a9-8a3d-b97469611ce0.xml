@@ -1226,11 +1226,11 @@ transcendence|schema||niroprime||UPDATE|G</Grants>
       <AutoIntrospectionLevel>3</AutoIntrospectionLevel>
       <Current>1</Current>
       <LastIntrospectionLevel>3</LastIntrospectionLevel>
-      <LastIntrospectionLocalTimestamp>2026-03-06.11:28:25</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2026-03-07.10:33:26</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_general_ci</CollationName>
     </schema>
     <user id="511" parent="1" name="niroprime"/>
-    <table id="512" parent="510" name="Achievments">
+    <table id="512" parent="510" name="Achievements">
       <DetailsLevel>3</DetailsLevel>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_general_ci</CollationName>
@@ -1255,7 +1255,7 @@ transcendence|schema||niroprime||UPDATE|G</Grants>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_general_ci</CollationName>
     </table>
-    <table id="517" parent="510" name="User_achievments">
+    <table id="517" parent="510" name="User_achievements">
       <DetailsLevel>3</DetailsLevel>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_general_ci</CollationName>
@@ -1486,15 +1486,15 @@ transcendence|schema||niroprime||UPDATE|G</Grants>
       <Position>3</Position>
       <StoredType>varchar(255)|0s</StoredType>
     </column>
-    <foreign-key id="566" parent="517" name="User_achievments_ibfk_1">
+    <foreign-key id="566" parent="517" name="User_achievements_ibfk_1">
       <ColNames>id_user</ColNames>
       <RefColNames>id</RefColNames>
       <RefTableName>User</RefTableName>
     </foreign-key>
-    <foreign-key id="567" parent="517" name="User_achievments_ibfk_2">
+    <foreign-key id="567" parent="517" name="User_achievements_ibfk_2">
       <ColNames>id_achievment</ColNames>
       <RefColNames>id</RefColNames>
-      <RefTableName>Achievments</RefTableName>
+      <RefTableName>Achievements</RefTableName>
     </foreign-key>
     <index id="568" parent="517" name="PRIMARY">
       <ColNames>id_user

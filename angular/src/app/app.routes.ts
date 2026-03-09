@@ -3,11 +3,14 @@ import { GameComponent } from './game/game.component';
 import { Home } from './home/home';
 import { ErrorPageComponent } from './error-page/error-page';
 import { ProfileComponent } from './profile/profile';
+import { LoginPage } from './login-page/login-page';
+import { authGuard } from './shared/interceptors/auth-interceptor';
 
 export const routes: Routes = [
   { path: '', component: Home },
-  { path: 'game', component: GameComponent },
-  { path: 'profile/:id', component: ProfileComponent },
+  { path: 'login', component: LoginPage },
+  { path: 'game', component: GameComponent, canActivate: [authGuard] },
+  { path: 'profile/:id', component: ProfileComponent, canActivate: [authGuard] },
 
   { path: '404', component: ErrorPageComponent, data: { code: 404 } },
   { path: '403', component: ErrorPageComponent, data: { code: 403 } },

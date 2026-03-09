@@ -1,90 +1,26 @@
 <div class="game-area">
-
   <div class="board-section">
-
-    <div class="player-panel" [class.active]="turn() === 'b'">
-      <span class="player-icon">♚</span>
-      <span class="player-name">Noirs</span>
-      <span class="captured">{{ capturedSymbols('w') }}</span>
-      <span class="turn-pill">Tour</span>
-    </div>
-    <div class="board-wrap">
-      <div class="row-coords">
-        @for (r of rows; track r) {
-          <span>{{ 8 - r }}</span>
-        }
-      </div>
-
-      <div class="board-inner">
-        <div class="board-grid">
-          @for (r of rows; track r) {
-            @for (c of cols; track c) {
-              <div
-                class="square"
-                [class.light]="isLight(r, c)"
-                [class.dark]="!isLight(r, c)"
-                [class.selected]="isSelected(r, c)"
-                [class.last-move]="isLastMove(r, c)"
-                [class.valid-target]="isValidMove(r, c)"
-                (click)="clickSquare(r, c)"
-              >
-                @if (board()[r][c]) {
-                  <span
-                    class="piece"
-                    [class.white-piece]="board()[r][c]!.color === 'w'"
-                    [class.black-piece]="board()[r][c]!.color === 'b'"
-                  >{{ symbol(board()[r][c]) }}</span>
-                }
-                @if (isValidMove(r, c) && !board()[r][c]) {
-                  <span class="move-dot"></span>
-                }
-                @if (isValidMove(r, c) && board()[r][c]) {
-                  <span class="capture-ring"></span>
-                }
-              </div>
-            }
-          }
-        </div>
-
-        <div class="col-coords">
-          @for (c of cols; track c) {
-            <span>{{ files[c] }}</span>
-          }
-        </div>
-      </div>
-    </div>
-
-    <div class="player-panel" [class.active]="turn() === 'w'">
-      <span class="player-icon">♔</span>
-      <span class="player-name">Blancs</span>
-      <span class="captured">{{ capturedSymbols('b') }}</span>
-      <span class="turn-pill">Tour</span>
-    </div>
-
+    <app-player-panel
+      icon="♚" name="Noirs"
+      [active]="turn() === 'b'"
+      [captured]="capturedSymbols('w')"
+    />
+    <app-board-grid
+      [board]="board()"
+      [selected]="selected()"
+      [validMoves]="validMoves()"
+      [lastMove]="lastMove()"
+      (squareClick)="onSquareClick($event)"
+    />
+    <app-player-panel
+      icon="♔" name="Blancs"
+      [active]="turn() === 'w'"
+      [captured]="capturedSymbols('b')"
+    />
   </div>
-
-
-  <div class="side-panel">
-
-    <div class="history-box">
-      <div class="history-header">
-        <span class="history-title">Historique</span>
-        <button class="reset-btn" (click)="resetGame()">Nouvelle partie</button>
-      </div>
-      <div class="history-moves" #historyEl>
-        @for (pair of movePairs(); track pair.n) {
-          <div class="history-row">
-            <span class="move-num">{{ pair.n }}.</span>
-            <span class="move-w">{{ pair.w }}</span>
-            <span class="move-b">{{ pair.b }}</span>
-          </div>
-        }
-        @if (moveHistory().length === 0) {
-          <p class="history-empty">Aucun coup joué</p>
-        }
-      </div>
-    </div>
-
-  </div>
-
+  <app-move-history
+    [pairs]="movePairs()"
+    [isEmpty]="moveHistory().length === 0"
+    (reset)="resetGame()"
+  />
 </div>
