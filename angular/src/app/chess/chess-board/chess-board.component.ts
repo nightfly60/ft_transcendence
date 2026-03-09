@@ -13,8 +13,9 @@ import { MoveHistoryComponent } from './move-history/move-history.component';
   styleUrl: './chess-board.component.scss',
 })
 export class ChessComponent {
-  gameId = input.required<string>();
-  mode   = input.required<GameMode>();
+  gameId  = input.required<string>();
+  mode    = input.required<GameMode>();
+  myColor = input<string>('');
   movePlayed = output<{ from: string; to: string }>();
 
   readonly files = ['a','b','c','d','e','f','g','h'];
