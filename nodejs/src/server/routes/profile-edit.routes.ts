@@ -84,9 +84,14 @@ router.patch('/:id', async (req: Request, res: Response) => {
 	}
 
 	const {username, bio} = req.body;
-	if (!username || username.trim() === '')
+	if (!username || username.trim() === '' || username.length > 30 || username.length < 3)
 	{
 		res.status(400).json({error: 'Username invalide'});
+		return ;
+	}
+	if (bio.length > 200)
+	{
+		res.status(400).json({error: 'Bio trop longue'});
 		return ;
 	}
 	try

@@ -38,7 +38,8 @@ CREATE TABLE IF NOT EXISTS \`User\` (
     two_fa BOOLEAN DEFAULT FALSE,
     language VARCHAR(10),
     password VARCHAR(255) NOT NULL,
-    username VARCHAR(255)
+    username VARCHAR(255),
+	last_seen DATETIME DEFAULT NULL
 );
 
 -- Table Profile
@@ -66,6 +67,7 @@ CREATE TABLE IF NOT EXISTS Achievements (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255),
     objective BIGINT,
+	type VARCHAR(255),
     description TEXT
 );
 

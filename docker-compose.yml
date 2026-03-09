@@ -37,7 +37,7 @@ services:
     restart: always
     volumes:
       - ./nodejs/src:/app/src
-      - ./nodejs/src/server/public/avatars:/app/src/server/public/avatars
+      - avatars:/app/src/server/public/avatars
       - vite_cache:/app/node_modules/.vite
     ports:
       - "${APP_PORT}:3000"
@@ -76,6 +76,12 @@ volumes:
       type: none
       o: bind
       device: /home/${LOGIN}/volumes/vite_cache
+  avatars:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/${LOGIN}/volumes/avatars
 
 networks:
   transcendence_network:
