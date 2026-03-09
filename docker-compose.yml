@@ -28,13 +28,16 @@ services:
       - transcendence_network
 
   nodejs:
-    build: ./nodejs
+    build:
+      context: ./nodejs
+      target: development
     container_name: nodejs
     env_file:
       - .env
     restart: always
     volumes:
       - ./nodejs/src:/app/src
+      - avatars:/app/src/server/public/avatars
       - vite_cache:/app/node_modules/.vite
     ports:
       - "${APP_PORT}:3000"
@@ -52,13 +55,13 @@ services:
     env_file:
       - .env
 
-  python:
-    build: ./python
-    container_name: python
-    env_file:
-      - .env
-    networks:
-      - transcendence_network
+  # python:
+  #   build: ./python
+  #   container_name: python
+  #   env_file:
+  #     - .env
+  #   networks:
+  #     - transcendence_network
 
 volumes:
   db_data:
@@ -73,6 +76,12 @@ volumes:
       type: none
       o: bind
       device: /home/${LOGIN}/volumes/vite_cache
+  avatars:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/${LOGIN}/volumes/avatars
 
 networks:
   transcendence_network:
