@@ -42,7 +42,7 @@ router.get('/:id', async (req: Request, res: Response) => {
   );
 
   const [friends]: any = await pool.query(
-	'SELECT COUNT(*) AS nb_friends FROM friends WHERE id_user_1 = ? OR id_user_2 = ?',
+	'SELECT COUNT(*) AS nb_friends FROM friends WHERE id_user_1 = ?',
 	[userId, userId]
   );
 
