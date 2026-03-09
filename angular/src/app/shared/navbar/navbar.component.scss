@@ -76,12 +76,13 @@ $font-body:  'Cormorant Garamond', serif;
 
   a {
     font-family: $font-body;
-    color: $muted;
+    color: $cream;
     text-decoration: none;
     font-size: 0.95rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    transition: color 0.2s;
+    transition: color 0.2s, text-shadow 0.2s;
+    text-shadow: 0 0 12px rgba($gold, 0.25);
     position: relative;
 
     &::after {
@@ -98,7 +99,8 @@ $font-body:  'Cormorant Garamond', serif;
 
     &:hover,
     &.active {
-      color: $cream;
+      color: $gold;
+      text-shadow: 0 0 16px rgba($gold, 0.5);
 
       &::after {
         transform: scaleX(1);
@@ -214,7 +216,7 @@ $font-body:  'Cormorant Garamond', serif;
 
       a {
         font-family: $font-body;
-        color: $muted;
+        color: $cream;
         text-decoration: none;
         font-size: 1.1rem;
         letter-spacing: 0.1em;
