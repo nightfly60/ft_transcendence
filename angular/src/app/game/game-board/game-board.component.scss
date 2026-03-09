@@ -27,6 +27,23 @@
   padding: 24px 32px 40px;
 }
 
+// ─── Statut de la partie ─────────────────────────────────────────────────────
+
+.game-status {
+  width: 100%;
+  padding: 8px 16px;
+  text-align: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1px solid;
+
+  &.check     { color: #e8c060; border-color: rgba(#e8c060, 0.4); background: rgba(#e8c060, 0.06); }
+  &.checkmate { color: #e05050; border-color: rgba(#e05050, 0.4); background: rgba(#e05050, 0.08); }
+  &.stalemate { color: #a09070; border-color: rgba(#a09070, 0.4); background: rgba(#a09070, 0.06); }
+}
+
 // ─── Section échiquier ───────────────────────────────────────────────────────
 
 .board-section {

@@ -19,6 +19,19 @@ export class GameBoardComponent {
 
   readonly files = ['a','b','c','d','e','f','g','h'];
 
+  gameStatus = signal<'playing' | 'check' | 'checkmate' | 'stalemate'>('playing');
+
+  checkSquare(): [number, number] | null {
+    if (this.gameStatus() !== 'check' && this.gameStatus() !== 'checkmate') return null;
+    const board = this.board();
+    const color = this.turn();
+    for (let r = 0; r < 8; r++)
+      for (let c = 0; c < 8; c++)
+        if (board[r][c]?.type === 'K' && board[r][c]?.color === color)
+          return [r, c];
+    return null;
+  }
+
   board       = signal<Board>(initBoard());
   selected    = signal<[number, number] | null>(null);
   validMoves  = signal<[number, number][]>([]);
@@ -44,6 +57,7 @@ export class GameBoardComponent {
   }
 
   onSquareClick(event: { r: number; c: number }): void {
+    if (this.gameStatus() === 'checkmate' || this.gameStatus() === 'stalemate') return;
     const { r, c } = event;
     const board = this.board();
     const sel = this.selected();
@@ -72,16 +86,25 @@ export class GameBoardComponent {
 
     if (target) this.captured.update(c => [...c, target]);
 
-    board[toR][toC] = piece;
+    // Promotion du pion (auto-dame)
+    if (piece.type === 'P' && (toR === 0 || toR === 7)) {
+      board[toR][toC] = { type: 'Q', color: piece.color };
+    } else {
+      board[toR][toC] = piece;
+    }
     board[fromR][fromC] = null;
 
     const notation = `${this.files[fromC]}${8 - fromR}-${this.files[toC]}${8 - toR}`;
     this.moveHistory.update(h => [...h, notation]);
     this.lastMove.set([[fromR, fromC], [toR, toC]]);
     this.board.set(board);
-    this.turn.update(t => t === 'w' ? 'b' : 'w');
+    const nextTurn: PieceColor = piece.color === 'w' ? 'b' : 'w';
+    this.turn.set(nextTurn);
     this.selected.set(null);
     this.validMoves.set([]);
+
+    // Vérifier échec / mat / pat
+    this.updateGameStatus(board, nextTurn);
 
     this.movePlayed.emit({
       from: `${this.files[fromC]}${8 - fromR}`,
@@ -97,11 +120,20 @@ export class GameBoardComponent {
     this.moveHistory.set([]);
     this.lastMove.set(null);
     this.captured.set([]);
+    this.gameStatus.set('playing');
   }
 
   // --- Génération des coups ---
 
   private getValidMoves(board: Board, row: number, col: number): [number, number][] {
+    const piece = board[row][col];
+    if (!piece) return [];
+    const raw = this.getRawMoves(board, row, col);
+    // Filtrer les coups qui laissent le roi en échec
+    return raw.filter(([tr, tc]) => !this.leavesKingInCheck(board, row, col, tr, tc, piece.color));
+  }
+
+  private getRawMoves(board: Board, row: number, col: number): [number, number][] {
     const piece = board[row][col];
     if (!piece) return [];
     const moves: [number, number][] = [];
@@ -114,6 +146,46 @@ export class GameBoardComponent {
       case 'K': this.kingMoves(board, piece, row, col, moves); break;
     }
     return moves;
+  }
+
+  private leavesKingInCheck(board: Board, fromR: number, fromC: number, toR: number, toC: number, color: PieceColor): boolean {
+    const sim = board.map(row => [...row]);
+    sim[toR][toC] = sim[fromR][fromC];
+    sim[fromR][fromC] = null;
+    return this.isKingInCheck(sim, color);
+  }
+
+  private isKingInCheck(board: Board, color: PieceColor): boolean {
+    let kingR = -1, kingC = -1;
+    for (let r = 0; r < 8; r++)
+      for (let c = 0; c < 8; c++)
+        if (board[r][c]?.type === 'K' && board[r][c]?.color === color)
+          { kingR = r; kingC = c; }
+
+    const enemy: PieceColor = color === 'w' ? 'b' : 'w';
+    for (let r = 0; r < 8; r++)
+      for (let c = 0; c < 8; c++)
+        if (board[r][c]?.color === enemy)
+          if (this.getRawMoves(board, r, c).some(([ar, ac]) => ar === kingR && ac === kingC))
+            return true;
+    return false;
+  }
+
+  private hasLegalMoves(board: Board, color: PieceColor): boolean {
+    for (let r = 0; r < 8; r++)
+      for (let c = 0; c < 8; c++)
+        if (board[r][c]?.color === color && this.getValidMoves(board, r, c).length > 0)
+          return true;
+    return false;
+  }
+
+  private updateGameStatus(board: Board, color: PieceColor): void {
+    const inCheck  = this.isKingInCheck(board, color);
+    const hasLegal = this.hasLegalMoves(board, color);
+    if (!hasLegal && inCheck)  this.gameStatus.set('checkmate');
+    else if (!hasLegal)        this.gameStatus.set('stalemate');
+    else if (inCheck)          this.gameStatus.set('check');
+    else                       this.gameStatus.set('playing');
   }
 
   private pawnMoves(board: Board, piece: Piece, row: number, col: number, moves: [number, number][]): void {

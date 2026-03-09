@@ -11,7 +11,8 @@ export class BoardGridComponent {
   board      = input.required<Board>();
   selected   = input<[number, number] | null>(null);
   validMoves = input<[number, number][]>([]);
-  lastMove   = input<[[number, number], [number, number]] | null>(null);
+  lastMove    = input<[[number, number], [number, number]] | null>(null);
+  checkSquare = input<[number, number] | null>(null);
   squareClick = output<{ r: number; c: number }>();
 
   rows  = [0,1,2,3,4,5,6,7];
@@ -34,6 +35,11 @@ export class BoardGridComponent {
 
   isValidMove(r: number, c: number): boolean {
     return this.validMoves().some(([mr, mc]) => mr === r && mc === c);
+  }
+
+  isInCheck(r: number, c: number): boolean {
+    const cs = this.checkSquare();
+    return cs !== null && cs[0] === r && cs[1] === c;
   }
 
   click(r: number, c: number): void {

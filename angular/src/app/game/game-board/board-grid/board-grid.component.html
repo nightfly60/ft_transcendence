@@ -16,6 +16,7 @@
             [class.selected]="isSelected(r, c)"
             [class.last-move]="isLastMove(r, c)"
             [class.valid-target]="isValidMove(r, c)"
+            [class.in-check]="isInCheck(r, c)"
             (click)="click(r, c)"
           >
             @if (board()[r][c]) {
