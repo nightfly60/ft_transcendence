@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { GameComponent } from './game/game.component';
+import { GameComponent } from './chess/chess.component';
 import { Home } from './home/home';
 import { ErrorPageComponent } from './error-page/error-page';
 import { ProfileComponent } from './profile/profile';

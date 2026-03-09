@@ -4,16 +4,16 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { SocketService } from '../services/socket.service';
 import { User } from '../models/user.model';
-import { GameModeSelectComponent, GameMode } from './game-mode-select/game-mode-select.component';
-import { GameHeaderComponent } from './game-header/game-header.component';
-import { GameBoardComponent } from './game-board/game-board.component';
+import { GameModeSelectComponent, GameMode } from './chess-mode-select/chess-mode-select.component';
+import { GameHeaderComponent } from './chess-header/chess-header.component';
+import { ChessComponent } from './chess-board/chess-board.component';
 
 @Component({
   selector: 'app-game',
   standalone: true,
-  imports: [AsyncPipe, GameModeSelectComponent, GameHeaderComponent, GameBoardComponent],
-  templateUrl: './game.component.html',
-  styleUrl: './game.component.scss',
+  imports: [AsyncPipe, GameModeSelectComponent, GameHeaderComponent, ChessComponent],
+  templateUrl: './chess.component.html',
+  styleUrl: './chess.component.scss',
 })
 export class GameComponent implements OnInit, OnDestroy {
   gameId = 'partie-1';
