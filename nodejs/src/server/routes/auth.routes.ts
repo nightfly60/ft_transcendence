@@ -149,6 +149,8 @@ router.get('/google/redirect', passport.authenticate('google', {session: false})
 	{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
 	);
 
+	console.log("image = ", user.profile_image);
+
 	res.redirect(`/?token=${token}`);
 	// res.status(200).json({ message: 'Connecté', token: token});
 	return ;
