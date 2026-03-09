@@ -53,15 +53,6 @@ CREATE TABLE IF NOT EXISTS Profile (
     FOREIGN KEY(id_user) REFERENCES \`User\`(id)
 );
 
--- Table Game
-CREATE TABLE IF NOT EXISTS Game (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nb_cuts BIGINT,
-    timestamp DATETIME,
-    id_winner INT NOT NULL,
-    FOREIGN KEY(id_winner) REFERENCES \`User\`(id)
-);
-
 -- Table Achievements
 CREATE TABLE IF NOT EXISTS Achievements (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -80,11 +71,15 @@ CREATE TABLE IF NOT EXISTS friends (
     FOREIGN KEY(id_user_2) REFERENCES \`User\`(id)
 );
 
--- Table User_Game
-CREATE TABLE IF NOT EXISTS User_Game (
+-- Table Game
+CREATE TABLE IF NOT EXISTS Game (
     id INT AUTO_INCREMENT PRIMARY KEY,
     id_player_one INT NOT NULL,
     id_player_second INT NOT NULL,
+    nb_cuts BIGINT,
+    timestamp DATETIME,
+    id_winner INT NOT NULL,
+    FOREIGN KEY(id_winner) REFERENCES \`User\`(id),
     FOREIGN KEY(id_player_one) REFERENCES \`User\`(id),
     FOREIGN KEY(id_player_second) REFERENCES \`User\`(id)
 );

@@ -91,7 +91,10 @@ export class ProfileComponent implements OnInit {
 
 	checkOnlineStatus(targetId: number) {
 		this.http.get<{ isOnline: boolean }>(`/api/friends/online/${targetId}`).subscribe({
-		next: (res) => { this.isOnline = res.isOnline; this.cdr.markForCheck(); },
+		next: (res) => {
+			this.isOnline = res.isOnline;
+			this.cdr.markForCheck();
+		},
 		error: () => {}
 		});
 	}
@@ -104,7 +107,6 @@ export class ProfileComponent implements OnInit {
 			this.http.delete(`/api/friends/remove/${this.data.id}`).subscribe({
 				next: () => {
 				this.isFriend = false;
-				this.data.nb_friends = (this.data.nb_friends ?? 1) - 1;
 				this.cdr.markForCheck();
 				},
 				error: () => {}
@@ -115,7 +117,6 @@ export class ProfileComponent implements OnInit {
 			this.http.post(`/api/friends/add/${this.data.id}`, {}).subscribe({
 				next: () => {
 				this.isFriend = true;
-				this.data.nb_friends = (this.data.nb_friends ?? 0) + 1;
 				this.cdr.markForCheck();
 				},
 				error: () => {}
