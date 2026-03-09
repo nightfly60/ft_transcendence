@@ -1,18 +1,18 @@
 import { Component, input, output, signal } from '@angular/core';
-import { GameMode } from '../game-mode-select/game-mode-select.component';
+import { GameMode } from '../chess-mode-select/chess-mode-select.component';
 import { Board, Piece, PieceColor, SYMBOLS, initBoard } from './chess.types';
 import { PlayerPanelComponent } from './player-panel/player-panel.component';
 import { BoardGridComponent } from './board-grid/board-grid.component';
 import { MoveHistoryComponent } from './move-history/move-history.component';
 
 @Component({
-  selector: 'app-game-board',
+  selector: 'app-chess',
   standalone: true,
   imports: [PlayerPanelComponent, BoardGridComponent, MoveHistoryComponent],
-  templateUrl: './game-board.component.html',
-  styleUrl: './game-board.component.scss',
+  templateUrl: './chess-board.component.html',
+  styleUrl: './chess-board.component.scss',
 })
-export class GameBoardComponent {
+export class ChessComponent {
   gameId = input.required<string>();
   mode   = input.required<GameMode>();
   movePlayed = output<{ from: string; to: string }>();
@@ -62,7 +62,7 @@ export class GameBoardComponent {
     const board = this.board();
     const sel = this.selected();
 
-    const isValid = this.validMoves().some(([mr, mc]) => mr === r && mc === c);
+    const isValid = this.validMoves().some(([moveRow, moveCol]) => moveRow === r && moveCol === c);
     if (sel && isValid) {
       this.playMove(sel[0], sel[1], r, c);
       return;
@@ -79,37 +79,37 @@ export class GameBoardComponent {
     this.validMoves.set([]);
   }
 
+  private toAlgebraic(r: number, c: number): string {
+    return `${this.files[c]}${8 - r}`;
+  }
+
   private playMove(fromR: number, fromC: number, toR: number, toC: number): void {
     const board = this.board().map(row => [...row]);
     const piece = board[fromR][fromC]!;
     const target = board[toR][toC];
 
-    if (target) this.captured.update(c => [...c, target]);
+    if (target)
+      this.captured.update(captured => [...captured, target]);
 
-    // Promotion du pion (auto-dame)
-    if (piece.type === 'P' && (toR === 0 || toR === 7)) {
-      board[toR][toC] = { type: 'Q', color: piece.color };
-    } else {
-      board[toR][toC] = piece;
-    }
+    board[toR][toC] = (piece.type === 'P' && (toR === 0 || toR === 7))
+      ? { type: 'Q', color: piece.color }
+      : piece;
     board[fromR][fromC] = null;
 
-    const notation = `${this.files[fromC]}${8 - fromR}-${this.files[toC]}${8 - toR}`;
-    this.moveHistory.update(h => [...h, notation]);
+    const from = this.toAlgebraic(fromR, fromC);
+    const to   = this.toAlgebraic(toR, toC);
+
+    this.moveHistory.update(h => [...h, `${from}-${to}`]);
     this.lastMove.set([[fromR, fromC], [toR, toC]]);
     this.board.set(board);
+
     const nextTurn: PieceColor = piece.color === 'w' ? 'b' : 'w';
     this.turn.set(nextTurn);
     this.selected.set(null);
     this.validMoves.set([]);
 
-    // Vérifier échec / mat / pat
     this.updateGameStatus(board, nextTurn);
-
-    this.movePlayed.emit({
-      from: `${this.files[fromC]}${8 - fromR}`,
-      to: `${this.files[toC]}${8 - toR}`,
-    });
+    this.movePlayed.emit({ from, to });
   }
 
   resetGame(): void {
@@ -123,29 +123,24 @@ export class GameBoardComponent {
     this.gameStatus.set('playing');
   }
 
-  // --- Génération des coups ---
-
   private getValidMoves(board: Board, row: number, col: number): [number, number][] {
     const piece = board[row][col];
     if (!piece) return [];
     const raw = this.getRawMoves(board, row, col);
-    // Filtrer les coups qui laissent le roi en échec
     return raw.filter(([tr, tc]) => !this.leavesKingInCheck(board, row, col, tr, tc, piece.color));
   }
 
   private getRawMoves(board: Board, row: number, col: number): [number, number][] {
     const piece = board[row][col];
     if (!piece) return [];
-    const moves: [number, number][] = [];
     switch (piece.type) {
-      case 'P': this.pawnMoves(board, piece, row, col, moves); break;
-      case 'R': this.slidingMoves(board, piece, row, col, moves, [[0,1],[0,-1],[1,0],[-1,0]]); break;
-      case 'B': this.slidingMoves(board, piece, row, col, moves, [[1,1],[1,-1],[-1,1],[-1,-1]]); break;
-      case 'Q': this.slidingMoves(board, piece, row, col, moves, [[0,1],[0,-1],[1,0],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]]); break;
-      case 'N': this.knightMoves(board, piece, row, col, moves); break;
-      case 'K': this.kingMoves(board, piece, row, col, moves); break;
+      case 'P': return this.pawnMoves(board, piece, row, col);
+      case 'R': return this.rookMoves(board, piece, row, col);
+      case 'B': return this.bishopMoves(board, piece, row, col);
+      case 'Q': return this.queenMoves(board, piece, row, col);
+      case 'N': return this.knightMoves(board, piece, row, col);
+      case 'K': return this.kingMoves(board, piece, row, col);
     }
-    return moves;
   }
 
   private leavesKingInCheck(board: Board, fromR: number, fromC: number, toR: number, toC: number, color: PieceColor): boolean {
@@ -182,13 +177,18 @@ export class GameBoardComponent {
   private updateGameStatus(board: Board, color: PieceColor): void {
     const inCheck  = this.isKingInCheck(board, color);
     const hasLegal = this.hasLegalMoves(board, color);
-    if (!hasLegal && inCheck)  this.gameStatus.set('checkmate');
-    else if (!hasLegal)        this.gameStatus.set('stalemate');
-    else if (inCheck)          this.gameStatus.set('check');
-    else                       this.gameStatus.set('playing');
+    if (!hasLegal && inCheck)  
+      this.gameStatus.set('checkmate');
+    else if (!hasLegal)        
+      this.gameStatus.set('stalemate');
+    else if (inCheck)         
+       this.gameStatus.set('check');
+    else                       
+      this.gameStatus.set('playing');
   }
 
-  private pawnMoves(board: Board, piece: Piece, row: number, col: number, moves: [number, number][]): void {
+  private pawnMoves(board: Board, piece: Piece, row: number, col: number): [number, number][] {
+    const moves: [number, number][] = [];
     const dir = piece.color === 'w' ? -1 : 1;
     const startRow = piece.color === 'w' ? 6 : 1;
     if (this.exists(row + dir, col) && board[row + dir][col] === null) {
@@ -200,33 +200,57 @@ export class GameBoardComponent {
       if (this.exists(row + dir, col + dc) && this.isEnemy(board, piece, row + dir, col + dc))
         moves.push([row + dir, col + dc]);
     }
+    return moves;
   }
 
-  private slidingMoves(board: Board, piece: Piece, row: number, col: number, moves: [number, number][], dirs: number[][]): void {
+  private rookMoves(board: Board, piece: Piece, row: number, col: number): [number, number][] {
+    return this.sliding(board, piece, row, col, [[0,1],[0,-1],[1,0],[-1,0]]);
+  }
+
+  private bishopMoves(board: Board, piece: Piece, row: number, col: number): [number, number][] {
+    return this.sliding(board, piece, row, col, [[1,1],[1,-1],[-1,1],[-1,-1]]);
+  }
+
+  private queenMoves(board: Board, piece: Piece, row: number, col: number): [number, number][] {
+    return this.sliding(board, piece, row, col, [[0,1],[0,-1],[1,0],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]]);
+  }
+
+  private sliding(board: Board, piece: Piece, row: number, col: number, dirs: number[][]): [number, number][] {
+    const moves: [number, number][] = [];
     for (const [dr, dc] of dirs) {
       let r = row + dr, c = col + dc;
       while (this.exists(r, c)) {
-        if (board[r][c] === null) { moves.push([r, c]); }
-        else { if (this.isEnemy(board, piece, r, c)) moves.push([r, c]); break; }
+        if (board[r][c] === null)
+          moves.push([r, c]);
+        else {
+          if (this.isEnemy(board, piece, r, c))
+            moves.push([r, c]);
+          break;
+        }
         r += dr; c += dc;
       }
     }
+    return moves;
   }
 
-  private knightMoves(board: Board, piece: Piece, row: number, col: number, moves: [number, number][]): void {
+  private knightMoves(board: Board, piece: Piece, row: number, col: number): [number, number][] {
+    const moves: [number, number][] = [];
     for (const [dr, dc] of [[2,1],[2,-1],[-2,1],[-2,-1],[1,2],[1,-2],[-1,2],[-1,-2]]) {
       const r = row + dr, c = col + dc;
       if (this.exists(r, c) && (board[r][c] === null || this.isEnemy(board, piece, r, c)))
         moves.push([r, c]);
     }
+    return moves;
   }
 
-  private kingMoves(board: Board, piece: Piece, row: number, col: number, moves: [number, number][]): void {
+  private kingMoves(board: Board, piece: Piece, row: number, col: number): [number, number][] {
+    const moves: [number, number][] = [];
     for (const [dr, dc] of [[0,1],[0,-1],[1,0],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]]) {
       const r = row + dr, c = col + dc;
       if (this.exists(r, c) && (board[r][c] === null || this.isEnemy(board, piece, r, c)))
         moves.push([r, c]);
     }
+    return moves;
   }
 
   private exists(r: number, c: number): boolean {
