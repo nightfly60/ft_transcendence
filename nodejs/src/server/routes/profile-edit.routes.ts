@@ -50,7 +50,23 @@ router.post('/avatar/:id', upload.single('avatar'), async (req: Request, res: Re
 			'UPDATE `Profile` SET path_img = ? WHERE id_user = ?',
 			[`/avatars/${filename}`, userId]
 		);
-		res.status(200).json({ path_img: `/avatars/${filename}` });
+
+		const token = req.headers.authorization?.split(' ')[1];
+		const user = jwt.verify(token!, process.env.JWT_SECRET!) as jwt.JwtPayload;
+
+		const new_token = jwt.sign(
+		{
+			id: user.id,
+			email: user.mail,
+			username: user.username,
+			language: user.language,
+			path_img: `/avatars/${filename}`
+		},
+		process.env.JWT_SECRET || "02a70f0b6ea2556ea2afa6309aafa9ab8d87b7f049eef3d51e808c27057c4421",
+		{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
+		);
+
+		res.status(200).json({ path_img: `/avatars/${filename}` , token: new_token});
 	}
 	catch (err)
 	{
