@@ -1,36 +1,9 @@
-#!/bin/sh
-set -e
+mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" <<EOSQL
+DROP DATABASE \`${MYSQL_DATABASE}\`;
 
-# Fix permissions à chaque démarrage
-chown -R mysql:mysql /var/lib/mysql /run/mysqld
-chmod -R 700 /var/lib/mysql /run/mysqld
+CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`;
+use \`${MYSQL_DATABASE}\`
 
-# Initialisation de MariaDB si le datadir est vide
-if [ ! -d "/var/lib/mysql/mysql" ]; then
-    echo "Initializing MariaDB database..."
-
-    mariadb-install-db --user=mysql --datadir=/var/lib/mysql
-
-    # Démarrage temporaire du serveur sans réseau
-    mysqld --user=mysql --datadir=/var/lib/mysql --skip-networking &
-    pid="$!"
-
-    # Attendre que le serveur soit prêt
-    while ! mysqladmin ping --silent; do
-        sleep 1
-    done
-
-    # Création root, base et user
-    mysql <<-EOSQL
-        ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';
-        CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`;
-        CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';
-        GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'%';
-        FLUSH PRIVILEGES;
-EOSQL
-
-    # Création des tables
-    mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" "${MYSQL_DATABASE}" <<EOSQL
 -- Table utilisateur
 CREATE TABLE IF NOT EXISTS \`User\` (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -67,7 +40,7 @@ CREATE TABLE IF NOT EXISTS Achievements (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255),
     objective BIGINT,
-	type VARCHAR(255),
+    type VARCHAR(255),
     description TEXT
 );
 
@@ -100,9 +73,4 @@ CREATE TABLE IF NOT EXISTS User_achievements (
 );
 EOSQL
 
-    # Arrêter le serveur temporaire
-    mysqladmin -uroot -p"${MYSQL_ROOT_PASSWORD}" shutdown
-fi
-
-# Démarrage principal de MariaDB
-exec mysqld --user=mysql --datadir=/var/lib/mysql
+echo "BASE DE DONNEE A JOUR ET VIDE"

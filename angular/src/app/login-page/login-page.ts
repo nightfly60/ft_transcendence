@@ -59,7 +59,10 @@ export class LoginPage {
 			password: this.password,
 			username: this.username,
 		}).subscribe({
-			next: () => this.tab = 'login',
+			next: () => {
+				this.tab = 'login',
+				this.cd.detectChanges();
+			},
 			error: (err) => {
 				console.log("ERROR", err);
 				const msg: string = err.error?.error ?? 'Erreur serveur';
@@ -72,5 +75,25 @@ export class LoginPage {
 				this.cd.detectChanges();
 			}
 		});
+	}
+
+	googleAuth(): void {
+		// this.http.get<{ token: string }>('/api/auth/google', {}).subscribe({
+		// 	next: (res) => {
+		// 		this.auth.login(res.token);
+		// 		this.router.navigate(['/']);
+		// 	},
+		// 	error: (err) => {
+		// 		console.log("ERROR", err);
+		// 		const msg: string = err.error?.error ?? 'Erreur serveur';
+		// 		this.passError = msg;
+		// 		this.cd.detectChanges();
+		// 	}
+		// });
+		window.location.href = '/api/auth/google';
+	}
+
+	intra42Auth(): void {
+		window.location.href = '/api/auth/intra42';
 	}
 }
