@@ -6,16 +6,20 @@ import { ProfileComponent } from './profile/profile';
 import { LoginPage } from './login-page/login-page';
 import { authGuard } from './shared/interceptors/auth-interceptor';
 import { ProfileEditComponent } from './profile-edit/profile-edit';
+import { PrivacyComponent } from './privacy/privacy';
+import { TermsComponent } from './terms/terms';
 
 export const routes: Routes = [
-  { path: '', component: Home },
-  { path: 'login', component: LoginPage },
-  { path: 'game', component: GameComponent, canActivate: [authGuard] },
-  { path: 'profile/:id', component: ProfileComponent, canActivate: [authGuard] },
-  { path: 'profile/edit/:id', component: ProfileEditComponent, canActivate: [authGuard] },
+	{ path: '', component: Home },
+	{ path: 'login', component: LoginPage },
+	{ path: 'game', component: GameComponent, canActivate: [authGuard] },
+	{ path: 'profile/:id', component: ProfileComponent, canActivate: [authGuard] },
+	{ path: 'profile/edit/:id', component: ProfileEditComponent, canActivate: [authGuard] },
+	{ path: 'policies/privacy-policy', component: PrivacyComponent },
+	{ path: 'policies/terms-of-use', component: TermsComponent },
 
-  { path: '404', component: ErrorPageComponent, data: { code: 404 } },
-  { path: '403', component: ErrorPageComponent, data: { code: 403 } },
-  { path: '500', component: ErrorPageComponent, data: { code: 500 } },
-  { path: '**', redirectTo: '/404' },
+	{ path: '404', component: ErrorPageComponent, data: { code: 404 } },
+	{ path: '403', component: ErrorPageComponent, data: { code: 403 } },
+	{ path: '500', component: ErrorPageComponent, data: { code: 500 } },
+	{ path: '**', redirectTo: '/404' },
 ];
