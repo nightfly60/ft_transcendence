@@ -26,7 +26,7 @@ export class LoginPage {
 	onLogin(): void {
 		this.passError = '';
 		this.emailError = '';
-
+		this.cd.markForCheck();
 		this.http.post<{ token: string }>('/api/auth/login', {
 		email: this.email,
 		password: this.password,
