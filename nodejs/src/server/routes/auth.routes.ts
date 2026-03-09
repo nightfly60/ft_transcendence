@@ -67,10 +67,6 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
 	const { password, email } = req.body;
 
-	console.log("==== DATAS RECUS =====");
-	console.log("mail: ", email);
-	console.log("password: ", password);
-
 	if (!validateEmail(email)) {
 		res.status(400).json({ error: 'Adresse Email incorrecte' });
 		return ;
@@ -133,8 +129,6 @@ router.get('/google', passport.authenticate('google'), (req, res) => {
 })
 
 router.get('/google/redirect', passport.authenticate('google', {session: false}), (req, res) => {
-	console.log(":::::USER in redirect: ", req.user);
-
 	const user = req.user;
 
 	if (user.id == null)
@@ -148,7 +142,8 @@ router.get('/google/redirect', passport.authenticate('google', {session: false})
 		id: user.id,
 		email: user.mail,
 		username: user.username,
-		language: user.language || 'fr'
+		language: user.language || 'fr',
+		path_img: user.profile_image
 	},
 	process.env.JWT_SECRET || "02a70f0b6ea2556ea2afa6309aafa9ab8d87b7f049eef3d51e808c27057c4421",
 	{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
@@ -156,6 +151,35 @@ router.get('/google/redirect', passport.authenticate('google', {session: false})
 
 	res.redirect(`/?token=${token}`);
 	// res.status(200).json({ message: 'Connecté', token: token});
+	return ;
+})
+
+router.get('/intra42', passport.authenticate('intra42'), (req, res) => {
+	res.send(200);
+})
+
+router.get('/intra42/redirect', passport.authenticate('intra42', {session: false}), (req, res) => {
+	const user = req.user;
+
+	if (user.id == null)
+	{
+		res.send(500);
+		return ;
+	}
+
+	const token = jwt.sign(
+	{
+		id: user.id,
+		email: user.mail,
+		username: user.username,
+		language: user.language || 'fr',
+		path_img: user.profile_image
+	},
+	process.env.JWT_SECRET || "02a70f0b6ea2556ea2afa6309aafa9ab8d87b7f049eef3d51e808c27057c4421",
+	{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
+	);
+
+	res.redirect(`/?token=${token}`);
 	return ;
 })
 
