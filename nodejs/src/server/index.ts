@@ -8,7 +8,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import authRouter from './routes/auth.routes';
 import { requireAuth } from './middleware/auth.middleware.js';
-import profileEditRouter from './routes/profile-edit.routes.js'
+import profileEditRouter from './routes/profile-edit.routes.js';
+import friendsRouter from './routes/friends.routes.js';
 import passport from 'passport';
 
 await import('./strategies/google');
@@ -35,7 +36,8 @@ app.use(express.urlencoded({ limit: '5mb', extended: true }));
 
 app.use('/users', requireAuth, userRouter);
 app.use('/profile', requireAuth, profileRouter); 
-app.use('/profile-edit', profileEditRouter);
+app.use('/profile-edit', requireAuth, profileEditRouter);
+app.use('/friends', requireAuth, friendsRouter)
 
 app.use('/auth', authRouter);
 initSockets(httpServer);

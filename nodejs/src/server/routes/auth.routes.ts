@@ -67,10 +67,6 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
 	const { password, email } = req.body;
 
-	console.log("==== DATAS RECUS =====");
-	console.log("mail: ", email);
-	console.log("password: ", password);
-
 	if (!validateEmail(email)) {
 		res.status(400).json({ error: 'Adresse Email incorrecte' });
 		return ;
