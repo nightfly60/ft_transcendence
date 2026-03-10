@@ -19,8 +19,8 @@ status:
 fclean:
 	docker compose down --rmi all --volumes --remove-orphans
 	rm -rf nodejs/node_modules angular/node_modules
-	docker run --rm -v /home/$(USER)/volumes/db_data:/data alpine sh -c "rm -rf /data/*"
-	docker run --rm -v /home/$(USER)/volumes/vite_cache:/data alpine sh -c "rm -rf /data/*"
+	docker run --rm -v /home/$(USER):/data alpine sh -c "rm -rf /data/volumes"
+	docker rmi alpine 2>/dev/null || true
 
 re: fclean all
 
