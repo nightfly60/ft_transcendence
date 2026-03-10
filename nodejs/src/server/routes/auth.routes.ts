@@ -120,7 +120,7 @@ router.post('/login', async (req, res) => {
 					language: user.language,
 					path_img: profile[0].path_img
 				},
-				process.env.JWT_SECRET || "02a70f0b6ea2556ea2afa6309aafa9ab8d87b7f049eef3d51e808c27057c4421",
+				process.env.JWT_SECRET!,
 				{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
 			);
 			res.status(200).json({ message: 'Connecté', token: tokenUser});
@@ -160,7 +160,7 @@ router.get('/google/redirect', passport.authenticate('google', {session: false})
 		language: user.language || 'fr',
 		path_img: user.profile_image
 	},
-	process.env.JWT_SECRET || "02a70f0b6ea2556ea2afa6309aafa9ab8d87b7f049eef3d51e808c27057c4421",
+	process.env.JWT_SECRET!,
 	{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
 	);
 
@@ -190,7 +190,7 @@ router.get('/intra42/redirect', passport.authenticate('intra42', {session: false
 		language: user.language || 'fr',
 		path_img: user.profile_image
 	},
-	process.env.JWT_SECRET || "02a70f0b6ea2556ea2afa6309aafa9ab8d87b7f049eef3d51e808c27057c4421",
+	process.env.JWT_SECRET!,
 	{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
 	);
 
