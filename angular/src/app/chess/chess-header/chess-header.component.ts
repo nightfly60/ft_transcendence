@@ -1,11 +1,11 @@
 import { Component, input, output } from '@angular/core';
-import { GameMode } from '../game-mode-select/game-mode-select.component';
+import { GameMode } from '../chess-mode-select/chess-mode-select.component';
 
 @Component({
-  selector: 'app-game-header',
+  selector: 'app-chess-header',
   standalone: true,
-  templateUrl: './game-header.component.html',
-  styleUrl: './game-header.component.scss',
+  templateUrl: './chess-header.component.html',
+  styleUrl: './chess-header.component.scss',
 })
 export class GameHeaderComponent {
   mode = input.required<GameMode>();

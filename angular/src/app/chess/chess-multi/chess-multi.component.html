@@ -1,0 +1,10 @@
+@if (waiting) {
+  <p>En attente d'un adversaire...</p>
+} @else if (gameId) {
+  <app-chess
+    [gameId]="gameId"
+    [mode]="'multi'"
+    [myColor]="myColor"
+    (movePlayed)="sendMove($event.from, $event.to)"
+  />
+}

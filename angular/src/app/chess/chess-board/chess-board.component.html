@@ -1,0 +1,27 @@
+<div class="game-area">
+  <div class="board-section">
+    <app-player-panel
+      icon="♚" name="Noirs"
+      [active]="turn() === 'b'"
+      [captured]="capturedSymbols('w')"
+    />
+    <app-board-grid
+      [board]="board()"
+      [selected]="selected()"
+      [validMoves]="validMoves()"
+      [lastMove]="lastMove()"
+      [checkSquare]="checkSquare()"
+      (squareClick)="onSquareClick($event)"
+    />
+    <app-player-panel
+      icon="♔" name="Blancs"
+      [active]="turn() === 'w'"
+      [captured]="capturedSymbols('b')"
+    />
+  </div>
+  <app-move-history
+    [pairs]="movePairs()"
+    [isEmpty]="moveHistory().length === 0"
+    (reset)="resetGame()"
+  />
+</div>

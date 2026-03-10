@@ -7,16 +7,20 @@ export class SocketService {
     path: '/socket.io/'
   });
 
-  joinGame(gameId: string) {
-    this.socket.emit('join_game', gameId);
+  findGame() {
+    this.socket.emit('find_game');
+  }
+
+  onWaiting(callback: () => void) {
+    this.socket.on('waiting', callback);
+  }
+
+  onGameReady(callback: (data: { gameId: string; color: string }) => void) {
+    this.socket.on('game_ready', callback);
   }
 
   sendMove(gameId: string, from: string, to: string) {
     this.socket.emit('move', { gameId, from, to });
-  }
-
-  onMove(callback: (data: { from: string; to: string }) => void) {
-    this.socket.on('move', callback);
   }
 
   disconnect() {

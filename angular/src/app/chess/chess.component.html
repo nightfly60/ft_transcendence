@@ -18,18 +18,18 @@
   <!-- CONTENU -->
   <div class="game-content">
     @if (!selectedMode) {
-      <app-game-mode-select (modeSelected)="selectMode($event)" />
+      <app-chess-mode-select (modeSelected)="selectMode($event)" />
     } @else {
-      <app-game-header
+      <app-chess-header
         [mode]="selectedMode"
         [username]="(user$ | async)?.username ?? ''"
         (back)="goBack()"
       />
-      <app-game-board
-        [gameId]="gameId"
-        [mode]="selectedMode"
-        (movePlayed)="jouerCoup($event.from, $event.to)"
-      />
+      @if (selectedMode === 'solo') {
+        <app-chess-solo />
+      } @else if (selectedMode === 'multi') {
+        <app-chess-multi />
+      }
     }
   </div>
 
