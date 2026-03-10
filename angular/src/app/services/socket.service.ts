@@ -3,7 +3,7 @@ import { io, Socket } from 'socket.io-client';
 
 @Injectable({ providedIn: 'root' })
 export class SocketService {
-  private socket: Socket = io('https://chess42.fr', {
+  private socket: Socket = io('https://localhost:8443', {
     path: '/socket.io/'
   });
 
@@ -35,9 +35,6 @@ export class SocketService {
     this.socket.emit('chat:send', ({ chatId, message }));
   }
 
-  // onReceiveMessage(msg : { text: string, sender: string, sentAt: string}) {
-  //   this.socket.emit('chat:receive,', msg);
-  // }
   onReceiveMessage(callback : (data : { text: string; sender: string; timestamp: Date}) => void) {
     this.socket.on('chat:receive', callback);
   }

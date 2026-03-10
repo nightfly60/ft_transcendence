@@ -19,7 +19,7 @@ class Message {
 export class ChatBox implements OnInit, AfterViewChecked{
    @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
   chatID = '';
-  username = ''; //?
+  username = ''; //not sure
   message = '';
   messages: Message[] = [];
 
@@ -33,25 +33,15 @@ export class ChatBox implements OnInit, AfterViewChecked{
       });
 
       this.socket.onReceiveMessage(({text, sender, timestamp}) => {
-        this.messages.push(new Message (text, timestamp, sender));
-      });
-      //need to check if sender = socket.data.user to render incoming or outgoing
+          this.messages.push(new Message(text, new Date(timestamp), sender));
+        });
+      //need to check if sender = socket.data.user to render incoming or outgoing -> in html?
     }
+
   
   ngAfterViewChecked() {
     this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight;
   }
-
-  // sendMessage() : void {
-  //   if (this.message.trim())
-  //   {
-  //     this.message = this.message.trim();
-  //     this.messages.push(new Message(this.message, new Date(), this.username));
-  //     //emit event to actually send message
-  //     this.message = '';
-  //     //this.username = '';
-  //   }
-  // }
 
   sendMessage() : void {
     if (this.message.trim())

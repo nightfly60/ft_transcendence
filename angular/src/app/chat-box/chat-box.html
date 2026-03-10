@@ -12,14 +12,10 @@
 	<div class="chat-window">
 		<div class="chat-messages" id="messages" #messagesContainer>
 			<div class="message incoming">
-				<div class="bubble">Hey! How's it going?</div><!-- placeholder -->
+				<div class="bubble">Incoming message example</div><!-- placeholder -->
 				<div class="timestamp">10:42 AM</div><!-- placeholder -->
 			</div>
-			<div class="message outgoing">
-				<div class="bubble">Pretty good! Just working on a project.</div>
-				<div class="timestamp">10:43 AM</div>
-			</div>
-			 <!-- need dynamic style if incoming or outgoing-->
+			 <!-- need dynamic style if incoming or outgoing baes on user id-->
 			 @for (message of messages; track message.timestamp) {
 				<div class="message outgoing">
 					<div class="bubble">{{ message.message }}</div>
