@@ -23,6 +23,25 @@ export class SocketService {
     this.socket.emit('move', { gameId, from, to });
   }
 
+  findChat() {
+    this.socket.emit('chat:find');
+  }
+
+  onChatReady(callback : (chatId : string) => void) {
+    this.socket.on('chat:ready', callback);
+  }
+
+  sendMessage(chatId : string, message : string) {
+    this.socket.emit('chat:send', ({ chatId, message }));
+  }
+
+  // onReceiveMessage(msg : { text: string, sender: string, sentAt: string}) {
+  //   this.socket.emit('chat:receive,', msg);
+  // }
+  onReceiveMessage(callback : (data : { text: string; sender: string; timestamp: Date}) => void) {
+    this.socket.on('chat:receive', callback);
+  }
+
   disconnect() {
     this.socket.disconnect();
   }
