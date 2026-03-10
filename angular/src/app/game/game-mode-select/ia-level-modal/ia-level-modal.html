@@ -1,0 +1,29 @@
+<div class="modal-overlay" (click)="onOverlayClick($event)">
+	<div class="modal-box">
+
+		<h2 class="modal-title">Niveau de l'IA</h2>
+		<p class="modal-subtitle">Choisis la difficulté de ton adversaire</p>
+
+		<div class="levels">
+		@for (level of levels; track level.key) {
+			<button
+			class="level-card"
+			[class.selected]="selectedLevel === level.key"
+			(click)="selectedLevel = level.key"
+			>
+			<span class="level-icon">{{ level.icon }}</span>
+			<span class="level-name">{{ level.label }}</span>
+			<span class="level-desc">{{ level.desc }}</span>
+			</button>
+		}
+		</div>
+
+		<div class="modal-actions">
+		<button class="btn-cancel" (click)="cancel.emit()">Annuler</button>
+		<button class="btn-confirm" [disabled]="!selectedLevel" (click)="confirm()">
+			Jouer
+		</button>
+		</div>
+
+	</div>
+</div>

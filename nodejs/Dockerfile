@@ -67,11 +67,10 @@ RUN chown -R nodejs:nodejs /app && chmod -R 755 /app
 # ========================================
 FROM build-deps AS development
 
-# Set environment
 ENV NODE_ENV=development \
     NPM_CONFIG_LOGLEVEL=warn
 
-RUN apk add --no-cache su-exec
+RUN apk add --no-cache su-exec g++
 
 # Copy source files
 COPY . .
