@@ -39,7 +39,8 @@ CREATE TABLE IF NOT EXISTS \`User\` (
     language VARCHAR(10),
     password VARCHAR(255) NOT NULL,
     username VARCHAR(255),
-	last_seen DATETIME DEFAULT NULL
+	last_seen DATETIME DEFAULT NULL,
+	two_fa_secret VARCHAR(255)
 );
 
 -- Table Profile

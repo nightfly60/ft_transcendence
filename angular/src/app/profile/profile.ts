@@ -76,6 +76,7 @@ export class ProfileComponent implements OnInit {
 	}
 
 	checkFriendStatus(targetId: number) {
+		if (!this.auth.isLoggedIn()) return ;
 		this.http.get<{isFriend: boolean}>(`/api/friends/status/${targetId}`).subscribe({
 		next: (res) => { this.isFriend = res.isFriend; this.cdr.markForCheck(); },
 		error: () => {}
@@ -83,6 +84,7 @@ export class ProfileComponent implements OnInit {
 	}
 
 	startPolling(targetId: number) {
+		if (!this.auth.isLoggedIn()) return ;
 		this.checkOnlineStatus(targetId);
 		this.pollingInterval = setInterval(() => {
 			this.checkOnlineStatus(targetId);
@@ -90,6 +92,7 @@ export class ProfileComponent implements OnInit {
 	}
 
 	checkOnlineStatus(targetId: number) {
+		if (!this.auth.isLoggedIn()) return ;
 		this.http.get<{ isOnline: boolean }>(`/api/friends/online/${targetId}`).subscribe({
 		next: (res) => {
 			this.isOnline = res.isOnline;

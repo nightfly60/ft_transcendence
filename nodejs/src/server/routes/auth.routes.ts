@@ -3,9 +3,9 @@ import pool from '../db.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import passport from 'passport';
+import { verify, generate } from "otplib";
 
 const router = Router();
-
 
 function validateEmail(mail: string): boolean {
 	var re = /\S+@\S+\.\S+/;
@@ -65,7 +65,7 @@ router.post('/register', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-	const { password, email } = req.body;
+	const { password, email, token } = req.body;
 
 	if (!validateEmail(email)) {
 		res.status(400).json({ error: 'Adresse Email incorrecte' });
@@ -79,7 +79,7 @@ router.post('/login', async (req, res) => {
 	try
 	{
 		const [result]: any = await pool.query(
-			'SELECT id, mail, password, username, language, two_fa FROM `User` WHERE mail = ?',
+			'SELECT id, mail, password, username, language, two_fa, two_fa_secret FROM `User` WHERE mail = ?',
 			[email]
 		);
 		if (result.length === 0)
@@ -97,7 +97,22 @@ router.post('/login', async (req, res) => {
 				[user.id]
 			);
 
-			const token = jwt.sign(
+			if (user.two_fa)
+			{
+				if (!token) return res.status(400).json({error: 'Token 2FA necessaire'});
+
+				const cleanToken = token.replace(/\s/g, '');
+
+				const secret = user.two_fa_secret;
+				const expectedToken = await generate({ secret, strategy: 'totp' });
+
+				const isValid = await verify({ secret, token: cleanToken, strategy: 'totp' });
+
+				if (!isValid.valid)
+					return res.status(400).json({ error: 'Token 2FA invalide' })
+			}
+
+			const tokenUser = jwt.sign(
 				{
 					id: user.id,
 					email: user.mail,
@@ -108,7 +123,7 @@ router.post('/login', async (req, res) => {
 				process.env.JWT_SECRET || "02a70f0b6ea2556ea2afa6309aafa9ab8d87b7f049eef3d51e808c27057c4421",
 				{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
 			);
-			res.status(200).json({ message: 'Connecté', token: token});
+			res.status(200).json({ message: 'Connecté', token: tokenUser});
 			return ;
 		}
 		else
@@ -149,8 +164,6 @@ router.get('/google/redirect', passport.authenticate('google', {session: false})
 	{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
 	);
 
-	console.log("image = ", user.profile_image);
-
 	res.redirect(`/?token=${token}`);
 	// res.status(200).json({ message: 'Connecté', token: token});
 	return ;
@@ -184,5 +197,7 @@ router.get('/intra42/redirect', passport.authenticate('intra42', {session: false
 	res.redirect(`/?token=${token}`);
 	return ;
 })
+
+
 
 export default router;
