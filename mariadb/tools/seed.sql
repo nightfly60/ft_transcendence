@@ -6,7 +6,6 @@ USE `transcendence`;
 -- Clear existing data (order respects foreign keys)
 SET FOREIGN_KEY_CHECKS = 0;
 TRUNCATE TABLE User_achievements;
-TRUNCATE TABLE User_Game;
 TRUNCATE TABLE friends;
 TRUNCATE TABLE Game;
 TRUNCATE TABLE Achievements;
@@ -50,31 +49,18 @@ INSERT INTO Achievements (name, objective, description, type) VALUES
 ('Clutch',         10,   'Gagner une partie en moins de 10 coups', 'under_cut'),
 ('Marathonien',    80,  'Jouer une partie de plus de 80 coups', 'upper_cut');
 
--- Games (id_winner référence un User existant)
-INSERT INTO Game (nb_cuts, timestamp, id_winner) VALUES
-(12, '2025-01-10 14:23:00', 1),
-(8,  '2025-01-11 16:45:00', 3),
-(15, '2025-01-12 10:00:00', 6),
-(5,  '2025-01-13 18:30:00', 2),
-(20, '2025-01-14 09:15:00', 9),
-(9,  '2025-01-15 20:00:00', 5),
-(11, '2025-01-16 13:10:00', 6),
-(7,  '2025-01-17 11:55:00', 1),
-(14, '2025-01-18 17:20:00', 3),
-(6,  '2025-01-19 15:40:00', 7);
-
--- User_Game (qui a joué contre qui)
-INSERT INTO User_Game (id_player_one, id_player_second) VALUES
-(1, 2),
-(3, 4),
-(6, 5),
-(2, 9),
-(9, 7),
-(5, 8),
-(6, 3),
-(1, 4),
-(3, 10),
-(7, 6);
+-- Games
+INSERT INTO Game (nb_cuts, timestamp, id_player_one, id_player_second, id_winner) VALUES
+(12, '2025-01-10 14:23:00', 1, 2,  1),
+(8,  '2025-01-11 16:45:00', 3, 4,  3),
+(15, '2025-01-12 10:00:00', 6, 5,  6),
+(5,  '2025-01-13 18:30:00', 2, 9,  2),
+(20, '2025-01-14 09:15:00', 9, 7,  9),
+(9,  '2025-01-15 20:00:00', 5, 8,  5),
+(11, '2025-01-16 13:10:00', 6, 3,  6),
+(7,  '2025-01-17 11:55:00', 1, 4,  1),
+(14, '2025-01-18 17:20:00', 3, 10, 3),
+(6,  '2025-01-19 15:40:00', 7, 6,  7);
 
 -- Friends
 INSERT INTO friends (id_user_1, id_user_2) VALUES

@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { Board, Piece, SYMBOLS } from '../chess.types';
 
 @Component({
@@ -13,11 +13,13 @@ export class BoardGridComponent {
   validMoves = input<[number, number][]>([]);
   lastMove    = input<[[number, number], [number, number]] | null>(null);
   checkSquare = input<[number, number] | null>(null);
+  flipped     = input<boolean>(false);
   squareClick = output<{ r: number; c: number }>();
 
-  rows  = [0,1,2,3,4,5,6,7];
-  cols  = [0,1,2,3,4,5,6,7];
   files = ['a','b','c','d','e','f','g','h'];
+
+  rows = computed(() => this.flipped() ? [7,6,5,4,3,2,1,0] : [0,1,2,3,4,5,6,7]);
+  cols = computed(() => this.flipped() ? [7,6,5,4,3,2,1,0] : [0,1,2,3,4,5,6,7]);
 
   isLight(r: number, c: number): boolean    { return (r + c) % 2 === 0; }
   symbol(piece: Piece | null): string       { return piece ? SYMBOLS[piece.color][piece.type] : ''; }

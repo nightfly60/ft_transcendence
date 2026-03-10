@@ -1,17 +1,52 @@
+// ─── Taille des cases ────────────────────────────────────────────────────────
+// --cell est hérité par tous les enfants (board-grid, player-panel)
+
 :host {
-  --cell: min(calc((100vw - 340px) / 8), calc((100vh - 180px) / 8), 80px);
+  // Desktop : place pour le panneau historique (220px) + gaps + padding
+  --cell: min(calc((100vw - 320px) / 8), calc((100vh - 140px) / 8), 110px);
+  display: block;
 }
 
-@media (max-width: 700px) {
+// Tablette (<960px) : historique masqué, plateau pleine largeur
+@media (max-width: 960px) {
   :host {
-    --cell: min(calc(100vw / 8), 55px);
+    --cell: min(calc((100vw - 48px) / 8), calc((100dvh - 200px) / 8), 72px);
   }
 
   .game-area {
     flex-direction: column;
     align-items: center;
-    padding: 12px 8px;
+    padding: 16px 24px;
     gap: 16px;
+  }
+
+  .board-section {
+    align-items: center;
+    width: 100%;
+  }
+}
+
+// Mobile (<600px) — row-coords masquées, coordonnées dans les cases
+@media (max-width: 600px) {
+  :host {
+    // Pas de row-coords externe : soustrait juste le padding (16px)
+    // 100dvh = hauteur réelle visible (exclut la barre du navigateur)
+    // soustraction : header(56) + 2×panneau(~34) + bouton(~30) + gaps+padding(~40) = ~194px
+    --cell: min(calc((100vw - 32px) / 8), calc((100dvh - 200px) / 8));
+  }
+
+  .game-area {
+    padding: 8px 16px;
+    gap: 6px;
+  }
+
+  .board-section {
+    gap: 4px;
+  }
+
+  .mobile-reset-btn {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.85rem;
   }
 }
 
@@ -44,6 +79,126 @@
   &.stalemate { color: #a09070; border-color: rgba(#a09070, 0.4); background: rgba(#a09070, 0.06); }
 }
 
+// ─── Overlay fin de partie ────────────────────────────────────────────────────
+
+.endgame-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  animation: fadeIn 0.3s ease;
+}
+
+.endgame-dialog {
+  background: #1a1a1a;
+  border: 1px solid #444;
+  border-radius: 12px;
+  padding: 2.5rem 3rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+}
+
+.endgame-icon {
+  font-size: 4rem;
+  line-height: 1;
+}
+
+.endgame-title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: 'Cormorant Garamond', serif;
+  letter-spacing: 0.08em;
+  color: #f0d9b5;
+}
+
+.endgame-sub {
+  margin: 0;
+  font-size: 1rem;
+  color: #aaa;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+// ─── Bouton rejouer mobile (sous le plateau) ──────────────────────────────────
+
+.mobile-reset-btn {
+  display: none;
+  width: 100%;
+  padding: 0.65rem;
+  background: #b58863;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+
+  &:hover { background: #a07050; }
+
+  @media (max-width: 960px) {
+    display: block;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+// ─── Dialog promotion ─────────────────────────────────────────────────────────
+
+.promotion-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.promotion-dialog {
+  background: #1e1e1e;
+  border: 1px solid #555;
+  border-radius: 8px;
+  padding: 1.5rem 2rem;
+  text-align: center;
+
+  p {
+    margin: 0 0 1rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #ddd;
+  }
+}
+
+.promotion-choices {
+  display: flex;
+  gap: 0.75rem;
+
+  button {
+    font-size: 2.5rem;
+    background: #f0d9b5;
+    border: 2px solid #b58863;
+    border-radius: 6px;
+    width: 3.5rem;
+    height: 3.5rem;
+    cursor: pointer;
+    line-height: 1;
+
+    &:hover { background: #b58863; }
+  }
+}
+
 // ─── Section échiquier ───────────────────────────────────────────────────────
 
 .board-section {
@@ -51,4 +206,24 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 10px;
+}
+
+.flip-btn {
+  background: transparent;
+  border: 1px solid rgba(#c9a84c, 0.3);
+  color: #a09070;
+  font-size: 1rem;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%);
+  transition: border-color 0.2s, color 0.2s;
+
+  &:hover {
+    border-color: #c9a84c;
+    color: #e8dfc8;
+  }
 }

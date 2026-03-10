@@ -1,11 +1,32 @@
 import { Injectable } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
+import { Board, Piece, PieceColor } from '../chess/chess-board/chess.types';
+
+export interface CastlingRights {
+  wK: boolean; wQ: boolean;
+  bK: boolean; bQ: boolean;
+}
+
+export interface GameState {
+  board: Board;
+  turn: PieceColor;
+  gameStatus: 'playing' | 'check' | 'checkmate' | 'stalemate';
+  moveHistory: string[];
+  captured: Piece[];
+  lastMove: [[number, number], [number, number]] | null;
+  enPassantTarget: string | null;
+  castlingRights: CastlingRights;
+  validMoves: Record<string, string[]>;
+}
 
 @Injectable({ providedIn: 'root' })
 export class SocketService {
-  private socket: Socket = io('https://chess42.fr', {
-    path: '/socket.io/'
+  private socket: Socket = io(`${window.location.protocol}//${window.location.host}`, {
+    path: '/socket.io/',
+    auth: { token: localStorage.getItem('token') ?? '' },
   });
+
+  // ─── Multiplayer ─────────────────────────────────────────────────────────
 
   findGame() {
     this.socket.emit('find_game');
@@ -19,9 +40,48 @@ export class SocketService {
     this.socket.on('game_ready', callback);
   }
 
-  sendMove(gameId: string, from: string, to: string) {
-    this.socket.emit('move', { gameId, from, to });
+  sendMove(gameId: string, from: string, to: string, promotion?: string) {
+    this.socket.emit('move', { gameId, from, to, promotion });
   }
+
+  offMultiListeners() {
+    this.socket.off('waiting');
+    this.socket.off('game_ready');
+    this.socket.off('game_state');
+  }
+
+  // ─── Solo ─────────────────────────────────────────────────────────────────
+
+  startSolo() {
+    this.socket.emit('start_solo');
+  }
+
+  onSoloReady(callback: (data: { gameId: string }) => void) {
+    this.socket.on('solo_ready', callback);
+  }
+
+  sendSoloMove(gameId: string, from: string, to: string, promotion?: string) {
+    this.socket.emit('solo_move', { gameId, from, to, promotion });
+  }
+
+  onGameState(callback: (state: GameState) => void) {
+    this.socket.on('game_state', callback);
+  }
+
+  resignSolo(gameId: string) {
+    this.socket.emit('solo_resign', { gameId });
+  }
+
+  resignMulti(gameId: string) {
+    this.socket.emit('multi_resign', { gameId });
+  }
+
+  offSoloListeners() {
+    this.socket.off('solo_ready');
+    this.socket.off('game_state');
+  }
+
+  // ─── Common ───────────────────────────────────────────────────────────────
 
   disconnect() {
     this.socket.disconnect();
