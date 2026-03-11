@@ -21,6 +21,9 @@ export class LoginPage {
 	passError = '';
 	usernameError = '';
 
+	token = '';
+	tokenError = '';
+
 	constructor(private http: HttpClient, private router: Router, private auth: AuthService, private cd: ChangeDetectorRef) {}
 
 	onLogin(): void {
@@ -30,6 +33,7 @@ export class LoginPage {
 		this.http.post<{ token: string }>('/api/auth/login', {
 		email: this.email,
 		password: this.password,
+		token: this.token,
 		}).subscribe({
 			next: (res) => {
 				this.auth.login(res.token);
@@ -43,7 +47,7 @@ export class LoginPage {
 				else if (msg.includes('Mot de passe'))
 					this.passError = msg;
 				else
-					this.passError = msg;
+					this.tokenError = msg;
 				this.cd.detectChanges();
 			}
 		});

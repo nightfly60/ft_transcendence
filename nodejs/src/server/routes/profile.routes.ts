@@ -44,7 +44,6 @@ router.get('/:id', async (req: Request, res: Response) => {
 	'SELECT COUNT(*) AS nb_friends FROM friends WHERE id_user_1 = ?',
 	[userId]
   );
-  console.log(friends[0].nb_friends);
 
   const [achievements]: any = await pool.query(
     `SELECT a.name, a.description, ua.type

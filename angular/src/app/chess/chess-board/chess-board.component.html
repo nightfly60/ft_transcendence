@@ -1,0 +1,70 @@
+@if (showEndgame()) {
+  <div class="endgame-overlay">
+    <div class="endgame-dialog">
+      @if (gameStatus() === 'stalemate') {
+        <div class="endgame-icon">½</div>
+        <p class="endgame-title">Pat</p>
+        <p class="endgame-sub">Nulle</p>
+      } @else if (myColor() && turn() === myColor()) {
+        <div class="endgame-icon">♟</div>
+        <p class="endgame-title">Défaite</p>
+        <p class="endgame-sub">Échec et mat</p>
+      } @else if (myColor() && turn() !== myColor()) {
+        <div class="endgame-icon">♛</div>
+        <p class="endgame-title">Victoire !</p>
+        <p class="endgame-sub">Échec et mat</p>
+      } @else {
+        <div class="endgame-icon">♚</div>
+        <p class="endgame-title">Échec et mat</p>
+        <p class="endgame-sub">Les {{ turn() === 'w' ? 'blancs' : 'noirs' }} ont perdu</p>
+      }
+    </div>
+  </div>
+}
+
+@if (showPromotion()) {
+  <div class="promotion-overlay">
+    <div class="promotion-dialog">
+      <p>Choisissez la pièce</p>
+      <div class="promotion-choices">
+        @for (p of promotionPieces; track p) {
+          <button (click)="selectPromotion(p)">{{ promotionSymbol(p) }}</button>
+        }
+      </div>
+    </div>
+  </div>
+}
+
+<div class="game-area">
+  <div class="board-section">
+    <app-player-panel
+      icon="♚" name="Noirs"
+      [active]="turn() === 'b'"
+      [captured]="capturedSymbols('w')"
+    />
+    <app-board-grid
+      [board]="board()"
+      [selected]="selected()"
+      [validMoves]="validMoves()"
+      [lastMove]="lastMove()"
+      [checkSquare]="checkSquare()"
+      [flipped]="isFlipped()"
+      (squareClick)="onSquareClick($event)"
+    />
+    <app-player-panel
+      icon="♔" name="Blancs"
+      [active]="turn() === 'w'"
+      [captured]="capturedSymbols('b')"
+    />
+
+    <button class="mobile-reset-btn" (click)="resetGame()">Nouvelle partie</button>
+    @if (mode() !== 'multi') {
+      <button class="flip-btn" (click)="manualFlip.set(!manualFlip())" title="Retourner l'échiquier">↕</button>
+    }
+  </div>
+  <app-move-history
+    [pairs]="movePairs()"
+    [isEmpty]="moveHistory().length === 0"
+    (reset)="resetGame()"
+  />
+</div>

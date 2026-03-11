@@ -1,0 +1,73 @@
+$gold:      #c9a84c;
+$cream:     #e8dfc8;
+$muted:     #a09070;
+$font-body: 'Cormorant Garamond', serif;
+
+$cell: var(--cell);
+
+.player-panel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: calc(#{$cell} * 8);
+  max-width: 100%;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba($gold, 0.18);
+  font-family: $font-body;
+  transition: border-color 0.3s, background 0.3s;
+  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+
+  &.active {
+    border-color: rgba($gold, 0.6);
+    background: rgba($gold, 0.06);
+
+    .turn-pill { opacity: 1; }
+  }
+
+  @media (max-width: 600px) {
+    padding: 5px 10px;
+    gap: 8px;
+  }
+}
+
+.player-icon {
+  font-size: 1.6rem;
+  color: $gold;
+
+  @media (max-width: 600px) {
+    font-size: 1.1rem;
+  }
+}
+
+.player-name {
+  font-size: 1.05rem;
+  font-style: italic;
+  color: $cream;
+  letter-spacing: 0.04em;
+
+  @media (max-width: 600px) {
+    font-size: 0.85rem;
+  }
+}
+
+.captured {
+  flex: 1;
+  font-size: 0.85rem;
+  color: $muted;
+  letter-spacing: 0.05em;
+  min-height: 1.2rem;
+}
+
+.turn-pill {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: $gold;
+  opacity: 0;
+  transition: opacity 0.3s;
+
+  &::before {
+    content: '● ';
+  }
+}
