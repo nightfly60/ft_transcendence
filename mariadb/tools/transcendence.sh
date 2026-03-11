@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS friends (
 CREATE TABLE IF NOT EXISTS User_achievements (
     id_user INT NOT NULL,
     id_achievement INT NOT NULL,
-    type VARCHAR(255),
+    progression VARCHAR(255),
     PRIMARY KEY(id_user, id_achievement),
     FOREIGN KEY(id_user) REFERENCES \`User\`(id),
     FOREIGN KEY(id_achievement) REFERENCES Achievements(id)
