@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { SocketService } from '../services/socket.service';
@@ -21,7 +21,7 @@ export class ChatBox implements OnInit, AfterViewChecked{
   chatID = '';
   username = ''; //not sure
   message = '';
-  messages: Message[] = [];
+  messages = signal<Message[]>([]);
 
     constructor(private socket: SocketService) {}
 
@@ -33,7 +33,7 @@ export class ChatBox implements OnInit, AfterViewChecked{
       });
 
       this.socket.onReceiveMessage(({text, sender, timestamp}) => {
-          this.messages.push(new Message(text, new Date(timestamp), sender));
+          this.messages.update((prev : Message[]) => [...prev, new Message(text, new Date(timestamp), sender)]);
         });
       //need to check if sender = socket.data.user to render incoming or outgoing -> in html?
     }
