@@ -11,8 +11,7 @@ import { randomUUID } from 'crypto';
 export function registerChatEvents(io: Server, socket: Socket) {
 	socket.on('chat:find', () => {
 		//if game-chat: get gameId from socket.data
-		//const chatId = socket.data.gameId;
-		const chatId = '2';
+		const chatId = socket.data.gameId;
 		socket.join(chatId);
 		socket.emit('chat:ready', chatId);
 	});
