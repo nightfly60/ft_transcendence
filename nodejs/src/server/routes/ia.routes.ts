@@ -15,9 +15,9 @@ interface NiveauParams {
 }
 
 export const levelIA: Record<string, NiveauParams> = {
-	novice: { depth: 1, errorChance: 0.2 }, // 600 elo
-	intermediaire: { depth: 2, errorChance: 0.1 }, // 800 elo
-	fort: { depth: 6, errorChance: 0.0 }, // 1000 elo
+	novice: { depth: 2, errorChance: 0.2 },
+	intermediaire: { depth: 4, errorChance: 0.1 },
+	fort: { depth: 6, errorChance: 0.0 },
 };
 
 router.post("/move", (req: Request, res: Response) => {
@@ -41,8 +41,6 @@ router.post("/move", (req: Request, res: Response) => {
 			if (err)
 			{
 				console.error("Erreur ia_engine: ", stderr);
-				console.error("Erreur ia_engine stderr:", stderr);
-  				console.error("Erreur ia_engine err:", err);
 				return res.status(500).json({error: "Erreur moteur IA"});
 			}
 

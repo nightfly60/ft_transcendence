@@ -2,6 +2,7 @@
 # define IA_HPP
 
 # include "chess.hpp"
+# include "evaluation_tables.hpp"
 # include <iostream>
 # include <string>
 # include <cstdlib>
