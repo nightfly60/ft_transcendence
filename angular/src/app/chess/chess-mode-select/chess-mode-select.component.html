@@ -1,0 +1,12 @@
+<div class="mode-selection">
+  <div class="header">
+    <h1 class="title">Choisir un mode de jeu</h1>
+    <p class="subtitle">Sélectionne comment tu veux jouer</p>
+  </div>
+
+  <div class="cards">
+    <app-chess-mode-solo (selected)="select('solo')" />
+    <app-chess-mode-multi (selected)="select('multi')" />
+    <app-chess-mode-ia (selected)="select('ia')" />
+  </div>
+</div>

@@ -40,7 +40,17 @@
   <a [routerLink]="['/profile', auth.getUserId()]" routerLinkActive="active" (click)="menuOpen = false">Mon Profil</a>
   <a [routerLink]="['/settings']" routerLinkActive="active" (click)="menuOpen = false">Parametres</a>
   <a routerLink="/ranking" routerLinkActive="active" (click)="menuOpen = false">Classement</a>
-  @if (!auth.isLoggedIn()) {
+  @if (auth.isLoggedIn()) {
+    <div class="mobile-user">
+      <img
+        [src]="auth.getAvatarUrl()"
+        class="mobile-avatar"
+        (error)="$any($event.target).src = '/avatars/default-avatar.png'"
+      />
+      <span class="mobile-username">{{ auth.username() }}</span>
+    </div>
+    <button class="mobile-logout" (click)="logout(); menuOpen = false">Déconnexion</button>
+  } @else {
     <button class="mobile-login" (click)="openLogin(); menuOpen = false">Se connecter</button>
   }
 </div>
