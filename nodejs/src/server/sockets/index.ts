@@ -2,7 +2,6 @@ import { Server } from 'socket.io';
 import { IncomingMessage, Server as HttpServer, ServerResponse } from 'http';
 import jwt from 'jsonwebtoken';
 import { registerChessEvents } from './chess/events/index.js';
-import { registerChessEvents } from './chess.js';
 import { registerChatEvents } from './chat.js';
 
 export function initSockets(httpServer: HttpServer<typeof IncomingMessage, typeof ServerResponse>): void {
