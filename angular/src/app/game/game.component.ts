@@ -30,10 +30,10 @@ export class GameComponent implements OnInit, OnDestroy {
       }
     }
     this.user$ = this.http.get<User>('/api/users/2');
-    this.socket.joinGame(this.gameId);
-    this.socket.onMove(({ from, to }) => {
-      console.log(`Adversaire joue : ${from} → ${to}`);
-    });
+    // this.socket.joinGame(this.gameId);
+    // this.socket.onMove(({ from, to }) => {
+    //   console.log(`Adversaire joue : ${from} → ${to}`);
+    // });
   }
 
   selectMode(mode: GameMode) {

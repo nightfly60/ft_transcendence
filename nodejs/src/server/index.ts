@@ -13,6 +13,7 @@ import friendsRouter from './routes/friends.routes.js';
 import two_faRouter from './routes/2fa.routes.js';
 import passport from 'passport';
 import fs from 'node:fs';
+import leaderboardRouter from './routes/leaderboard.routes.js'
 
 const options = {
 	key:  fs.readFileSync('/etc/ssl/private/private-key.pem'),
@@ -46,6 +47,7 @@ app.use('/profile', requireAuth, profileRouter);
 app.use('/profile-edit', requireAuth, profileEditRouter);
 app.use('/friends', requireAuth, friendsRouter)
 app.use('/2fa', requireAuth, two_faRouter)
+app.use('/leaderboard', requireAuth, leaderboardRouter)
 
 app.use('/auth', authRouter);
 initSockets(httpServer);

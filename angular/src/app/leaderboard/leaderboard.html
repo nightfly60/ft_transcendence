@@ -1,0 +1,23 @@
+<div class="page-wrapper">
+	<div class="floating-piece">♜</div>
+	<div class="floating-piece">♝</div>
+	<div class="floating-piece">♛</div>
+	<div class="floating-piece">♞</div>
+	<div class="floating-piece">♟</div>
+	<div class="floating-piece">♚</div>
+	<div class="chessboard-bg">
+		@for (cell of cells; track $index) {
+			<div [style.background]="cell.light ? '#f5f0e8' : 'transparent'"></div>
+		}
+	</div>
+
+	<ng-container *ngFor="let p of this.data">
+		<button (click)="openPlayerProfile(p.id)">
+			<div class="achievement-card-done">
+				<span class="achievement-name">{{ p.username }}</span>
+				<span class="achievement-desc">{{ p.xp }}</span>
+				<span class="achievement-desc">{{ p.elo }}</span>
+			</div>
+		</button>
+	</ng-container>
+</div>

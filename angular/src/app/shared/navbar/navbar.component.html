@@ -6,7 +6,7 @@
   <ul class="navbar-links">
     <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Accueil</a></li>
     <li><a routerLink="/game" routerLinkActive="active">Jouer</a></li>
-    <li><a routerLink="/ranking" routerLinkActive="active">Classement</a></li>
+    <li><a [routerLink]="['/leaderboard']" routerLinkActive="active">Classement</a></li>
     <li><a [routerLink]="['/profile', auth.getUserId()]" routerLinkActive="active">Mon Profil</a></li>
 	<li><a [routerLink]="['/settings']" routerLinkActive="active">Parametres</a></li>
   </ul>
@@ -39,7 +39,7 @@
   <a routerLink="/game" routerLinkActive="active" (click)="menuOpen = false">Jouer</a>
   <a [routerLink]="['/profile', auth.getUserId()]" routerLinkActive="active" (click)="menuOpen = false">Mon Profil</a>
   <a [routerLink]="['/settings']" routerLinkActive="active" (click)="menuOpen = false">Parametres</a>
-  <a routerLink="/ranking" routerLinkActive="active" (click)="menuOpen = false">Classement</a>
+  <a [routerLink]="['/leaderboard']" routerLinkActive="active" (click)="menuOpen = false">Classement</a>
   @if (auth.isLoggedIn()) {
     <div class="mobile-user">
       <img
