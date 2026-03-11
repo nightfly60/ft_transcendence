@@ -32,6 +32,10 @@ export class SocketService {
     this.socket.emit('find_game');
   }
 
+  leaveGame(gameId: string) {
+    this.socket.emit('leave_game', { gameId });
+  }
+
   onWaiting(callback: () => void) {
     this.socket.on('waiting', callback);
   }
@@ -44,10 +48,20 @@ export class SocketService {
     this.socket.emit('move', { gameId, from, to, promotion });
   }
 
+  onOpponentLeft(callback: (data: { seconds: number }) => void) {
+    this.socket.on('opponent_left', callback);
+  }
+
+  onOpponentBack(callback: () => void) {
+    this.socket.on('opponent_back', callback);
+  }
+
   offMultiListeners() {
     this.socket.off('waiting');
     this.socket.off('game_ready');
     this.socket.off('game_state');
+    this.socket.off('opponent_left');
+    this.socket.off('opponent_back');
   }
 
   // ─── Solo ─────────────────────────────────────────────────────────────────
@@ -82,6 +96,12 @@ export class SocketService {
   }
 
   // ─── Common ───────────────────────────────────────────────────────────────
+
+  reconnect(token: string) {
+    this.socket.disconnect();
+    this.socket.auth = { token };
+    this.socket.connect();
+  }
 
   disconnect() {
     this.socket.disconnect();

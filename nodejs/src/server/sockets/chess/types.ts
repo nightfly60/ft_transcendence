@@ -48,4 +48,6 @@ export interface ChessGame {
 export interface MultiGame extends ChessGame {
   white: string;
   black: string;
+  whiteUserId: number;
+  blackUserId: number;
 }

@@ -90,6 +90,7 @@ router.post('/login', async (req, res) => {
 
 		const user = result[0];
 		const isPasswordValid = await bcrypt.compare(password, user.password);
+		console.log(`[login] tentative userId=${user.id} username=${user.username} email=${email} -> ${isPasswordValid ? 'OK' : 'ECHEC'}`);
 		if (isPasswordValid)
 		{
 			const [profile]: any = await pool.query(

@@ -1,6 +1,11 @@
 @if (waiting()) {
   <p>En attente d'un adversaire...</p>
 } @else if (gameState(); as state) {
+  @if (countdown() !== null) {
+    <div class="opponent-banner">
+      Adversaire déconnecté — forfait dans {{ countdown() }}s
+    </div>
+  }
   <app-chess
     [gameId]="gameId()"
     [mode]="'multi'"

@@ -44,7 +44,8 @@ export class ChessComponent {
   pendingPromotion = signal<{ from: [number,number]; to: [number,number] } | null>(null);
   readonly promotionPieces: PromotionPiece[] = ['Q', 'R', 'B', 'N'];
 
-  manualFlip = signal<boolean>(false);
+  manualFlip   = signal<boolean>(false);
+  showEndgame  = signal<boolean>(false);
   isFlipped() { return this.myColor() === 'b' || this.manualFlip(); }
 
   constructor() {
@@ -55,7 +56,14 @@ export class ChessComponent {
       const et = this.externalTurn();
       if (et) this.turn.set(et);
       const es = this.externalStatus();
-      if (es) this.gameStatus.set(es);
+      if (es) {
+        const wasOver = this.gameStatus() === 'checkmate' || this.gameStatus() === 'stalemate';
+        this.gameStatus.set(es);
+        if (!wasOver && (es === 'checkmate' || es === 'stalemate')) {
+          this.showEndgame.set(true);
+          setTimeout(() => this.showEndgame.set(false), 4000);
+        }
+      }
       const eh = this.externalHistory();
       if (eh) this.moveHistory.set(eh);
       const ec = this.externalCaptured();

@@ -7,6 +7,21 @@ import { ChessComponent } from '../chess-board/chess-board.component';
   standalone: true,
   imports: [ChessComponent],
   templateUrl: './chess-multi.component.html',
+  styles: [`
+    .opponent-banner {
+      width: 100%;
+      padding: 8px 16px;
+      text-align: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border: 1px solid rgba(224, 80, 80, 0.4);
+      background: rgba(224, 80, 80, 0.08);
+      color: #e05050;
+      box-sizing: border-box;
+    }
+  `],
 })
 export class ChessMultiComponent implements OnInit, OnDestroy {
   private socket = inject(SocketService);
@@ -15,10 +30,11 @@ export class ChessMultiComponent implements OnInit, OnDestroy {
   myColor   = signal<string>('');
   gameState = signal<GameState | null>(null);
   waiting   = signal<boolean>(false);
+  countdown = signal<number | null>(null);
+
+  private countdownInterval: ReturnType<typeof setInterval> | null = null;
 
   ngOnInit() {
-    this.socket.findGame();
-
     this.socket.onWaiting(() => {
       this.waiting.set(true);
     });
@@ -29,9 +45,40 @@ export class ChessMultiComponent implements OnInit, OnDestroy {
       this.waiting.set(false);
     });
 
+    this.socket.onOpponentLeft(({ seconds }) => {
+      this.countdown.set(seconds);
+      this.countdownInterval = setInterval(() => {
+        const current = this.countdown();
+        if (current === null || current <= 1) {
+          clearInterval(this.countdownInterval!);
+          this.countdownInterval = null;
+          this.countdown.set(null);
+        } else {
+          this.countdown.set(current - 1);
+        }
+      }, 1000);
+    });
+
+    this.socket.onOpponentBack(() => {
+      if (this.countdownInterval) {
+        clearInterval(this.countdownInterval);
+        this.countdownInterval = null;
+      }
+      this.countdown.set(null);
+    });
+
     this.socket.onGameState(state => {
       this.gameState.set(state);
+      if (state.gameStatus === 'checkmate' || state.gameStatus === 'stalemate') {
+        if (this.countdownInterval) {
+          clearInterval(this.countdownInterval);
+          this.countdownInterval = null;
+        }
+        this.countdown.set(null);
+      }
     });
+
+    this.socket.findGame();
   }
 
   onMovePlayed(move: { from: string; to: string; promotion?: string }) {
@@ -50,6 +97,8 @@ export class ChessMultiComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    if (this.countdownInterval) clearInterval(this.countdownInterval);
+    this.socket.leaveGame(this.gameId());
     this.socket.offMultiListeners();
   }
 }

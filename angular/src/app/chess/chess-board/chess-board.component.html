@@ -1,4 +1,4 @@
-@if (gameStatus() === 'checkmate' || gameStatus() === 'stalemate') {
+@if (showEndgame()) {
   <div class="endgame-overlay">
     <div class="endgame-dialog">
       @if (gameStatus() === 'stalemate') {
@@ -58,7 +58,9 @@
     />
 
     <button class="mobile-reset-btn" (click)="resetGame()">Nouvelle partie</button>
-    <button class="flip-btn" (click)="manualFlip.set(!manualFlip())" title="Retourner l'échiquier">↕</button>
+    @if (mode() !== 'multi') {
+      <button class="flip-btn" (click)="manualFlip.set(!manualFlip())" title="Retourner l'échiquier">↕</button>
+    }
   </div>
   <app-move-history
     [pairs]="movePairs()"
