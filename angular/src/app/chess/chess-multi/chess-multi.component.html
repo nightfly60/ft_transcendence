@@ -1,10 +1,23 @@
-@if (waiting) {
+@if (waiting()) {
   <p>En attente d'un adversaire...</p>
-} @else if (gameId) {
+} @else if (gameState(); as state) {
+  @if (countdown() !== null) {
+    <div class="opponent-banner">
+      Adversaire déconnecté — forfait dans {{ countdown() }}s
+    </div>
+  }
   <app-chess
-    [gameId]="gameId"
+    [gameId]="gameId()"
     [mode]="'multi'"
-    [myColor]="myColor"
-    (movePlayed)="sendMove($event.from, $event.to)"
+    [myColor]="myColor()"
+    [externalBoard]="state.board"
+    [externalTurn]="state.turn"
+    [externalStatus]="state.gameStatus"
+    [externalHistory]="state.moveHistory"
+    [externalCaptured]="state.captured"
+    [externalLastMove]="state.lastMove"
+    [externalValidMoves]="state.validMoves"
+    (movePlayed)="onMovePlayed($event)"
+    (resign)="onResign()"
   />
 }

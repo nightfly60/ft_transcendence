@@ -17,7 +17,7 @@
 
 		<button class="intra-btn" (click)="intra42Auth()">
 			<img src="https://upload.wikimedia.org/wikipedia/commons/8/8d/42_Logo.svg" class="intra-icon" />
-			<span>Se connecter avec 42Intra</span>
+			<span>Se connecter avec l'Intranet de 42</span>
 		</button>
 	</div>
 	<div class="tabs">
@@ -60,6 +60,21 @@
 			}
 			@else if (passError) {
 				<span class="field-error">{{ passError }}</span>
+			}
+		</div>
+		<div class="field">
+			<label>Double Authentification (facultatif)</label>
+			<input
+				type="text"
+				class="token-input"
+				[(ngModel)]="token"
+				name="token"
+				placeholder="Code à 6 chiffres"
+				maxlength="6"
+				required
+			/>
+			@if (tokenError) {
+				<span class="field-error">{{ tokenError }}</span>
 			}
 		</div>
 		<button type="submit" class="btn-submit">Connexion</button>

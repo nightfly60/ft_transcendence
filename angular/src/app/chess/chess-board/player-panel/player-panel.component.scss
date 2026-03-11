@@ -9,7 +9,8 @@ $cell: var(--cell);
   display: flex;
   align-items: center;
   gap: 12px;
-  width: calc(#{$cell} * 8 + 24px); // board width + row-coords
+  width: calc(#{$cell} * 8);
+  max-width: 100%;
   padding: 10px 16px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba($gold, 0.18);
@@ -23,11 +24,20 @@ $cell: var(--cell);
 
     .turn-pill { opacity: 1; }
   }
+
+  @media (max-width: 600px) {
+    padding: 5px 10px;
+    gap: 8px;
+  }
 }
 
 .player-icon {
   font-size: 1.6rem;
   color: $gold;
+
+  @media (max-width: 600px) {
+    font-size: 1.1rem;
+  }
 }
 
 .player-name {
@@ -35,6 +45,10 @@ $cell: var(--cell);
   font-style: italic;
   color: $cream;
   letter-spacing: 0.04em;
+
+  @media (max-width: 600px) {
+    font-size: 0.85rem;
+  }
 }
 
 .captured {

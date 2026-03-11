@@ -76,6 +76,7 @@ export class ProfileComponent implements OnInit {
 	}
 
 	checkFriendStatus(targetId: number) {
+		if (!this.auth.isLoggedIn()) return ;
 		this.http.get<{isFriend: boolean}>(`/api/friends/status/${targetId}`).subscribe({
 		next: (res) => { this.isFriend = res.isFriend; this.cdr.markForCheck(); },
 		error: () => {}
@@ -83,6 +84,7 @@ export class ProfileComponent implements OnInit {
 	}
 
 	startPolling(targetId: number) {
+		if (!this.auth.isLoggedIn()) return ;
 		this.checkOnlineStatus(targetId);
 		this.pollingInterval = setInterval(() => {
 			this.checkOnlineStatus(targetId);
@@ -90,8 +92,12 @@ export class ProfileComponent implements OnInit {
 	}
 
 	checkOnlineStatus(targetId: number) {
+		if (!this.auth.isLoggedIn()) return ;
 		this.http.get<{ isOnline: boolean }>(`/api/friends/online/${targetId}`).subscribe({
-		next: (res) => { this.isOnline = res.isOnline; this.cdr.markForCheck(); },
+		next: (res) => {
+			this.isOnline = res.isOnline;
+			this.cdr.markForCheck();
+		},
 		error: () => {}
 		});
 	}
@@ -104,7 +110,6 @@ export class ProfileComponent implements OnInit {
 			this.http.delete(`/api/friends/remove/${this.data.id}`).subscribe({
 				next: () => {
 				this.isFriend = false;
-				this.data.nb_friends = (this.data.nb_friends ?? 1) - 1;
 				this.cdr.markForCheck();
 				},
 				error: () => {}
@@ -115,7 +120,6 @@ export class ProfileComponent implements OnInit {
 			this.http.post(`/api/friends/add/${this.data.id}`, {}).subscribe({
 				next: () => {
 				this.isFriend = true;
-				this.data.nb_friends = (this.data.nb_friends ?? 0) + 1;
 				this.cdr.markForCheck();
 				},
 				error: () => {}

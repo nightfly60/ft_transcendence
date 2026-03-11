@@ -9,7 +9,7 @@ export interface Piece {
 export type Board = (Piece | null)[][];
 
 export const SYMBOLS: Record<PieceColor, Record<PieceType, string>> = {
-  w: { K: '♔', Q: '♕', R: '♖', B: '♗', N: '♘', P: '♙' },
+  w: { K: '♚', Q: '♛', R: '♜', B: '♝', N: '♞', P: '♟' },
   b: { K: '♚', Q: '♛', R: '♜', B: '♝', N: '♞', P: '♟' },
 };
 

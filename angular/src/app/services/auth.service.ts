@@ -1,9 +1,11 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { SocketService } from './socket.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 	constructor(private router: Router) {}
+	private socket = inject(SocketService);
 
 	isLoggedIn = signal(!!localStorage.getItem('token'));
 	username = signal(this.getUsername());
@@ -12,7 +14,8 @@ export class AuthService {
 		localStorage.removeItem('token');
 		localStorage.setItem('token', token);
 		this.isLoggedIn.set(true);
-		this.username.set(this.getUsername())
+		this.username.set(this.getUsername());
+		this.socket.reconnect(token);
 	}
 
 	updateUsername(newUsername: string): void { // mettre a jour quand le username change
@@ -40,6 +43,13 @@ export class AuthService {
 		if (!token) return '';
 		const payload = JSON.parse(atob(token.split('.')[1]));
 		return payload.id ?? '';
+	}
+
+	getUserMail(): string {
+		const token = localStorage.getItem('token');
+		if (!token) return '';
+		const payload = JSON.parse(atob(token.split('.')[1]));
+		return payload.email ?? '';
 	}
 
 	getAvatarUrl(): string {

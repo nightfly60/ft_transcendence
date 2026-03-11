@@ -30,20 +30,19 @@ router.get('/:id', async (req: Request, res: Response) => {
   // recuperation des stats (nb_parties et surtout winrate)
   const [statsRows]: any = await pool.query(
 	`SELECT 
-		COUNT(ug.id) AS nb_parties,
+		COUNT(id) AS nb_parties,
 		ROUND(
-			SUM(CASE WHEN g.id_winner = ? THEN 1 ELSE 0 END) * 100.0 / COUNT(ug.id),
+			SUM(CASE WHEN id_winner = ? THEN 1 ELSE 0 END) * 100.0 / COUNT(id),
 			0
 		) AS winrate
-	FROM User_Game ug
-	JOIN Game g ON g.id = ug.id
-	WHERE ug.id_player_one = ? OR ug.id_player_second = ?`,
+	FROM Game
+	WHERE id_player_one = ? OR id_player_second = ?`,
 	[userId, userId, userId, userId]
   );
 
   const [friends]: any = await pool.query(
-	'SELECT COUNT(*) AS nb_friends FROM friends WHERE id_user_1 = ? OR id_user_2 = ?',
-	[userId, userId]
+	'SELECT COUNT(*) AS nb_friends FROM friends WHERE id_user_1 = ?',
+	[userId]
   );
 
   const [achievements]: any = await pool.query(

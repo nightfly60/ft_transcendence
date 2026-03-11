@@ -16,6 +16,7 @@ $font-body: 'Cormorant Garamond', serif;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
 
   &::before {
     content: '';

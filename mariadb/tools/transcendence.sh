@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS \`User\` (
     language VARCHAR(10),
     password VARCHAR(255) NOT NULL,
     username VARCHAR(255),
-	last_seen DATETIME DEFAULT NULL
+	last_seen DATETIME DEFAULT NULL,
+	two_fa_secret VARCHAR(255)
 );
 
 -- Table Profile
@@ -24,6 +25,19 @@ CREATE TABLE IF NOT EXISTS Profile (
     elo BIGINT,
     id_user INT NOT NULL UNIQUE,
     FOREIGN KEY(id_user) REFERENCES \`User\`(id)
+);
+
+-- Table Game
+CREATE TABLE IF NOT EXISTS Game (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_player_one INT NOT NULL,
+    id_player_second INT NOT NULL,
+    nb_cuts BIGINT,
+    timestamp DATETIME,
+    id_winner INT NOT NULL,
+    FOREIGN KEY(id_winner) REFERENCES \`User\`(id),
+    FOREIGN KEY(id_player_one) REFERENCES \`User\`(id),
+    FOREIGN KEY(id_player_second) REFERENCES \`User\`(id)
 );
 
 -- Table Achievements
@@ -42,19 +56,6 @@ CREATE TABLE IF NOT EXISTS friends (
     PRIMARY KEY(id_user_1, id_user_2),
     FOREIGN KEY(id_user_1) REFERENCES \`User\`(id),
     FOREIGN KEY(id_user_2) REFERENCES \`User\`(id)
-);
-
--- Table Game
-CREATE TABLE IF NOT EXISTS Game (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    id_player_one INT NOT NULL,
-    id_player_second INT NOT NULL,
-    nb_cuts BIGINT,
-    timestamp DATETIME,
-    id_winner INT NOT NULL,
-    FOREIGN KEY(id_player_one) REFERENCES \`User\`(id),
-    FOREIGN KEY(id_player_second) REFERENCES \`User\`(id),
-    FOREIGN KEY(id_winner) REFERENCES \`User\`(id)
 );
 
 -- Table User_Achievements
