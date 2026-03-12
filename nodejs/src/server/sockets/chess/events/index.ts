@@ -1,5 +1,5 @@
 import { Server, Socket } from 'socket.io';
-import { registerMultiplayerEvents } from './multiplayer.js';
+import { registerMultiplayerEvents } from './multiplayer/index.js';
 import { registerSoloEvents } from './solo.js';
 
 export function registerChessEvents(io: Server, socket: Socket): void {

@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { GameState, SocketService } from '../../services/socket.service';
 import { ChessComponent } from '../chess-board/chess-board.component';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-chess-solo',
@@ -11,6 +12,7 @@ import { ChessComponent } from '../chess-board/chess-board.component';
 })
 export class ChessSoloComponent implements OnInit, OnDestroy {
   private socket = inject(SocketService);
+  auth = inject(AuthService);
 
   gameId    = signal<string>('');
   gameState = signal<GameState | null>(null);

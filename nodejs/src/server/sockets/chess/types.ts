@@ -8,7 +8,7 @@ export interface Piece {
 
 export type Board = (Piece | null)[][];
 
-export type GameStatus = 'playing' | 'check' | 'checkmate' | 'stalemate';
+export type GameStatus = 'playing' | 'check' | 'checkmate' | 'stalemate' | 'draw' | 'resign';
 
 export interface CastlingRights {
   wK: boolean;
