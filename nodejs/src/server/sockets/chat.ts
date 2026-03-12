@@ -10,7 +10,7 @@ import { Server, Socket } from 'socket.io';
 export function registerChatEvents(io: Server, socket: Socket) {
 	socket.on('chat:find', () => {
 		//if game-chat: get gameId from socket.data
-		const chatId = socket.data.gameId;
+		const chatId = socket.data.id_game;
 		socket.join(chatId);
 		socket.emit('chat:ready', chatId);
 	});
@@ -25,7 +25,6 @@ export function registerChatEvents(io: Server, socket: Socket) {
 			sender: user,
 			timestamp: new Date()
 		};
-		console.log('chat send back');
 		//chat content moderation happens here
 		io.to(data.chatId).emit('chat:receive', enriched);
 	});
