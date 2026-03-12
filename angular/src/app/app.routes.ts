@@ -13,7 +13,7 @@ import { Settings } from './settings/settings';
 export const routes: Routes = [
 	{ path: '', component: Home },
 	{ path: 'login', component: LoginPage },
-	{ path: 'game', component: GameComponent, canActivate: [authGuard] },
+	{ path: 'game', component: GameComponent },
 	{ path: 'profile/:id', component: ProfileComponent, canActivate: [authGuard] },
 	{ path: 'profile/edit/:id', component: ProfileEditComponent, canActivate: [authGuard] },
 	{ path: 'policies/privacy-policy', component: PrivacyComponent },

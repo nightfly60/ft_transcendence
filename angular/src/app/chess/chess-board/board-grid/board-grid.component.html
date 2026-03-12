@@ -22,7 +22,7 @@
             class="piece"
             [class.white-piece]="board()[r][c]!.color === 'w'"
             [class.black-piece]="board()[r][c]!.color === 'b'"
-          >{{ symbol(board()[r][c]) }}</span>
+>{{ symbol(board()[r][c]) }}</span>
         }
         @if (isValidMove(r, c) && !board()[r][c]) {
           <span class="move-dot"></span>

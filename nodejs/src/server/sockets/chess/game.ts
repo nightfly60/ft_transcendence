@@ -4,7 +4,7 @@ import {
 } from './types.js';
 import {
   initBoard, fromAlgebraic, getValidMoves, applyMove, computeGameStatus, computeValidMovesMap,
-} from './engine.js';
+} from './engine/index.js';
 
 /**
  * @brief Crée une nouvelle partie d'échecs en position initiale.

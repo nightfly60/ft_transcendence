@@ -22,13 +22,13 @@
     } @else {
       <app-chess-header
         [mode]="selectedMode"
-        [username]="(user$ | async)?.username ?? ''"
+        [username]="auth.username()"
         (back)="goBack()"
       />
       @if (selectedMode === 'solo') {
         <app-chess-solo />
       } @else if (selectedMode === 'multi') {
-        <app-chess-multi />
+        <app-chess-multi (quit)="goBack()" />
       }
     }
   </div>
