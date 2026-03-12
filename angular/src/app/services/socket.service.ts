@@ -107,7 +107,7 @@ export class SocketService {
     this.socket.emit('chat:find');
   }
 
-  onChatReady(callback : (chatId : string) => void) {
+  onChatReady(callback : (chatId : string, userId : number) => void) {
     this.socket.on('chat:ready', callback);
   }
 
@@ -115,7 +115,7 @@ export class SocketService {
     this.socket.emit('chat:send', ({ chatId, message }));
   }
 
-  onReceiveMessage(callback : (data : { text: string; sender: string; timestamp: Date}) => void) {
+  onReceiveMessage(callback : (data : { text: string; senderId: number; timestamp: Date}) => void) {
     this.socket.on('chat:receive', callback);
   }
   

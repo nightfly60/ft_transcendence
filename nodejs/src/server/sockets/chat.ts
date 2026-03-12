@@ -3,7 +3,7 @@ import { Server, Socket } from 'socket.io';
 
  interface ChatMessage {
  	text:		string;
- 	sender:	string;
+ 	senderId:	number;
  	timestamp:	Date;
  }
 
@@ -12,17 +12,17 @@ export function registerChatEvents(io: Server, socket: Socket) {
 		//if game-chat: get gameId from socket.data
 		const chatId = socket.data.id_game;
 		socket.join(chatId);
-		socket.emit('chat:ready', chatId);
+		socket.emit('chat:ready', chatId, socket.data.userId);
 	});
 
 	socket.on('chat:send', (data: { chatId: string, message: string}) =>
 	{
 		//enrich message with username + timestamp -> can store username in socket.data
-		const user: string = socket.data.user;
+		const user: number = socket.data.userId;
 		//for dms need more user info like id, friends, online status
 		const enriched: ChatMessage = {
 			text: data.message,
-			sender: user,
+			senderId: user,
 			timestamp: new Date()
 		};
 		//chat content moderation happens here

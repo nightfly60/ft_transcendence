@@ -6,7 +6,7 @@ import { SocketService } from '../services/socket.service';
 class Message {
  constructor( public message: string,
               public timestamp: Date,
-              public sender: string) {}
+              public senderId: number) {}
 }
 
 @Component({
@@ -19,7 +19,7 @@ class Message {
 export class ChatBox implements OnInit, AfterViewChecked{
    @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
   chatID = '';
-  username = ''; //not sure
+  userId = 0; //replace with user object?
   message = '';
   messages = signal<Message[]>([]);
 
@@ -27,12 +27,13 @@ export class ChatBox implements OnInit, AfterViewChecked{
 
     ngOnInit(): void {
       this.socket.findChat(); //get chat id from db or from game
-      this.socket.onChatReady(( chatId ) => {  //is chat id really string or is it number
+      this.socket.onChatReady(( chatId, userId ) => {  //is chat id really string or is it number
           this.chatID = chatId;
+          this.userId = userId;
       });
 
-      this.socket.onReceiveMessage(({text, sender, timestamp}) => {
-          this.messages.update((prev : Message[]) => [...prev, new Message(text, new Date(timestamp), sender)]);
+      this.socket.onReceiveMessage(({text, senderId, timestamp}) => {
+          this.messages.update((prev : Message[]) => [...prev, new Message(text, new Date(timestamp), senderId)]);
         });
       //need to check if sender = socket.data.user to render incoming or outgoing -> in html?
     }

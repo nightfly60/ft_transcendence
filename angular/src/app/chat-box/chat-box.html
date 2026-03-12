@@ -17,10 +17,19 @@
 			</div>
 			 <!-- need dynamic style if incoming or outgoing baes on user id-->
 			 @for (message of messages(); track message.timestamp) {
-				<div class="message outgoing">
-					<div class="bubble">{{ message.message }}</div>
-					<div class="timestamp">{{ message.timestamp | date: 'H:mm'}}</div>
-				</div>
+				@if (message.senderId === this.userId) {
+					<div class=" message outgoing">
+						<div class="bubble">{{ message.message }}</div>
+						<div class="timestamp">{{ message.timestamp | date: 'H:mm'}}</div>
+					</div>
+				}
+				@else
+				{
+					<div class="message incoming">
+						<div class="bubble">{{ message.message }}</div>
+						<div class="timestamp">{{ message.timestamp | date: 'H:mm'}}</div>
+					</div>
+				}
 			}
 		</div>
 		<div class="chat-input-area">
