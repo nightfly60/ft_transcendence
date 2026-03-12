@@ -28,6 +28,7 @@ export class ChessComponent {
   externalCaptured   = input<Piece[] | null>(null);
   externalLastMove   = input<[[number, number], [number, number]] | null>(null);
   externalValidMoves = input<Record<string, string[]> | null>(null);
+  disabled           = input<boolean>(false);
 
   readonly files = ['a','b','c','d','e','f','g','h'];
 
@@ -120,10 +121,11 @@ export class ChessComponent {
   // ─── Interaction ──────────────────────────────────────────────────────────
 
   onSquareClick(event: { r: number; c: number }): void {
+	if (this.disabled()) return;
     if (this.gameStatus() === 'checkmate' || this.gameStatus() === 'stalemate') return;
     if (this.showPromotion()) return;
     const color = this.myColor();
-    if (this.mode() === 'multi' && color && this.turn() !== color) return;
+    if (this.mode() === 'multi' || this.mode() === 'ia' && color && this.turn() !== color) return;
     const { r, c } = event;
     const sel = this.selected();
     const extMoves = this.externalValidMoves();

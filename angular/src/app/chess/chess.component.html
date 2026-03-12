@@ -25,11 +25,13 @@
         [username]="(user$ | async)?.username ?? ''"
         (back)="goBack()"
       />
-      @if (selectedMode === 'solo') {
-        <app-chess-solo />
-      } @else if (selectedMode === 'multi') {
-        <app-chess-multi />
-      }
+		@if (selectedMode === 'solo') {
+		<app-chess-solo />
+		} @else if (selectedMode === 'multi') {
+		<app-chess-multi />
+		} @else if (selectedMode === 'ia') {
+		<app-chess-ia [level]="selectedIaLevel" />
+		}
     }
   </div>
 

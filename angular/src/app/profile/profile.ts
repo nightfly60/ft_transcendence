@@ -54,34 +54,34 @@ export class ProfileComponent implements OnInit {
 
 	ngOnInit() {
 		this.route.params.subscribe(params => {
-		const id = params['id'];
-		if (!id) { this.router.navigate(['/404']); return; }
-		this.id = id;
-		this.data = null;
-		this.showAll = false;
-		this.isFriend = false;
+			const id = params['id'];
+			if (!id) { this.router.navigate(['/404']); return; }
+			this.id = id;
+			this.data = null;
+			this.showAll = false;
+			this.isFriend = false;
 
-		this.http.get(`/api/profile/${id}`).subscribe({
-			next: (data: any) => {
-			this.data = data;
-			if (this.auth.getUserId() !== data.id) {
-				this.checkFriendStatus(data.id);
-			}
-			this.startPolling(data.id);
-			this.cdr.markForCheck();
-			},
-			error: (err) => { this.router.navigate([`/${err.status}`]); this.cdr.markForCheck(); },
-		});
+			this.http.get(`/api/profile/${id}`).subscribe({
+				next: (data: any) => {
+					this.data = data;
+					if (this.auth.getUserId() !== data.id) {
+						this.checkFriendStatus(data.id);
+					}
+					this.startPolling(data.id);
+					this.cdr.markForCheck();
+				},
+				error: (err) => { this.router.navigate([`/${err.status}`]); this.cdr.markForCheck(); },
+			});
 		});
 	}
 
 	checkFriendStatus(targetId: number) {
-		if (!this.auth.isLoggedIn()) return ;
-		this.http.get<{isFriend: boolean}>(`/api/friends/status/${targetId}`).subscribe({
-		next: (res) => { this.isFriend = res.isFriend; this.cdr.markForCheck(); },
-		error: () => {}
-		});
-	}
+			if (!this.auth.isLoggedIn()) return ;
+			this.http.get<{isFriend: boolean}>(`/api/friends/status/${targetId}`).subscribe({
+				next: (res) => { this.isFriend = res.isFriend; this.cdr.markForCheck(); },
+				error: () => {}
+			});
+		}
 
 	startPolling(targetId: number) {
 		if (!this.auth.isLoggedIn()) return ;
@@ -94,11 +94,11 @@ export class ProfileComponent implements OnInit {
 	checkOnlineStatus(targetId: number) {
 		if (!this.auth.isLoggedIn()) return ;
 		this.http.get<{ isOnline: boolean }>(`/api/friends/online/${targetId}`).subscribe({
-		next: (res) => {
-			this.isOnline = res.isOnline;
-			this.cdr.markForCheck();
-		},
-		error: () => {}
+			next: (res) => {
+				this.isOnline = res.isOnline;
+				this.cdr.markForCheck();
+			},
+			error: () => {}
 		});
 	}
 
