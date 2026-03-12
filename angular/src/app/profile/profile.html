@@ -96,21 +96,53 @@
 		</div>
 		</section>
 
+		<!-- history -->
+		<section class="achievements-section">
+			<div class="gold-separator" style="margin-bottom: 2rem;"></div>
+			<div class="achievements-header">
+				<span class="xp-label">Historique des parties</span>
+			</div>
+
+			<div class="achievements-grid">
+				<div 
+				class="achievement-card" 
+				*ngFor="let g of visibleGames">
+				<span class="game-win-icon" *ngIf="g.id_winner === data.id">★ Victoire</span>
+				<span class="game-lose-icon" *ngIf="g.id_winner != data.id && g.id_winner != -1">★ Defaite</span>
+				<span class="game-lose-icon" *ngIf="-1 == g.id_winner">★ Match Nul</span>
+				<span class="achievement-name">{{ g.username_player_one }} contre {{ g.username_player_second }}</span>
+				<span class="achievement-desc">Le {{ g.timestamp | date: 'dd/MM/yyyy'}}</span>
+				<span class="achievement-desc">Partie en {{ g.nb_cuts }} coups</span>
+				</div>
+			</div>
+		</section>
+
 		<!-- achievements -->
 		<section class="achievements-section" *ngIf="data.achievements?.length">
 		<div class="gold-separator" style="margin-bottom: 2rem;"></div>
 		<div class="achievements-header">
-			<span class="xp-label">Succès obtenus</span>
+			<span class="xp-label">Succès</span>
 			</div>
 
 		<div class="achievements-grid">
-			<div 
-			class="achievement-card" 
-			*ngFor="let a of visibleAchievements">
-			<span class="achievement-icon">★</span>
-			<span class="achievement-name">{{ a.name }}</span>
-			<span class="achievement-desc">{{ a.description }}</span>
-			</div>
+			<ng-container *ngFor="let a of visibleAchievements">
+				<div class="achievement-card-done" *ngIf="+a.progress >= +a.objective">
+					<span class="achievement-name">{{ a.name }}</span>
+					<span class="achievement-desc">{{ a.description }}</span>
+					<div class="xp-track">
+						<div class="xp-fill" [style.width.%]="a.progress / a.objective * 100 > 100 ? 100 : a.progress / a.objective * 100"></div>
+					</div>
+				</div>
+			</ng-container>
+			<ng-container *ngFor="let a of visibleAchievements">
+				<div class="achievement-card locked" *ngIf="+a.progress < +a.objective">
+					<span class="achievement-name">{{ a.name }}</span>
+					<span class="achievement-desc">{{ a.description }}</span>
+					<div class="xp-track">
+						<div class="xp-fill" [style.width.%]="a.progress / a.objective * 100 > 100 ? 100 : a.progress / a.objective * 100"></div>
+					</div>
+				</div>
+			</ng-container>
 		</div>
 
 		<button 

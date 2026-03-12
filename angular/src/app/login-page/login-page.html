@@ -72,6 +72,8 @@
 				placeholder="Code à 6 chiffres"
 				maxlength="6"
 				required
+				inputmode="numeric"
+				oninput="this.value = this.value.replace(/\D+/g, '')"
 			/>
 			@if (tokenError) {
 				<span class="field-error">{{ tokenError }}</span>

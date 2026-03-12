@@ -10,6 +10,7 @@ import { ProfileEditComponent } from './profile-edit/profile-edit';
 import { PrivacyComponent } from './privacy/privacy';
 import { TermsComponent } from './terms/terms';
 import { Settings } from './settings/settings';
+import { Leaderboard } from './leaderboard/leaderboard';
 
 export const routes: Routes = [
 	{ path: '', component: Home },
@@ -21,6 +22,7 @@ export const routes: Routes = [
 	{ path: 'policies/privacy-policy', component: PrivacyComponent },
 	{ path: 'policies/terms-of-use', component: TermsComponent },
 	{ path: 'settings', component: Settings, canActivate: [authGuard]},
+	{ path: 'leaderboard', component: Leaderboard, canActivate: [authGuard]},
 
 	{ path: '404', component: ErrorPageComponent, data: { code: 404 } },
 	{ path: '403', component: ErrorPageComponent, data: { code: 403 } },

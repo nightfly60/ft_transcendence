@@ -35,6 +35,10 @@ export class ProfileComponent implements OnInit {
 		: this.data.achievements?.slice(0, 3);
 	}
 
+	get visibleGames() {
+		return this.data.games
+	}
+
 	toggleAchievements() {
 		this.showAll = !this.showAll;
 		this.cdr.markForCheck();
@@ -88,7 +92,7 @@ export class ProfileComponent implements OnInit {
 		this.checkOnlineStatus(targetId);
 		this.pollingInterval = setInterval(() => {
 			this.checkOnlineStatus(targetId);
-		}, 1000 * 10);
+		}, 1000 * 30);
 	}
 
 	checkOnlineStatus(targetId: number) {
