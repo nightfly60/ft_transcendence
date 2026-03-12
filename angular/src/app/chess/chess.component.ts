@@ -4,11 +4,12 @@ import { GameHeaderComponent } from './chess-header/chess-header.component';
 import { ChessSoloComponent } from './chess-solo/chess-solo.component';
 import { ChessMultiComponent } from './chess-multi/chess-multi.component';
 import { AuthService } from '../services/auth.service';
+import { ChessIaComponent } from './chess-ia/chess-ia.component';
 
 @Component({
   selector: 'app-game',
   standalone: true,
-  imports: [GameModeSelectComponent, GameHeaderComponent, ChessSoloComponent, ChessMultiComponent],
+  imports: [GameModeSelectComponent, GameHeaderComponent, ChessSoloComponent, ChessMultiComponent, ChessIaComponent],
   templateUrl: './chess.component.html',
   styleUrl: './chess.component.scss',
 })

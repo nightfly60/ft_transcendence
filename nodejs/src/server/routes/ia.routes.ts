@@ -15,10 +15,22 @@ interface NiveauParams {
 }
 
 export const levelIA: Record<string, NiveauParams> = {
-	novice: { depth: 2, errorChance: 0.2 },
-	intermediaire: { depth: 4, errorChance: 0.1 },
-	fort: { depth: 6, errorChance: 0.0 },
+	novice: { depth: 2, errorChance: 0.4 },
+	intermediaire: { depth: 4, errorChance: 0.3 },
+	fort: { depth: 6, errorChance: 0.1 },
 };
+
+export function getIAMove(fen: string, level: string): Promise<string> {
+	return new Promise((resolve, reject) => {
+		if (!levelIA[level]) return reject(new Error('Niveau invalide'));
+		const IA_ENGINE_PATH = path.join(__dirname, "../ia/ia_engine/ia_engine");
+		const { depth, errorChance } = levelIA[level];
+		execFile(IA_ENGINE_PATH, [fen, String(depth), String(errorChance)], (err, stdout, stderr) => {
+		if (err) return reject(new Error(stderr));
+		resolve(stdout.trim());
+		});
+	});
+}
 
 router.post("/move", (req: Request, res: Response) => {
 	const {fen, level} = req.body;
@@ -36,7 +48,7 @@ router.post("/move", (req: Request, res: Response) => {
 
 	execFile (
 		IA_ENGINE_PATH,
-		[fen, String(depth), errorChance],
+		[fen, String(depth), String(errorChance)],
 		(err, stdout, stderr) => {
 			if (err)
 			{
@@ -49,6 +61,5 @@ router.post("/move", (req: Request, res: Response) => {
 		}
 	);
 });
-
 
 export default router;
