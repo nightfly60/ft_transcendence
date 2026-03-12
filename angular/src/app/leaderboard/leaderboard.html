@@ -11,13 +11,34 @@
 		}
 	</div>
 
-	<ng-container *ngFor="let p of this.data">
-		<button (click)="openPlayerProfile(p.id)">
-			<div class="achievement-card-done">
-				<span class="achievement-name">{{ p.username }}</span>
-				<span class="achievement-desc">{{ p.xp }}</span>
-				<span class="achievement-desc">{{ p.elo }}</span>
-			</div>
-		</button>
-	</ng-container>
+	<div class="leaderboard-container">		
+		<div class="leaderboard-controls">
+			<button class="sort-button" (click)="sortByXP()">TRIER PAR XP</button>
+			<button class="sort-button" (click)="sortByLevel()">TRIER PAR ELO</button>
+		</div>
+
+		<div class="leaderboard-list">
+			@for (p of getLeaderboard; track p.id; let i = $index) {
+				<div class="leaderboard-card-wrapper">
+					<button (click)="openPlayerProfile(p.id)">
+						<div class="leaderboard-card">
+							<div class="player-info">
+								<div class="player-name">{{ p.username }}</div>
+							</div>
+							<div class="leaderboard-stats">
+								<div class="stat-item">
+									<span class="stat-label">XP</span>
+									<span class="leaderboard-font">{{ p.xp }}</span>
+								</div>
+								<div class="stat-item">
+									<span class="stat-label">ELO</span>
+									<span class="leaderboard-font">{{ p.elo }}</span>
+								</div>
+							</div>
+						</div>
+					</button>
+				</div>
+			}
+		</div>
+	</div>
 </div>
