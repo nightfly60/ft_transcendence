@@ -7,6 +7,9 @@ $font-body: 'Cormorant Garamond', serif;
 
 .card {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   background: rgba($gold, 0.05);
   border: 1px solid rgba($gold, 0.5);
   padding: 60px 40px 48px;
@@ -45,6 +48,10 @@ $font-body: 'Cormorant Garamond', serif;
   font-size: 4rem;
   color: $gold;
   margin-bottom: 20px;
+
+  @media (max-width: 900px) {
+    margin-bottom: 6px;
+  }
 }
 
 .card-title {
@@ -54,9 +61,16 @@ $font-body: 'Cormorant Garamond', serif;
   color: $cream;
   margin: 0 0 10px;
   letter-spacing: 0.05em;
+
+  @media (max-width: 900px) {
+    font-size: 0.7rem;
+    white-space: nowrap;
+    margin: 8px 0 0;
+  }
 }
 
 .card-desc {
+  flex: 1;
   color: $muted;
   font-size: 1.15rem;
   line-height: 1.6;

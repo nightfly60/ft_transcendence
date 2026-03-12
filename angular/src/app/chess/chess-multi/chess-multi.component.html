@@ -6,10 +6,22 @@
       Adversaire déconnecté — forfait dans {{ countdown() }}s
     </div>
   }
+  @if (drawProposed()) {
+    <div class="draw-banner">
+      <span>L'adversaire propose la nulle</span>
+      <button class="draw-accept" (click)="onAcceptDraw()">Accepter</button>
+      <button class="draw-refuse" (click)="onRefuseDraw()">Refuser</button>
+    </div>
+  }
+  @if (drawRefused()) {
+    <div class="draw-refused-banner">Nulle refusée</div>
+  }
   <app-chess
     [gameId]="gameId()"
     [mode]="'multi'"
     [myColor]="myColor()"
+    [whiteName]="whiteUsername()"
+    [blackName]="blackUsername()"
     [externalBoard]="state.board"
     [externalTurn]="state.turn"
     [externalStatus]="state.gameStatus"
@@ -19,6 +31,10 @@
     [externalValidMoves]="state.validMoves"
     (movePlayed)="onMovePlayed($event)"
     (resign)="onResign()"
+    (abandon)="onAbandon()"
+    (proposeDraw)="onProposeDraw()"
+    (replay)="onReplay()"
+    (quit)="onQuit()"
   />
   <app-chat-box></app-chat-box>
 }
