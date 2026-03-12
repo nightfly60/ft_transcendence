@@ -1,6 +1,5 @@
 import { send } from 'process';
 import { Server, Socket } from 'socket.io';
-import { randomUUID } from 'crypto';
 
  interface ChatMessage {
  	text:		string;
@@ -26,6 +25,7 @@ export function registerChatEvents(io: Server, socket: Socket) {
 			sender: user,
 			timestamp: new Date()
 		};
+		console.log('chat send back');
 		//chat content moderation happens here
 		io.to(data.chatId).emit('chat:receive', enriched);
 	});

@@ -27,13 +27,14 @@ export class ChatBox implements OnInit, AfterViewChecked{
 
     ngOnInit(): void {
       this.socket.findChat(); //get chat id from db or from game
-
       this.socket.onChatReady(( chatId ) => {  //is chat id really string or is it number
           this.chatID = chatId;
+          console.log('Chat ready');
       });
 
       this.socket.onReceiveMessage(({text, sender, timestamp}) => {
           this.messages.update((prev : Message[]) => [...prev, new Message(text, new Date(timestamp), sender)]);
+          console.log('message received');
         });
       //need to check if sender = socket.data.user to render incoming or outgoing -> in html?
     }
@@ -48,6 +49,7 @@ export class ChatBox implements OnInit, AfterViewChecked{
     {
       this.message = this.message.trim();
       this.socket.sendMessage(this.chatID, this.message);
+      console.log('message sent');
       this.message = '';
     }
   }

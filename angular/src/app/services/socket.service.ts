@@ -113,6 +113,7 @@ export class SocketService {
 
   sendMessage(chatId : string, message : string) {
     this.socket.emit('chat:send', ({ chatId, message }));
+    console.log('chat sebd service');
   }
 
   onReceiveMessage(callback : (data : { text: string; sender: string; timestamp: Date}) => void) {
