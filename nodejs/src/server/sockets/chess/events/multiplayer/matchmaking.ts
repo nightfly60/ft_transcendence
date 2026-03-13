@@ -129,7 +129,6 @@ export function registerFindGame(io: Server, socket: Socket): void {
   socket.on('find_game', async () => {
     const userId = socket.data.userId as number;
     console.log(`[find_game] socket=${socket.id} userId=${userId} | waitingPlayer=${waitingPlayer} | playerGames=${JSON.stringify([...playerGames])}`);
-
     const existingGameId = playerGames.get(userId);
     console.log(`[find_game] existingGameId pour userId=${userId}: ${existingGameId ?? 'aucun'}`);
 

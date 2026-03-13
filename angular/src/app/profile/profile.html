@@ -71,7 +71,7 @@
 			<span class="stat-value">{{ (data.winrate ?? 15) }}%</span>
 			<span class="stat-label">Victoires</span>
 		</div>
-		<div class="stat-card">
+		<div class="stat-card" style="cursor: pointer;" (click)="goToFriends()">
 			<span class="stat-icon">♞</span>
 			<span class="stat-value">{{ data.nb_friends ?? 0 }}</span>
 			<span class="stat-label">Amis</span>
