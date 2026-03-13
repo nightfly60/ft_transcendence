@@ -19,7 +19,22 @@ export class Settings {
 	tokenErrorEnable = '';
 	tokenErrorConfirm = '';
 
+	api_key = '';
+	apiError = '';
+
 	constructor(private http: HttpClient, private router: Router, public auth: AuthService, private cd: ChangeDetectorRef) {}
+
+	ngOnInit() {
+		this.http.get('/api/public_api/getKey', {}).subscribe({
+			next: (data: any) => {
+				this.api_key = data;
+				this.cd.detectChanges();
+			},
+			error: (err) => {
+				console.log("ERROR", err);
+			}
+		})
+	}
 
 	cells = Array.from({ length: 144 }, (_, i) => ({
 		light: (Math.floor(i / 12) + i) % 2 === 0
@@ -67,5 +82,28 @@ export class Settings {
 				this.cd.detectChanges();
 			}
 		});
+	}
+
+	genAPIKey() : void {
+		this.apiError = '';
+
+		if (this.api_key)
+		{
+			this.apiError = "Vous avez déjà une clé";
+			return ;
+		}
+
+		this.http.post('/api/public_api/genKey', {}).subscribe({
+			next: (data: any) => {
+				this.api_key = data;
+				this.cd.detectChanges();
+			},
+			error: (err: any) => {
+				console.log("ERROR", err);
+				const msg: string = err.error?.error ?? 'Erreur serveur';
+				this.apiError = msg;
+				this.cd.detectChanges();
+			}
+		})
 	}
 }

@@ -7,13 +7,15 @@ import profileRouter from './routes/profile.routes.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import authRouter from './routes/auth.routes';
-import { requireAuth } from './middleware/auth.middleware.js';
+import { requireAuth, checkAPI } from './middleware/auth.middleware.js';
 import profileEditRouter from './routes/profile-edit.routes.js';
 import friendsRouter from './routes/friends.routes.js';
 import two_faRouter from './routes/2fa.routes.js';
 import passport from 'passport';
 import fs from 'node:fs';
 import leaderboardRouter from './routes/leaderboard.routes.js'
+import publicAPIRouter from './routes/public_api.routes.js';
+import databaseRouter from './routes/database.routes.js';
 
 const options = {
 	key:  fs.readFileSync('/etc/ssl/private/private-key.pem'),
@@ -45,9 +47,11 @@ app.use(express.urlencoded({ limit: '5mb', extended: true }));
 app.use('/users', requireAuth, userRouter);
 app.use('/profile', requireAuth, profileRouter); 
 app.use('/profile-edit', requireAuth, profileEditRouter);
-app.use('/friends', requireAuth, friendsRouter)
-app.use('/2fa', requireAuth, two_faRouter)
-app.use('/leaderboard', requireAuth, leaderboardRouter)
+app.use('/friends', requireAuth, friendsRouter);
+app.use('/2fa', requireAuth, two_faRouter);
+app.use('/leaderboard', requireAuth, leaderboardRouter);
+app.use('/public_api', requireAuth, publicAPIRouter);
+app.use('/database', checkAPI, databaseRouter);
 
 app.use('/auth', authRouter);
 initSockets(httpServer);
