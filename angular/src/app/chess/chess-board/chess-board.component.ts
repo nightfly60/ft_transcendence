@@ -151,7 +151,6 @@ export class ChessComponent {
     if (this.gameStatus() === 'checkmate' || this.gameStatus() === 'stalemate' || this.gameStatus() === 'draw' || this.gameStatus() === 'resign') return;
     if (this.showPromotion()) return;
     const color = this.myColor();
-    console.log(this.mode() === 'multi' || (this.mode() === 'ia' && color && this.turn() !== color));
     if (((this.mode() === 'multi' || this.mode() === 'ia') && color && this.turn() !== color))
        return;
     const { r, c } = event;
