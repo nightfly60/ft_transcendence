@@ -29,11 +29,17 @@ export class BoardGridComponent {
     return s !== null && s[0] === r && s[1] === c;
   }
 
-  isLastMove(r: number, c: number): boolean {
-    const lm = this.lastMove();
-    if (!lm) return false;
-    return (lm[0][0] === r && lm[0][1] === c) || (lm[1][0] === r && lm[1][1] === c);
-  }
+	isLastMoveFrom(r: number, c: number): boolean {
+		const lm = this.lastMove();
+		if (!lm) return false;
+		return lm[0][0] === r && lm[0][1] === c;
+	}
+
+	isLastMoveTo(r: number, c: number): boolean {
+		const lm = this.lastMove();
+		if (!lm) return false;
+		return lm[1][0] === r && lm[1][1] === c;
+	}
 
   isValidMove(r: number, c: number): boolean {
     return this.validMoves().some(([mr, mc]) => mr === r && mc === c);

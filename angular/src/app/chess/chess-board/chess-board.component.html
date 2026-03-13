@@ -83,25 +83,27 @@
         </div>
       </div>
     }
-    <app-player-panel
-      icon="♚" name="Noirs"
-      [active]="turn() === 'b'"
-      [captured]="capturedSymbols('w')"
-    />
-    <app-board-grid
-      [board]="board()"
-      [selected]="selected()"
-      [validMoves]="validMoves()"
-      [lastMove]="lastMove()"
-      [checkSquare]="checkSquare()"
-      [flipped]="isFlipped()"
-      (squareClick)="onSquareClick($event)"
-    />
-    <app-player-panel
-      icon="♔" name="Blancs"
-      [active]="turn() === 'w'"
-      [captured]="capturedSymbols('b')"
-    />
+	<app-player-panel
+	[icon]="isFlipped() ? '♔' : '♚'"
+	[name]="isFlipped() ? 'Blancs' : 'Noirs'"
+	[active]="isFlipped() ? turn() === 'w' : turn() === 'b'"
+	[captured]="isFlipped() ? capturedSymbols('b') : capturedSymbols('w')"
+	/>
+	<app-board-grid
+	[board]="board()"
+	[selected]="selected()"
+	[validMoves]="validMoves()"
+	[lastMove]="lastMove()"
+	[checkSquare]="checkSquare()"
+	[flipped]="isFlipped()"
+	(squareClick)="onSquareClick($event)"
+	/>
+	<app-player-panel
+	[icon]="isFlipped() ? '♚' : '♔'"
+	[name]="isFlipped() ? 'Noirs' : 'Blancs'"
+	[active]="isFlipped() ? turn() === 'b' : turn() === 'w'"
+	[captured]="isFlipped() ? capturedSymbols('w') : capturedSymbols('b')"
+	/>
 
     <button class="mobile-reset-btn" (click)="resetGame()">Nouvelle partie</button>
   </div>
