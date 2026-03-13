@@ -54,19 +54,6 @@ CREATE TABLE IF NOT EXISTS Profile (
     FOREIGN KEY(id_user) REFERENCES \`User\`(id)
 );
 
--- Table Game
-CREATE TABLE IF NOT EXISTS Game (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nb_cuts BIGINT,
-    timestamp DATETIME,
-    id_player_one INT NOT NULL,
-    id_player_second INT,
-    id_winner INT,
-    FOREIGN KEY(id_player_one) REFERENCES \`User\`(id),
-    FOREIGN KEY(id_player_second) REFERENCES \`User\`(id),
-    FOREIGN KEY(id_winner) REFERENCES \`User\`(id)
-);
-
 -- Table Achievements
 CREATE TABLE IF NOT EXISTS Achievements (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -93,6 +80,47 @@ CREATE TABLE IF NOT EXISTS User_achievements (
     PRIMARY KEY(id_user, id_achievement),
     FOREIGN KEY(id_user) REFERENCES \`User\`(id),
     FOREIGN KEY(id_achievement) REFERENCES Achievements(id)
+);
+
+-- Table Conversations
+CREATE TABLE IF NOT EXISTS Conversations (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    type ENUM('game', 'dm'),
+    created_at TIMESTAMP
+);
+
+-- Table Message
+CREATE TABLE IF NOT EXISTS Message (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_conversation INT NOT NULL,
+    id_sender INT NOT NULL,
+    content VARCHAR(255),
+    sent_at TIMESTAMP,
+    FOREIGN KEY(id_conversation) REFERENCES \`Conversations\`(id),
+    FOREIGN KEY(id_sender) REFERENCES \`User\`(id)
+);
+
+-- Table Conversation_Participants
+CREATE TABLE IF NOT EXISTS Conversation_Participants (
+    id_conversation INT NOT NULL,
+    id_participant INT NOT NULL,
+    FOREIGN KEY(id_conversation) REFERENCES \`Conversations\`(id),
+    FOREIGN KEY(id_participant) REFERENCES \`User\`(id)
+);
+
+-- Table Game
+CREATE TABLE IF NOT EXISTS Game (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nb_cuts BIGINT,
+    timestamp DATETIME,
+    id_player_one INT NOT NULL,
+    id_player_second INT,
+    id_winner INT,
+    id_conversation INT NOT NULL,
+    FOREIGN KEY(id_player_one) REFERENCES \`User\`(id),
+    FOREIGN KEY(id_player_second) REFERENCES \`User\`(id),
+    FOREIGN KEY(id_winner) REFERENCES \`User\`(id),
+    FOREIGN KEY(id_conversation) REFERENCES \`Conversations\`(id)
 );
 EOSQL
 
