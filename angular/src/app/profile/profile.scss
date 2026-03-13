@@ -6,6 +6,8 @@ $gold:       #c9a84c;
 $gold-light: #e8c060;
 $gold-dark:  #7a5c18;
 $muted:      #a09070;
+$red:        #ff0000;
+$green:      #00ff40;
 $font-body:  'Cormorant Garamond', serif;
 
 :host { display: block; }
@@ -412,7 +414,24 @@ $font-body:  'Cormorant Garamond', serif;
   gap: 0.4rem;
   padding: 1.2rem 1.4rem;
   border: 1px solid rgba($gold, 0.18);
-  background: rgba($gold, 0.03);
+  background: rgba($gold, 0.05);
+  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  transition: border-color 0.3s, background 0.3s, transform 0.3s;
+
+  &:hover {
+    border-color: rgba($gold, 0.45);
+    background: rgba($gold, 0.07);
+    transform: translateY(-3px);
+  }
+}
+
+.achievement-card-done {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1.2rem 1.4rem;
+  border: 1px solid rgba($green, 0.18);
+  background: rgba($gold, 0.05);
   clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
   transition: border-color 0.3s, background 0.3s, transform 0.3s;
 
@@ -459,4 +478,14 @@ $font-body:  'Cormorant Garamond', serif;
     background: rgba($gold, 0.07);
     border-color: rgba($gold, 0.6);
   }
+}
+
+.game-lose-icon {
+  font-size: 1.5rem;
+  color: rgba($red, 0.5);
+}
+
+.game-win-icon {
+  font-size: 1.5rem;
+  color: rgba($green, 0.5);
 }

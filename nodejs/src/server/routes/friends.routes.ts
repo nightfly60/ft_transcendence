@@ -92,9 +92,14 @@ router.get('/online/:targetId', requireAuth, async (req, res) => {
 			return res.status(500).json({error: 'Utilisateur non trouve'});
 
 		const last_seen = new Date(rows[0].last_seen);
-		const diffSeconds = (Date.now() - last_seen.getTime()) / 1000;
-		const isOnline = diffSeconds < 60; // en ligne si actif les X dernieres secondes
-		res.json({isOnline, last_seen: rows[0].last_seen})
+		if (last_seen)
+		{
+			const diffSeconds = (Date.now() - last_seen.getTime()) / 1000;
+			const isOnline = diffSeconds < 60; // en ligne si actif les X dernieres secondes
+			res.json({isOnline: isOnline, last_seen: rows[0].last_seen})
+			return ;
+		}
+		res.json({isOnline: false, last_seen: rows[0].last_seen})
 	}
 	catch (err)
 	{

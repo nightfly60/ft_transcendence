@@ -12,6 +12,15 @@ export const requireAuth = async (req: any, res: Response, next: NextFunction) =
 
 	try {
 		req.user = jwt.verify(token, process.env.JWT_SECRET || "...");
+		
+		const [rows]: any = await pool.query(
+			`SELECT * FROM User WHERE id = ?`,
+			[(req.user as any).id]
+		);
+
+		if (rows.length === 0) {
+			return res.status(401).json({ error: 'Utilisateur Invalide' });
+		}
 
 		await pool.query(
 			`UPDATE User SET last_seen = NOW() WHERE id = ?`,

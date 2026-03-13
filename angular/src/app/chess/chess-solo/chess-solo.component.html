@@ -1,0 +1,19 @@
+@if (waiting()) {
+  <p>Connexion à la partie...</p>
+} @else if (gameState(); as state) {
+  <app-chess
+    [gameId]="gameId()"
+    [mode]="'solo'"
+    [myColor]="'w'"
+    [userName]="auth.username()"
+    [externalBoard]="state.board"
+    [externalTurn]="state.turn"
+    [externalStatus]="state.gameStatus"
+    [externalHistory]="state.moveHistory"
+    [externalCaptured]="state.captured"
+    [externalLastMove]="state.lastMove"
+    [externalValidMoves]="state.validMoves"
+    (movePlayed)="onMovePlayed($event)"
+    (resign)="onResign()"
+  />
+}

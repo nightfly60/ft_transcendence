@@ -17,7 +17,7 @@
 
 		<button class="intra-btn" (click)="intra42Auth()">
 			<img src="https://upload.wikimedia.org/wikipedia/commons/8/8d/42_Logo.svg" class="intra-icon" />
-			<span>Se connecter avec 42Intra</span>
+			<span>Se connecter avec l'Intranet de 42</span>
 		</button>
 	</div>
 	<div class="tabs">
@@ -28,16 +28,55 @@
 	  <form class="form" (ngSubmit)="onLogin()">
 		<div class="field">
 			<label>Email</label>
-			<input type="email" [(ngModel)]="email" name="email" [class.error]="emailError" />
-			@if (emailError) {
+			<input type="email"
+			[(ngModel)]="email"
+			#emailModel="ngModel"
+			name="email"
+			[class.error]="emailError"
+			[placeholder]="'user@mail.fr'"
+			minlength="3"
+			maxlength="40"
+			required
+			/>
+			@if (emailModel.errors?.['minlength'] && emailModel.touched) {
+				<span class="field-error">Adresse Email Invalide</span>
+			}
+			@else if (emailError) {
 				<span class="field-error">{{ emailError }}</span>
 			}
 		</div>
 		<div class="field">
 			<label>Mot de passe</label>
-			<input type="password" [(ngModel)]="password" name="password" placeholder="••••••••" required />
-			@if (passError) {
+			<input type="password"
+			[(ngModel)]="password"
+			#passwordModel="ngModel"
+			name="password"
+			placeholder="••••••••"
+			minlength="3"
+			required />
+			@if (passwordModel.errors?.['minlength'] && passwordModel.touched)
+			{
+				<span class="field-error">Mot de Passe trop court</span>
+			}
+			@else if (passError) {
 				<span class="field-error">{{ passError }}</span>
+			}
+		</div>
+		<div class="field">
+			<label>Double Authentification (facultatif)</label>
+			<input
+				type="text"
+				class="token-input"
+				[(ngModel)]="token"
+				name="token"
+				placeholder="Code à 6 chiffres"
+				maxlength="6"
+				required
+				inputmode="numeric"
+				oninput="this.value = this.value.replace(/\D+/g, '')"
+			/>
+			@if (tokenError) {
+				<span class="field-error">{{ tokenError }}</span>
 			}
 		</div>
 		<button type="submit" class="btn-submit">Connexion</button>
@@ -47,22 +86,54 @@
 	  <form class="form" (ngSubmit)="onRegister()">
 		<div class="field">
 			<label>Pseudo</label>
-			<input type="text" [(ngModel)]="username" name="username" placeholder="ChessPlayer42" required />
-			@if (usernameError) {
+			<input type="text"
+			[(ngModel)]="username"
+			#usernameModel="ngModel"
+			name="username"
+			placeholder="ChessPlayer42"
+			minlength="3"
+			maxlength="40"
+			required />
+			@if (usernameModel.errors?.['minlength'] && usernameModel.touched) {
+				<span class="field-error">Username trop court</span>
+			}
+			@else if (usernameError) {
 				<span class="field-error">{{ usernameError }}</span>
 			}
 		</div>
 		<div class="field">
 			<label>Email</label>
-			<input type="email" [(ngModel)]="email" name="email" placeholder="votre@email.com" required />
-			@if (emailError) {
+			<input type="email"
+			[(ngModel)]="email"
+			#emailModel="ngModel"
+			name="email"
+			[class.error]="emailError"
+			[placeholder]="'user@mail.fr'"
+			minlength="3"
+			maxlength="40"
+			required
+			/>
+			@if (emailModel.errors?.['minlength'] && emailModel.touched) {
+				<span class="field-error">Adresse Email Invalide</span>
+			}
+			@else if (emailError) {
 				<span class="field-error">{{ emailError }}</span>
 			}
 		</div>
 		<div class="field">
 			<label>Mot de passe</label>
-			<input type="password" [(ngModel)]="password" name="password" placeholder="••••••••" required />
-			@if (passError) {
+			<input type="password"
+			[(ngModel)]="password"
+			#passwordModel="ngModel"
+			name="password"
+			placeholder="••••••••"
+			minlength="3"
+			required />
+			@if (passwordModel.errors?.['minlength'] && passwordModel.touched)
+			{
+				<span class="field-error">Mot de Passe trop court</span>
+			}
+			@else if (passError) {
 				<span class="field-error">{{ passError }}</span>
 			}
 		</div>

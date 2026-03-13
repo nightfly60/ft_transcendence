@@ -1,8 +1,9 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 
 @Component({
 	selector: 'app-user',
@@ -12,12 +13,13 @@ import { CommonModule } from '@angular/common';
 	styleUrls: ['./profile.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
 	data: any = null;
 	id: string = '';
 	isFriend: boolean = false;
 	isOnline: boolean = false;
 	private pollingInterval: any = null;
+	private routeSub: Subscription | null = null;
 
 	readonly XP_PER_LEVEL = 1000;
 	cells = Array.from({ length: 144 }, (_, i) => ({
@@ -33,6 +35,10 @@ export class ProfileComponent implements OnInit {
 		return this.showAll
 		? this.data.achievements
 		: this.data.achievements?.slice(0, 3);
+	}
+
+	get visibleGames() {
+		return this.data.games
 	}
 
 	toggleAchievements() {
@@ -53,7 +59,7 @@ export class ProfileComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		this.route.params.subscribe(params => {
+		this.routeSub = this.route.params.subscribe(params => {
 		const id = params['id'];
 		if (!id) { this.router.navigate(['/404']); return; }
 		this.id = id;
@@ -76,6 +82,7 @@ export class ProfileComponent implements OnInit {
 	}
 
 	checkFriendStatus(targetId: number) {
+		if (!this.auth.isLoggedIn()) return ;
 		this.http.get<{isFriend: boolean}>(`/api/friends/status/${targetId}`).subscribe({
 		next: (res) => { this.isFriend = res.isFriend; this.cdr.markForCheck(); },
 		error: () => {}
@@ -83,15 +90,32 @@ export class ProfileComponent implements OnInit {
 	}
 
 	startPolling(targetId: number) {
+		if (this.pollingInterval) {
+			clearInterval(this.pollingInterval);
+			this.pollingInterval = null;
+		}
+		if (!this.auth.isLoggedIn()) return;
 		this.checkOnlineStatus(targetId);
 		this.pollingInterval = setInterval(() => {
 			this.checkOnlineStatus(targetId);
-		}, 1000 * 10);
+		}, 1000 * 30);
+	}
+
+	ngOnDestroy() {
+		if (this.pollingInterval) {
+			clearInterval(this.pollingInterval);
+			this.pollingInterval = null;
+		}
+		this.routeSub?.unsubscribe();
 	}
 
 	checkOnlineStatus(targetId: number) {
+		if (!this.auth.isLoggedIn()) return ;
 		this.http.get<{ isOnline: boolean }>(`/api/friends/online/${targetId}`).subscribe({
-		next: (res) => { this.isOnline = res.isOnline; this.cdr.markForCheck(); },
+		next: (res) => {
+			this.isOnline = res.isOnline;
+			this.cdr.markForCheck();
+		},
 		error: () => {}
 		});
 	}
@@ -104,7 +128,6 @@ export class ProfileComponent implements OnInit {
 			this.http.delete(`/api/friends/remove/${this.data.id}`).subscribe({
 				next: () => {
 				this.isFriend = false;
-				this.data.nb_friends = (this.data.nb_friends ?? 1) - 1;
 				this.cdr.markForCheck();
 				},
 				error: () => {}
@@ -115,7 +138,6 @@ export class ProfileComponent implements OnInit {
 			this.http.post(`/api/friends/add/${this.data.id}`, {}).subscribe({
 				next: () => {
 				this.isFriend = true;
-				this.data.nb_friends = (this.data.nb_friends ?? 0) + 1;
 				this.cdr.markForCheck();
 				},
 				error: () => {}

@@ -1,0 +1,44 @@
+<div class="page-wrapper">
+	<div class="floating-piece">♜</div>
+	<div class="floating-piece">♝</div>
+	<div class="floating-piece">♛</div>
+	<div class="floating-piece">♞</div>
+	<div class="floating-piece">♟</div>
+	<div class="floating-piece">♚</div>
+	<div class="chessboard-bg">
+		@for (cell of cells; track $index) {
+			<div [style.background]="cell.light ? '#f5f0e8' : 'transparent'"></div>
+		}
+	</div>
+
+	<div class="leaderboard-container">		
+		<div class="leaderboard-controls">
+			<button class="sort-button" (click)="sortByXP()">TRIER PAR XP</button>
+			<button class="sort-button" (click)="sortByLevel()">TRIER PAR ELO</button>
+		</div>
+
+		<div class="leaderboard-list">
+			@for (p of getLeaderboard; track p.id; let i = $index) {
+				<div class="leaderboard-card-wrapper">
+					<button (click)="openPlayerProfile(p.id)">
+						<div class="leaderboard-card">
+							<div class="player-info">
+								<div class="player-name">{{ p.username }}</div>
+							</div>
+							<div class="leaderboard-stats">
+								<div class="stat-item">
+									<span class="stat-label">XP</span>
+									<span class="leaderboard-font">{{ p.xp }}</span>
+								</div>
+								<div class="stat-item">
+									<span class="stat-label">ELO</span>
+									<span class="leaderboard-font">{{ p.elo }}</span>
+								</div>
+							</div>
+						</div>
+					</button>
+				</div>
+			}
+		</div>
+	</div>
+</div>

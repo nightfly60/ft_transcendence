@@ -1,0 +1,20 @@
+<div class="side-panel">
+  <div class="history-box">
+    <div class="history-header">
+      <span class="history-title">Historique</span>
+      <button class="reset-btn" (click)="reset.emit()">Nouvelle partie</button>
+    </div>
+    <div class="history-moves">
+      @for (pair of pairs(); track pair.n) {
+        <div class="history-row">
+          <span class="move-num">{{ pair.n }}.</span>
+          <span class="move-w">{{ pair.w }}</span>
+          <span class="move-b">{{ pair.b }}</span>
+        </div>
+      }
+      @if (isEmpty()) {
+        <p class="history-empty">Aucun coup joué</p>
+      }
+    </div>
+  </div>
+</div>

@@ -1,6 +1,7 @@
 $black: #0a0a0a;
 $white: #f5f0e8;
 $gold:  #c9a84c;
+$red:   #dd0000;
 $font:  'Cormorant Garamond', serif;
 
 .page {
@@ -167,10 +168,10 @@ $font:  'Cormorant Garamond', serif;
 }
 
 .field-error {
-  font-size: 12px;
-  color: #f44336;
-  margin-top: 2px;
-  letter-spacing: 0.5px;
+	color: $red;
+	font-family: 'Google Sans', Roboto, sans-serif;
+	font-size: 14px;
+	font-weight: 500;
 }
 
 .google-btn {
@@ -243,4 +244,100 @@ svg.google-icon {
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.google-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 24px;
+  background: $gold;
+  color: $black;
+  font-family: 'Google Sans', Roboto, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  border: 1px solid $black;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.google-btn:hover {
+  background: $white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+
+.google-btn:active {
+  background: $white;
+}
+
+.google-icon {
+  width: 18px;
+  height: 18px;
+}
+
+svg.google-icon {
+  width: 25px !important;
+  height: 25px !important;
+  flex-shrink: 0;
+}
+
+.intra-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 24px;
+  background: $gold;
+  color: $black;
+  font-family: 'Google Sans', Roboto, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.intra-btn:hover {
+  background: $white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+
+.intra-btn:active {
+  background: $white;
+}
+
+.intra-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.auth-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.token-input {
+	width: 100%;
+	padding: 0.6rem 1rem;
+	border: 1px solid #d4af37;
+	border-radius: 6px;
+	background: rgba(255,255,255,0.05);
+	color: white;
+	font-size: 1.1rem;
+	letter-spacing: 0.3em;
+	text-align: center;
+	outline: none;
+
+	&:focus {
+		border-color: #f0cc55;
+		box-shadow: 0 0 0 2px rgba(212,175,55,0.2);
+	}
+
+	&::placeholder {
+		color: #666;
+		letter-spacing: normal;
+		font-size: 0.85rem;
+	}
 }

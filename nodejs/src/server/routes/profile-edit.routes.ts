@@ -62,7 +62,7 @@ router.post('/avatar/:id', upload.single('avatar'), async (req: Request, res: Re
 			language: user.language,
 			path_img: `/avatars/${filename}`
 		},
-		process.env.JWT_SECRET || "02a70f0b6ea2556ea2afa6309aafa9ab8d87b7f049eef3d51e808c27057c4421",
+		process.env.JWT_SECRET!,
 		{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
 		);
 
@@ -84,9 +84,14 @@ router.patch('/:id', async (req: Request, res: Response) => {
 	}
 
 	const {username, bio} = req.body;
-	if (!username || username.trim() === '')
+	if (!username || username.trim() === '' || username.length > 30 || username.length < 3)
 	{
 		res.status(400).json({error: 'Username invalide'});
+		return ;
+	}
+	if (bio && bio.length > 200)
+	{
+		res.status(400).json({error: 'Bio trop longue'});
 		return ;
 	}
 	try
@@ -119,7 +124,7 @@ router.patch('/:id', async (req: Request, res: Response) => {
 			language: user[0].language,
 			path_img: profile[0].path_img ?? null
 		},
-		process.env.JWT_SECRET || "02a70f0b6ea2556ea2afa6309aafa9ab8d87b7f049eef3d51e808c27057c4421",
+		process.env.JWT_SECRET!,
 		{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
 		);
 

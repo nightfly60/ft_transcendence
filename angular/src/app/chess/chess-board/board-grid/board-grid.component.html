@@ -1,0 +1,36 @@
+<div class="board-grid">
+  @for (r of rows(); track r) {
+    @for (c of cols(); track c) {
+      <div
+        class="square"
+        [class.light]="isLight(r, c)"
+        [class.dark]="!isLight(r, c)"
+        [class.selected]="isSelected(r, c)"
+        [class.last-move]="isLastMove(r, c)"
+        [class.valid-target]="isValidMove(r, c)"
+        [class.in-check]="isInCheck(r, c)"
+        (click)="click(r, c)"
+      >
+        @if ((!flipped() && c === 0) || (flipped() && c === 7)) {
+          <span class="coord-r">{{ 8 - r }}</span>
+        }
+        @if ((!flipped() && r === 7) || (flipped() && r === 0)) {
+          <span class="coord-c">{{ files[c] }}</span>
+        }
+        @if (board()[r][c]) {
+          <span
+            class="piece"
+            [class.white-piece]="board()[r][c]!.color === 'w'"
+            [class.black-piece]="board()[r][c]!.color === 'b'"
+>{{ symbol(board()[r][c]) }}</span>
+        }
+        @if (isValidMove(r, c) && !board()[r][c]) {
+          <span class="move-dot"></span>
+        }
+        @if (isValidMove(r, c) && board()[r][c]) {
+          <span class="capture-ring"></span>
+        }
+      </div>
+    }
+  }
+</div>

@@ -1,0 +1,36 @@
+<div class="page-wrapper">
+
+  <!-- pieces qui flottent -->
+  <div class="floating-piece">♜</div>
+  <div class="floating-piece">♝</div>
+  <div class="floating-piece">♛</div>
+  <div class="floating-piece">♞</div>
+  <div class="floating-piece">♟</div>
+  <div class="floating-piece">♚</div>
+
+  <!-- DAMIER DE FOND -->
+  <div class="chessboard-bg">
+    @for (cell of cells; track $index) {
+      <div [style.background]="cell.light ? '#f5f0e8' : 'transparent'"></div>
+    }
+  </div>
+
+  <!-- CONTENU -->
+  <div class="game-content">
+    @if (!selectedMode) {
+      <app-chess-mode-select (modeSelected)="selectMode($event)" />
+    } @else {
+      <app-chess-header
+        [mode]="selectedMode"
+        [username]="auth.username()"
+        (back)="goBack()"
+      />
+      @if (selectedMode === 'solo') {
+        <app-chess-solo />
+      } @else if (selectedMode === 'multi') {
+        <app-chess-multi (quit)="goBack()" />
+      }
+    }
+  </div>
+
+</div>

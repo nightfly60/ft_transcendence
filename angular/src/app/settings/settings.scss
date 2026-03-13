@@ -1,0 +1,283 @@
+// var pour les couleurs
+$black:      #0a0a0a;
+$white:      #f5f0e8;
+$cream:      #e8dfc8;
+$gold:       #c9a84c;
+$gold-light: #e8c060;
+$gold-dark:  #7a5c18;
+$muted:      #a09070;
+$red:        #dd0000;
+$font-body:  'Cormorant Garamond', serif;
+$font:       'Cormorant Garamond', serif;
+
+.btn-submit {
+	margin-top: 8px;
+	background: transparent;
+	border: 1px solid rgba($gold, 0.5);
+	color: $gold;
+	padding: 12px;
+	border-radius: 2px;
+	font-size: 13px;
+	font-family: $font;
+	cursor: pointer;
+	letter-spacing: 3px;
+	text-transform: uppercase;
+	transition: all 0.2s;
+}
+
+.field-error {
+	color: $red;
+	font-family: 'Google Sans', Roboto, sans-serif;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+:host { display: block; }
+
+.page-wrapper {
+  background-color: $black;
+  color: $white;
+  font-family: $font-body;
+  position: relative;
+  min-height: 100vh;
+
+  &::before {
+	content: '';
+	position: fixed;
+	inset: 0;
+	background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.85) 100%);
+	z-index: 1;
+	pointer-events: none;
+  }
+  &::after {
+	content: '';
+	position: fixed;
+	inset: 0;
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+	opacity: 0.4;
+	z-index: 1;
+	pointer-events: none;
+  }
+}
+
+.chessboard-bg {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: repeat(12, 1fr);
+  opacity: 0.07;
+  pointer-events: none;
+  z-index: 0;
+}
+
+// toujours les belles pieces qui flottent
+.floating-piece {
+  position: fixed;
+  opacity: 0;
+  animation: drift 10s ease-in-out infinite;
+  z-index: 1;
+  pointer-events: none;
+  color: $gold;
+  &:nth-child(1) { top: 10%; left:  5%; font-size: 5.5rem; animation-delay: 0s; }
+  &:nth-child(2) { top: 70%; left:  8%; font-size: 7.5rem; animation-delay: 2s; }
+  &:nth-child(3) { top: 20%; right: 6%; font-size: 5.8rem; animation-delay: 4s; }
+  &:nth-child(4) { top: 80%; right:10%; font-size: 5.4rem; animation-delay: 5s; }
+  &:nth-child(5) { top: 50%; left:  3%; font-size: 5.2rem; animation-delay: 1s; }
+  &:nth-child(6) { top: 40%; right: 4%; font-size: 6rem;   animation-delay: 3s; }
+}
+@keyframes drift {
+  0%   { opacity: 0;    transform: translateY(20px) rotate(0deg); }
+  20%  { opacity: 0.14; }
+  80%  { opacity: 0.14; }
+  100% { opacity: 0;    transform: translateY(-30px) rotate(10deg); }
+}
+
+.profile-page {
+  position: relative;
+  z-index: 2;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 4rem 3rem 4rem;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+
+  @media (max-width: 768px) { padding: 2.5rem 1.5rem; }
+  @media (max-width: 480px) { padding: 2rem 1rem; }
+}
+
+// header
+.profile-header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 2.5rem;
+  margin-bottom: 2rem;
+
+  @media (max-width: 700px) {
+	grid-template-columns: auto 1fr;
+	grid-template-rows: auto auto;
+	gap: 1.5rem;
+  }
+  @media (max-width: 480px) {
+	grid-template-columns: 1fr;
+	justify-items: center;
+	text-align: center;
+  }
+}
+
+// avatar + coupe pour pas que ca depasse
+.avatar-ring {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  padding: 3px;
+  background: linear-gradient(135deg, $gold-dark, $gold, $gold-light, $gold-dark);
+  box-shadow: 0 0 30px rgba($gold, 0.35), 0 0 60px rgba($gold, 0.12);
+  animation: ring-pulse 4s ease-in-out infinite;
+  flex-shrink: 0;
+
+  @media (max-width: 480px) { width: 90px; height: 90px; }
+}
+@keyframes ring-pulse {
+  0%, 100% { box-shadow: 0 0 25px rgba($gold, 0.3),  0 0 50px rgba($gold, 0.1); }
+  50%       { box-shadow: 0 0 50px rgba($gold, 0.65), 0 0 90px rgba($gold, 0.25); }
+}
+
+// TOUTES LES INFOS
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.username {
+  font-family: $font-body;
+  font-size: clamp(2.5rem, 5.2vw, 3.7rem);
+  font-weight: 400;
+  font-style: italic;
+  color: $white;
+  letter-spacing: 0.05em;
+  line-height: 1;
+}
+
+.online-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 0.5rem;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #666;
+  display: inline-block;
+  transition: background 0.3s;
+
+  &.online {
+	background: #4caf50;
+	box-shadow: 0 0 6px #4caf50;
+  }
+}
+
+.status-text {
+  font-size: 0.8rem;
+  color: #aaa;
+
+  &.online {
+	color: #4caf50;
+  }
+}
+
+.gold-separator {
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba($gold, 0.5) 30%, rgba($gold, 0.5) 70%, transparent);
+  margin-bottom: 2.5rem;
+}
+
+.twofa-section {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1rem;
+	margin-top: 2rem;
+	width: 100%;
+}
+
+.twofa-title {
+	font-size: 1.2rem;
+	font-weight: 600;
+	color: #d4af37;
+	margin: 0;
+}
+
+.twofa-subtitle {
+	font-size: 0.85rem;
+	color: #aaa;
+	margin: 0;
+}
+
+.qr-block {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1rem;
+	margin-top: 1rem;
+}
+
+.qr-instruction {
+	font-size: 0.85rem;
+	color: #ccc;
+	text-align: center;
+	max-width: 300px;
+}
+
+.qr-image {
+	width: 220px;
+	border: 2px solid #d4af37;
+	border-radius: 8px;
+	padding: 8px;
+	background: white;
+}
+
+.confirm-form {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.75rem;
+	width: 100%;
+	max-width: 280px;
+}
+
+.token-input {
+	width: 100%;
+	padding: 0.6rem 1rem;
+	border: 1px solid #d4af37;
+	border-radius: 6px;
+	background: rgba(255,255,255,0.05);
+	color: white;
+	font-size: 1.1rem;
+	letter-spacing: 0.3em;
+	text-align: center;
+	outline: none;
+
+	&:focus {
+		border-color: #f0cc55;
+		box-shadow: 0 0 0 2px rgba(212,175,55,0.2);
+	}
+
+	&::placeholder {
+		color: #666;
+		letter-spacing: normal;
+		font-size: 0.85rem;
+	}
+}
