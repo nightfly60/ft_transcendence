@@ -1,0 +1,103 @@
+@if (auth.isLoggedIn()) {
+  <div class="chat-widget">
+
+    <!-- Bouton flottant -->
+    <button class="chat-fab" (click)="togglePanel()" [class.open]="panelOpen()" title="Utilisateurs en ligne">
+      <span class="fab-icon">💬</span>
+      @if (onlineUsers().length > 0) {
+        <span class="fab-badge">{{ onlineUsers().length }}</span>
+      }
+    </button>
+
+    <!-- Panneau -->
+    @if (panelOpen()) {
+      <div class="chat-panel">
+
+        <!-- Header -->
+        <div class="panel-header">
+          @if (chatWith()) {
+            <button class="back-btn" (click)="backToList()">←</button>
+            <div class="chat-header-user">
+              <img
+                [src]="chatWith()!.path_img || '/avatars/default-avatar.png'"
+                class="header-avatar"
+                (error)="$any($event.target).src = '/avatars/default-avatar.png'"
+                alt=""
+              />
+              <span class="panel-title">{{ chatWith()!.username }}</span>
+            </div>
+          } @else {
+            <span class="panel-title">Communauté</span>
+          }
+          <button class="panel-close" (click)="panelOpen.set(false)">✕</button>
+        </div>
+
+        <!-- Onglets (uniquement sur la liste) -->
+        @if (!chatWith()) {
+          <div class="panel-tabs">
+            <button class="tab-btn" [class.active]="activeTab() === 'online'" (click)="setTab('online')">
+              En ligne
+              @if (onlineUsers().length > 0) {
+                <span class="tab-count">{{ onlineUsers().length }}</span>
+              }
+            </button>
+            <button class="tab-btn" disabled title="Bientôt disponible">Amis</button>
+            <button class="tab-btn" disabled title="Bientôt disponible">Messages</button>
+          </div>
+        }
+
+        <!-- Vue : liste des users en ligne -->
+        @if (!chatWith() && activeTab() === 'online') {
+          <div class="panel-body">
+            @if (onlineUsers().length === 0) {
+              <p class="empty-msg">Aucun utilisateur en ligne</p>
+            } @else {
+              @for (user of onlineUsers(); track user.id) {
+                <div class="user-item" (click)="openChat(user)">
+                  <div class="user-avatar-wrap">
+                    <img
+                      [src]="user.path_img || '/avatars/default-avatar.png'"
+                      class="user-avatar"
+                      (error)="$any($event.target).src = '/avatars/default-avatar.png'"
+                      alt=""
+                    />
+                    <span class="online-dot"></span>
+                  </div>
+                  <span class="user-name">{{ user.username }}</span>
+                  <span class="chat-arrow">›</span>
+                </div>
+              }
+            }
+          </div>
+        }
+
+        <!-- Vue : fenêtre de chat -->
+        @if (chatWith()) {
+          <div class="messages-list" #msgList>
+            @if (getMessages(chatWith()!.id).length === 0) {
+              <p class="empty-msg">Commencez la conversation !</p>
+            }
+            @for (msg of getMessages(chatWith()!.id); track msg.timestamp) {
+              <div class="msg-bubble" [class.mine]="msg.fromMe" [class.theirs]="!msg.fromMe">
+                <span class="msg-text">{{ msg.text }}</span>
+              </div>
+            }
+          </div>
+          <div class="msg-input-row">
+            <input
+              class="msg-input"
+              type="text"
+              [value]="inputText"
+              (input)="inputText = $any($event.target).value"
+              (keyup.enter)="sendMessage()"
+              placeholder="Message..."
+              autocomplete="off"
+            />
+            <button class="msg-send" (click)="sendMessage()">›</button>
+          </div>
+        }
+
+      </div>
+    }
+  </div>
+}
