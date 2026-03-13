@@ -17,20 +17,23 @@
 
   <!-- CONTENU -->
   <div class="game-content">
-    @if (!selectedMode) {
-      <app-chess-mode-select (modeSelected)="selectMode($event)" />
-    } @else {
-      <app-chess-header
-        [mode]="selectedMode"
-        [username]="auth.username()"
-        (back)="goBack()"
-      />
-      @if (selectedMode === 'solo') {
-        <app-chess-solo />
-      } @else if (selectedMode === 'multi') {
-        <app-chess-multi (quit)="goBack()" />
-      }
-    }
-  </div>
+		@if (!selectedMode) {
+			<app-chess-mode-select (modeSelected)="selectMode($event)" />
+		} 
+		@else {
+			<app-chess-header
+				[mode]="selectedMode"
+				[username]="auth.username()"
+				(back)="goBack()"
+			/>
+			@if (selectedMode === 'solo') {
+				<app-chess-solo />
+			} @else if (selectedMode === 'multi') {
+				<app-chess-multi />
+			} @else if (selectedMode === 'ia') {
+				<app-chess-ia [level]="selectedIaLevel" />
+			}
+		}
+	</div>
 
 </div>

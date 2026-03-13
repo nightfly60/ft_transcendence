@@ -104,6 +104,24 @@ export class SocketService {
     this.socket.off('game_state');
   }
 
+  // ia
+	startSoloIA(level: 'novice' | 'intermediaire' | 'expert') {
+		this.socket.emit('start_solo_ia', { level });
+	}
+
+	sendSoloIAMove(gameId: string, from: string, to: string, promotion?: string) {
+		this.socket.emit('solo_ia_move', { gameId, from, to, promotion });
+	}
+
+	offSoloIAListeners() {
+		this.socket.off('solo_ready');
+		this.socket.off('game_state');
+	}
+
+	onSoloIAReady(callback: (data: { gameId: string; playerColor?: 'w' | 'b' }) => void) {
+		this.socket.on('solo_ready', callback);
+	}
+
   // ─── Common ───────────────────────────────────────────────────────────────
 
   reconnect(token: string) {

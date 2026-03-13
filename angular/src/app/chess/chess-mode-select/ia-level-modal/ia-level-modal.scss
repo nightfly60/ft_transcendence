@@ -1,0 +1,156 @@
+$black: #0a0a0a;
+$white: #f5f0e8;
+$gold:  #c9a84c;
+$font:  'Cormorant Garamond', serif;
+
+.modal-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.75);
+	backdrop-filter: blur(4px);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+	animation: fadeIn 0.2s ease;
+}
+
+.modal-box {
+	position: relative;
+	z-index: 2;
+	background: $black;
+	border: 1px solid rgba($gold, 0.5);
+	border-radius: 4px;
+	padding: 48px 40px;
+	width: min(500px, 92vw);
+	font-family: $font;
+	box-shadow:
+		0 24px 60px rgba(0, 0, 0, 0.7),
+		0 0 40px rgba($gold, 0.08),
+		inset 0 1px 0 rgba($gold, 0.1);
+	animation: slideUp 0.25s ease;
+}
+
+.modal-title {
+	text-align: center;
+	color: $white;
+	font-size: 28px;
+	font-weight: 300;
+	margin: 0 0 8px;
+	letter-spacing: 5px;
+	text-transform: uppercase;
+	text-shadow: 0 0 20px rgba($gold, 0.3);
+}
+
+.modal-subtitle {
+	color: rgba($white, 0.75);
+	font-family: $font;
+	font-size: 13px;
+	text-align: center;
+	margin: 0 0 36px;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+}
+
+.levels {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: 14px;
+	margin-bottom: 36px;
+}
+
+.level-card {
+	background: rgba($white, 0.07);
+	border: 1px solid rgba($white, 0.25);
+	border-radius: 2px;
+	padding: 20px 14px;
+	cursor: pointer;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 6px;
+	transition: all 0.2s ease;
+	font-family: $font;
+	color: $white;
+
+	&:hover {
+		border-color: rgba($gold, 0.5);
+		box-shadow: 0 0 12px rgba($gold, 0.15);
+	}
+
+	&.selected {
+		border-color: rgba($gold, 0.5);
+		background: rgba($white, 0.07);
+		box-shadow: 0 0 12px rgba($gold, 0.15);
+	}
+}
+
+.level-icon { font-size: 2rem; }
+
+.level-name {
+	font-size: 13px;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	color: $gold;
+	text-shadow: 0 0 16px rgba($gold, 0.5);
+}
+
+.level-desc {
+	font-size: 12px;
+	color: rgba($white, 0.75);
+	letter-spacing: 1px;
+}
+
+.modal-actions {
+	display: flex;
+	gap: 12px;
+	justify-content: flex-end;
+}
+
+.btn-cancel {
+	background: transparent;
+	border: 1px solid rgba($white, 0.25);
+	color: rgba($white, 0.75);
+	padding: 12px 24px;
+	border-radius: 2px;
+	font-family: $font;
+	font-size: 13px;
+	letter-spacing: 3px;
+	text-transform: uppercase;
+	cursor: pointer;
+	transition: all 0.2s;
+
+	&:hover {
+		border-color: rgba($white, 0.5);
+		color: $white;
+	}
+}
+
+.btn-confirm {
+	background: transparent;
+	border: 1px solid rgba($gold, 0.5);
+	color: $gold;
+	padding: 12px 28px;
+	border-radius: 2px;
+	font-family: $font;
+	font-size: 13px;
+	letter-spacing: 3px;
+	text-transform: uppercase;
+	cursor: pointer;
+	transition: all 0.2s;
+
+	&:hover:not(:disabled) {
+		background: rgba($gold, 0.1);
+		border-color: $gold;
+		box-shadow: 0 0 18px rgba($gold, 0.2);
+		text-shadow: 0 0 12px rgba($gold, 0.4);
+	}
+
+	&:disabled {
+		opacity: 0.35;
+		cursor: not-allowed;
+	}
+}
+
+@keyframes fadeIn  { from { opacity: 0 } to { opacity: 1 } }
+@keyframes slideUp { from { transform: translateY(24px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }

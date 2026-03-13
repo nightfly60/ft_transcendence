@@ -29,6 +29,11 @@ export interface MoveResult {
   newCastlingRights: CastlingRights;
 }
 
+export interface SoloIAGame extends ChessGame {
+	iaLevel: string;
+	playerColor: 'w' | 'b';
+}
+
 export const DEFAULT_CONTEXT: GameContext = {
   enPassantTarget: null,
   castlingRights: { wK: true, wQ: true, bK: true, bQ: true },

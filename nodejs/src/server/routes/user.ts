@@ -3,6 +3,19 @@ import pool from '../db.js';
 
 const router = Router();
 
+router.get('/online', async (req: Request, res: Response) => {
+  const selfId = (req as any).user?.id ?? null;
+  const [rows]: any = await pool.query(
+    `SELECT u.id, u.username, p.path_img
+     FROM User u
+     LEFT JOIN Profile p ON p.id_user = u.id
+     WHERE u.last_seen IS NOT NULL
+       AND TIMESTAMPDIFF(SECOND, u.last_seen, NOW()) < 60
+       AND u.id != ?`,
+    [selfId ?? 0]
+  );
+  res.json({ users: rows });
+});
 
 router.get('/:id', async (req: Request, res: Response) => {
   const [rows]: any = await pool.query(

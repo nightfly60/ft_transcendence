@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { registerChessEvents } from './chess/events/index.js';
 import { registerChatEvents } from './chat.js';
 
+
 export function initSockets(httpServer: HttpServer<typeof IncomingMessage, typeof ServerResponse>): void {
   const io = new Server(httpServer, {
     cors: {

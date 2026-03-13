@@ -79,7 +79,7 @@ export function applyMoveToGame(
   game: ChessGame,
   fromR: number, fromC: number,
   toR: number, toC: number,
-  promotion: PieceType,
+  promotion?: PieceType,
 ): ChessGame {
   const ctx = getCtx(game);
   const files = 'abcdefgh';
