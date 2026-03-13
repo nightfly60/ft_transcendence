@@ -14,7 +14,7 @@ interface ChatMessage {
   timestamp: number;
 }
 
-type Tab = 'online' | 'amis' | 'messages';
+type Tab = 'online' | 'messages';
 
 @Component({
   selector: 'app-chat-widget',

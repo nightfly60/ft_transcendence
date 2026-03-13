@@ -16,6 +16,7 @@ import { finalizeGame } from './db.js';
 export function registerMove(io: Server, socket: Socket): void {
   socket.on('move', async ({ gameId, from, to, promotion }: { gameId: string; from: string; to: string; promotion?: string }) => {
     const game = multiGames.get(gameId);
+	console.log("mouv");
     if (!game || game.gameStatus === 'checkmate' || game.gameStatus === 'stalemate' || game.gameStatus === 'draw' || game.gameStatus === 'resign') return;
 
     const playerColor: PieceColor = game.white === socket.id ? 'w' : 'b';

@@ -144,4 +144,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
 			});
 		}
 	}
+
+	goToFriends() {
+		this.router.navigate(['/profile', this.data.id, 'friends']);
+	}
 }

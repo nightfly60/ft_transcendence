@@ -22,7 +22,7 @@ export function registerResign(io: Server, socket: Socket): void {
     const resigned = { ...game, turn: resignColor, gameStatus: 'resign' as const };
     multiGames.set(gameId, resigned);
     io.to(gameId).emit('game_state', buildGameState(resigned));
-
+	
     const winnerSocketId = resignColor === 'w' ? game.black : game.white;
     const winnerUserId = io.sockets.sockets.get(winnerSocketId)?.data.userId as number;
     await finalizeGame(gameId, game.whiteUserId, game.blackUserId, game.moveHistory.length, winnerUserId);
