@@ -17,7 +17,7 @@ interface NiveauParams {
 export const levelIA: Record<string, NiveauParams> = {
 	novice: { depth: 2, errorChance: 0.4 },
 	intermediaire: { depth: 4, errorChance: 0.3 },
-	fort: { depth: 6, errorChance: 0.1 },
+	expert: { depth: 6, errorChance: 0.0 },
 };
 
 export function getIAMove(fen: string, level: string): Promise<string> {
@@ -35,16 +35,11 @@ export function getIAMove(fen: string, level: string): Promise<string> {
 router.post("/move", (req: Request, res: Response) => {
 	const {fen, level} = req.body;
 
-	console.log(fen);
-	console.log(level);
-	console.log(levelIA[level].depth);
-
 	if (!fen || !level || !levelIA[level])
 		return res.status(400).json({error: "Parametres invalides"});
 
 	const IA_ENGINE_PATH = path.join(__dirname, "../ia/ia_engine/ia_engine");
 	const {depth, errorChance} = levelIA[level];
-	console.log(IA_ENGINE_PATH);
 
 	execFile (
 		IA_ENGINE_PATH,

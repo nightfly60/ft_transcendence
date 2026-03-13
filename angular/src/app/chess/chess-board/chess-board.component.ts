@@ -4,6 +4,7 @@ import { Board, Piece, PieceColor, PieceType, SYMBOLS, initBoard } from './chess
 import { PlayerPanelComponent } from './player-panel/player-panel.component';
 import { BoardGridComponent } from './board-grid/board-grid.component';
 import { MoveHistoryComponent } from './move-history/move-history.component';
+import { IaLevel } from '../chess-mode-select/ia-level-modal/ia-level-modal';
 
 type PromotionPiece = Extract<PieceType, 'Q' | 'R' | 'B' | 'N'>;
 
@@ -15,15 +16,24 @@ type PromotionPiece = Extract<PieceType, 'Q' | 'R' | 'B' | 'N'>;
   styleUrl: './chess-board.component.scss',
 })
 export class ChessComponent {
-  gameId  = input.required<string>();
-  mode    = input.required<GameMode>();
-  myColor = input<string>('');
+  gameId    = input.required<string>();
+  mode      = input.required<GameMode>();
+  myColor   = input<string>('');
+  whiteName = input<string>('');
+  blackName = input<string>('');
   movePlayed = output<{ from: string; to: string; promotion?: string }>();
   resign     = output<void>();
+  replay     = output<void>();
+  abandon      = output<void>();
+  quit         = output<void>();
+  proposeDraw  = output<void>();
+  aiLevel = input<'novice' | 'intermediaire' | 'expert' | null>(null);
+
+  userName = input<string>('');
 
   externalBoard      = input<Board | null>(null);
   externalTurn       = input<PieceColor | null>(null);
-  externalStatus     = input<'playing' | 'check' | 'checkmate' | 'stalemate' | null>(null);
+  externalStatus     = input<'playing' | 'check' | 'checkmate' | 'stalemate' | 'draw' | 'resign' | null>(null);
   externalHistory    = input<string[] | null>(null);
   externalCaptured   = input<Piece[] | null>(null);
   externalLastMove   = input<[[number, number], [number, number]] | null>(null);
@@ -32,7 +42,7 @@ export class ChessComponent {
 
   readonly files = ['a','b','c','d','e','f','g','h'];
 
-  gameStatus  = signal<'playing' | 'check' | 'checkmate' | 'stalemate'>('playing');
+  gameStatus  = signal<'playing' | 'check' | 'checkmate' | 'stalemate' | 'draw' | 'resign'>('playing');
   board       = signal<Board>(initBoard());
   selected    = signal<[number, number] | null>(null);
   validMoves  = signal<[number, number][]>([]);
@@ -58,11 +68,13 @@ export class ChessComponent {
       if (et) this.turn.set(et);
       const es = this.externalStatus();
       if (es) {
-        const wasOver = this.gameStatus() === 'checkmate' || this.gameStatus() === 'stalemate';
+        const wasOver = this.gameStatus() === 'checkmate' || this.gameStatus() === 'stalemate' || this.gameStatus() === 'draw' || this.gameStatus() === 'resign';
         this.gameStatus.set(es);
-        if (!wasOver && (es === 'checkmate' || es === 'stalemate')) {
+        if (!wasOver && (es === 'checkmate' || es === 'stalemate' || es === 'draw' || es === 'resign')) {
           this.showEndgame.set(true);
-          setTimeout(() => this.showEndgame.set(false), 4000);
+          if (this.mode() !== 'multi') {
+            setTimeout(() => this.showEndgame.set(false), 4000);
+          }
         }
       }
       const eh = this.externalHistory();
@@ -110,6 +122,20 @@ export class ChessComponent {
     return SYMBOLS[color][p];
   }
 
+  onReplay(): void {
+    this.showEndgame.set(false);
+    this.replay.emit();
+  }
+
+  onAbandon(): void {
+    this.abandon.emit();
+  }
+
+  onQuit(): void {
+    this.showEndgame.set(false);
+    this.quit.emit();
+  }
+
   resetGame(): void {
     this.resign.emit();
     this.selected.set(null);
@@ -122,19 +148,35 @@ export class ChessComponent {
 
   onSquareClick(event: { r: number; c: number }): void {
 	if (this.disabled()) return;
-    if (this.gameStatus() === 'checkmate' || this.gameStatus() === 'stalemate') return;
+    if (this.gameStatus() === 'checkmate' || this.gameStatus() === 'stalemate' || this.gameStatus() === 'draw' || this.gameStatus() === 'resign') return;
     if (this.showPromotion()) return;
     const color = this.myColor();
-    if (this.mode() === 'multi' || this.mode() === 'ia' && color && this.turn() !== color) return;
+    if (this.mode() === 'multi' || (this.mode() === 'ia' && color && this.turn() !== color)) return;
     const { r, c } = event;
     const sel = this.selected();
     const extMoves = this.externalValidMoves();
 
-    const isValid = this.validMoves().some(([mr, mc]) => mr === r && mc === c);
+    // Castling: si le roi est sélectionné et qu'on clique sur une tour amie,
+    // rediriger vers la case de destination du roi (g/c file)
+    let targetR = r, targetC = c;
+    if (sel) {
+      const selPiece = this.board()[sel[0]][sel[1]];
+      const clickedPiece = this.board()[r][c];
+      if (
+        selPiece?.type === 'K' &&
+        clickedPiece?.type === 'R' &&
+        clickedPiece.color === selPiece.color
+      ) {
+        // Tour côté roi (colonne h=7) → destination g=6, Tour côté dame (colonne a=0) → destination c=2
+        targetC = c === 7 ? 6 : 2;
+      }
+    }
+
+    const isValid = this.validMoves().some(([mr, mc]) => mr === targetR && mc === targetC);
     if (sel && isValid) {
       const fromPiece = this.board()[sel[0]][sel[1]];
-      if (fromPiece?.type === 'P' && (r === 0 || r === 7)) {
-        this.pendingPromotion.set({ from: sel, to: [r, c] });
+      if (fromPiece?.type === 'P' && (targetR === 0 || targetR === 7)) {
+        this.pendingPromotion.set({ from: sel, to: [targetR, targetC] });
         this.showPromotion.set(true);
         this.selected.set(null);
         this.validMoves.set([]);
@@ -143,7 +185,7 @@ export class ChessComponent {
         this.validMoves.set([]);
         this.movePlayed.emit({
           from: this.toAlgebraic(sel[0], sel[1]),
-          to:   this.toAlgebraic(r, c),
+          to:   this.toAlgebraic(targetR, targetC),
         });
       }
       return;

@@ -7,6 +7,9 @@ $font-body: 'Cormorant Garamond', serif;
 
 .card {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba($gold, 0.25);
   padding: 48px 40px;
@@ -42,6 +45,7 @@ $font-body: 'Cormorant Garamond', serif;
 }
 
 .card-desc {
+  flex: 1;
   color: $muted;
   font-size: 1.15rem;
   line-height: 1.6;

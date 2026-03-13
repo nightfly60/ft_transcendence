@@ -1,8 +1,11 @@
-import { Component, output } from '@angular/core';
+import { Component, inject, output } from '@angular/core';
 import { GameModeSoloComponent } from './chess-mode-solo/chess-mode-solo.component';
 import { GameModeMultiComponent } from './chess-mode-multi/chess-mode-multi.component';
 import { GameModeIaComponent } from './chess-mode-ia/chess-mode-ia.component';
-import { IaLevelModal, IaLevel } from './ia-level-modal/ia-level-modal';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
+import { IaLevel } from './ia-level-modal/ia-level-modal';
+import { IaLevelModal } from './ia-level-modal/ia-level-modal';
 
 export type GameMode = 'solo' | 'multi' | 'ia';
 

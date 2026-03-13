@@ -8,7 +8,7 @@ export interface Piece {
 
 export type Board = (Piece | null)[][];
 
-export type GameStatus = 'playing' | 'check' | 'checkmate' | 'stalemate';
+export type GameStatus = 'playing' | 'check' | 'checkmate' | 'stalemate' | 'draw' | 'resign';
 
 export interface CastlingRights {
   wK: boolean;
@@ -31,6 +31,7 @@ export interface MoveResult {
 
 export interface SoloIAGame extends ChessGame {
 	iaLevel: string;
+	playerColor: 'w' | 'b';
 }
 
 export const DEFAULT_CONTEXT: GameContext = {

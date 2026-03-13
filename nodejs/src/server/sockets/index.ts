@@ -3,6 +3,7 @@ import { IncomingMessage, Server as HttpServer, ServerResponse } from 'http';
 import jwt from 'jsonwebtoken';
 import { registerChessEvents } from './chess/events/index.js';
 
+
 export function initSockets(httpServer: HttpServer<typeof IncomingMessage, typeof ServerResponse>): void {
   const io = new Server(httpServer, {
     cors: {
@@ -14,8 +15,9 @@ export function initSockets(httpServer: HttpServer<typeof IncomingMessage, typeo
   io.use((socket, next) => {
     const token = (socket.handshake.auth as any).token;
     if (!token) {
-      console.log('[socket] connexion refusée: pas de token');
-      return next(new Error('Non autorisé'));
+      socket.data.userId = null;
+      console.log('[socket] connexion invité');
+      return next();
     }
     try {
       const payload = jwt.verify(token, process.env.JWT_SECRET || '...') as any;

@@ -10,7 +10,7 @@ export interface CastlingRights {
 export interface GameState {
   board: Board;
   turn: PieceColor;
-  gameStatus: 'playing' | 'check' | 'checkmate' | 'stalemate';
+  gameStatus: 'playing' | 'check' | 'checkmate' | 'stalemate' | 'resign';
   moveHistory: string[];
   captured: Piece[];
   lastMove: [[number, number], [number, number]] | null;
@@ -40,7 +40,7 @@ export class SocketService {
     this.socket.on('waiting', callback);
   }
 
-  onGameReady(callback: (data: { gameId: string; color: string }) => void) {
+  onGameReady(callback: (data: { gameId: string; color: string; whiteUsername: string; blackUsername: string }) => void) {
     this.socket.on('game_ready', callback);
   }
 
@@ -56,12 +56,21 @@ export class SocketService {
     this.socket.on('opponent_back', callback);
   }
 
+  proposeDraw(gameId: string) { this.socket.emit('propose_draw', { gameId }); }
+  acceptDraw(gameId: string)  { this.socket.emit('accept_draw',  { gameId }); }
+  refuseDraw(gameId: string)  { this.socket.emit('refuse_draw',  { gameId }); }
+
+  onDrawProposed(callback: () => void)  { this.socket.on('draw_proposed', callback); }
+  onDrawRefused(callback: () => void)   { this.socket.on('draw_refused',  callback); }
+
   offMultiListeners() {
     this.socket.off('waiting');
     this.socket.off('game_ready');
     this.socket.off('game_state');
     this.socket.off('opponent_left');
     this.socket.off('opponent_back');
+    this.socket.off('draw_proposed');
+    this.socket.off('draw_refused');
   }
 
   // ─── Solo ─────────────────────────────────────────────────────────────────
@@ -96,7 +105,7 @@ export class SocketService {
   }
 
   // ia
-	startSoloIA(level: 'novice' | 'intermediaire' | 'fort') {
+	startSoloIA(level: 'novice' | 'intermediaire' | 'expert') {
 		this.socket.emit('start_solo_ia', { level });
 	}
 
@@ -107,6 +116,10 @@ export class SocketService {
 	offSoloIAListeners() {
 		this.socket.off('solo_ready');
 		this.socket.off('game_state');
+	}
+
+	onSoloIAReady(callback: (data: { gameId: string; playerColor?: 'w' | 'b' }) => void) {
+		this.socket.on('solo_ready', callback);
 	}
 
   // ─── Common ───────────────────────────────────────────────────────────────

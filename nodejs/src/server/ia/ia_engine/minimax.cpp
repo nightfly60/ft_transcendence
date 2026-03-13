@@ -31,12 +31,11 @@ int	getKingSecurity(const chess::Board &board, chess::Color color)
 		chess::Piece piece = board.at(sq);
 
 		if (piece != chess::Piece::NONE && piece.color() == color)
-			neighbors++;
+			score += 5;
 	}
-	score += neighbors * 10;
 
 	if (board.isAttacked(king_pos, ~color)) // ~ operateur dans la lib pour avoir la couleur oposee
-		score -= 50;
+		score -= 100;
 
 	return (score);
 }
@@ -118,7 +117,6 @@ static int minimax(chess::Board &board, int depth, int alpha, int beta)
 		int best = 100000;
 		for (const auto &move : moves)
 		{
-			// PVLine child_pv;
 			board.makeMove(move);
 			int score = minimax(board, depth - 1, alpha, beta);
 			board.unmakeMove(move);
@@ -136,11 +134,10 @@ std::string	getIaMove(chess::Board &board, int depth, float errorChance)
 	chess::Movelist moves;
 	chess::movegen::legalmoves(moves, board);
 
+	int searchDepth = depth;
+
 	if ((float)rand() / RAND_MAX < errorChance)
-	{
-		int randomIndex = rand() % moves.size();
-		return (chess::uci::moveToUci(moves[randomIndex]));
-	}
+		searchDepth = std::max(1, depth / 2);
 
 	bool isWhite = board.sideToMove() == chess::Color::WHITE;
 	chess::Move bestMove = moves[0];
@@ -148,7 +145,7 @@ std::string	getIaMove(chess::Board &board, int depth, float errorChance)
 	for (const auto &move : moves)
 	{
 		board.makeMove(move);
-		int score = minimax(board, depth - 1, -100000, 100000);
+		int score = minimax(board, searchDepth - 1, -100000, 100000);
 		board.unmakeMove(move);
 		if (isWhite && score > bestScore)
 		{
