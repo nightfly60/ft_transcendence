@@ -1,6 +1,7 @@
 import pool from '../../../../db.js';
 import { playerGames } from './state.js';
 import { updateElo } from './elo.js';
+import { updateXp } from './xp.js';
 
 /**
  * @brief Clôture une partie : nettoie l'état en mémoire, persiste le résultat en BDD et met à jour les ELO.
@@ -12,17 +13,18 @@ import { updateElo } from './elo.js';
  * @param winnerId    Id du gagnant, ou null en cas de nulle/pat.
  */
 export async function finalizeGame(
-  gameId: string,
-  whiteUserId: number,
-  blackUserId: number,
-  nbMoves: number,
-  winnerId: number | null,
+	gameId: string,
+	whiteUserId: number,
+	blackUserId: number,
+	nbMoves: number,
+	winnerId: number | null,
 ): Promise<void> {
-  playerGames.delete(whiteUserId);
-  playerGames.delete(blackUserId);
-  await pool.query(
-    'UPDATE Game SET id_winner = ?, nb_cuts = ? WHERE id = ?',
-    [winnerId ?? null, nbMoves, Number(gameId)]
-  );
-  await updateElo(winnerId, whiteUserId, blackUserId);
+	playerGames.delete(whiteUserId);
+	playerGames.delete(blackUserId);
+	await pool.query(
+		'UPDATE Game SET id_winner = ?, nb_cuts = ? WHERE id = ?',
+		[winnerId ?? null, nbMoves, Number(gameId)]
+	);
+	await updateElo(winnerId, whiteUserId, blackUserId);
+	await updateXp(winnerId, whiteUserId, blackUserId);
 }

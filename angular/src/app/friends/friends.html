@@ -1,0 +1,57 @@
+<div class="page-wrapper">
+	<div class="floating-piece">♜</div>
+	<div class="floating-piece">♝</div>
+	<div class="floating-piece">♛</div>
+	<div class="floating-piece">♞</div>
+	<div class="floating-piece">♟</div>
+	<div class="floating-piece">♚</div>
+
+	<div class="chessboard-bg">
+		<div *ngFor="let cell of cells" [style.background]="cell.light ? '#f5f0e8' : 'transparent'"></div>
+	</div>
+
+	<div class="friends-page">
+
+		<div class="page-header">
+		<button class="back-btn" (click)="goBack()">← Retour</button>
+		<div class="header-info">
+			<h1 class="page-title">Liste d'amis de {{ username }}</h1>
+		</div>
+		</div>
+
+		<div class="gold-separator"></div>
+
+		<div class="loading-state" *ngIf="loading">
+		<span class="loading-piece">♞</span>
+		</div>
+
+		<div class="empty-state" *ngIf="!loading && friends.length === 0">
+		<span class="empty-icon">♟</span>
+		<p class="empty-text">Aucun ami pour le moment.</p>
+		</div>
+
+		<div class="friends-grid" *ngIf="!loading && friends.length > 0">
+		<div
+			class="friend-card"
+			*ngFor="let f of friends"
+			(click)="goToProfile(f.id)">
+			<div class="friend-avatar-ring">
+			<img
+				class="friend-avatar"
+				[src]="f.path_img || '/avatars/default-avatar.png'"
+				alt="Avatar"
+				(error)="$any($event.target).src = '/avatars/default-avatar.png'"
+			/>
+			</div>
+			<div class="friend-info">
+			<span class="friend-username">{{ f.username }}</span>
+			</div>
+			<div>
+			<span class="friend-elo">ELO {{ f.elo }}</span>
+			</div>
+			<span class="card-arrow">→</span>
+		</div>
+		</div>
+
+	</div>
+</div>
