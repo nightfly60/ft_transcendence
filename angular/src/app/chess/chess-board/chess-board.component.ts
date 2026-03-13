@@ -145,12 +145,8 @@ export class ChessComponent {
   // ─── Interaction ──────────────────────────────────────────────────────────
 
   onSquareClick(event: { r: number; c: number }): void {
-<<<<<<< HEAD
-    if (this.gameStatus() === 'checkmate' || this.gameStatus() === 'stalemate' || this.gameStatus() === 'draw' || this.gameStatus() === 'resign') return;
-=======
 	if (this.disabled()) return;
-    if (this.gameStatus() === 'checkmate' || this.gameStatus() === 'stalemate') return;
->>>>>>> 5266b90d (ia liee front)
+    if (this.gameStatus() === 'checkmate' || this.gameStatus() === 'stalemate' || this.gameStatus() === 'draw' || this.gameStatus() === 'resign') return;
     if (this.showPromotion()) return;
     const color = this.myColor();
     if (this.mode() === 'multi' || (this.mode() === 'ia' && color && this.turn() !== color)) return;
