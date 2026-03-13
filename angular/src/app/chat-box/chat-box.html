@@ -11,11 +11,6 @@
 <body>
 	<div class="chat-window">
 		<div class="chat-messages" id="messages" #messagesContainer>
-			<div class="incoming">
-				<div class="bubble">Incoming message example</div><!-- placeholder -->
-				<div class="timestamp">10:42 AM</div><!-- placeholder -->
-			</div>
-			 <!-- need dynamic style if incoming or outgoing baes on user id-->
 			 @for (message of messages(); track message.timestamp) {
 				@if (message.senderId === this.userId) {
 					<div class=" message outgoing">

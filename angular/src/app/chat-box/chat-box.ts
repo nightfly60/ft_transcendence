@@ -27,7 +27,7 @@ export class ChatBox implements OnInit, AfterViewChecked{
 
     ngOnInit(): void {
       this.socket.findChat(); //get chat id from db or from game
-      this.socket.onChatReady(( chatId, userId ) => {  //is chat id really string or is it number
+      this.socket.onChatReady(( chatId, userId ) => {
           this.chatID = chatId;
           this.userId = userId;
       });
@@ -35,7 +35,6 @@ export class ChatBox implements OnInit, AfterViewChecked{
       this.socket.onReceiveMessage(({text, senderId, timestamp}) => {
           this.messages.update((prev : Message[]) => [...prev, new Message(text, new Date(timestamp), senderId)]);
         });
-      //need to check if sender = socket.data.user to render incoming or outgoing -> in html?
     }
 
   
