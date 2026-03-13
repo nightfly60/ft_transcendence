@@ -5,13 +5,14 @@ import { GameModeIaComponent } from './chess-mode-ia/chess-mode-ia.component';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { IaLevel } from './ia-level-modal/ia-level-modal';
+import { IaLevelModal } from './ia-level-modal/ia-level-modal';
 
 export type GameMode = 'solo' | 'multi' | 'ia';
 
 @Component({
   selector: 'app-chess-mode-select',
   standalone: true,
-  imports: [GameModeSoloComponent, GameModeMultiComponent, GameModeIaComponent],
+  imports: [GameModeSoloComponent, GameModeMultiComponent, GameModeIaComponent, IaLevelModal],
   templateUrl: './chess-mode-select.component.html',
   styleUrl: './chess-mode-select.component.scss',
 })

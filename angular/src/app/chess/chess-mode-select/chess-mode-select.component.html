@@ -4,9 +4,16 @@
 		<p class="subtitle">Sélectionne comment tu veux jouer</p>
 	</div>
 
-  <div class="cards">
-    <app-chess-mode-solo (selected)="select('solo')" />
-    <app-chess-mode-multi (selected)="select('multi')" />
-    <app-chess-mode-ia (selected)="select('ia')" />
-  </div>
+	<div class="cards">
+		<app-chess-mode-solo (selected)="select('solo')" />
+		<app-chess-mode-multi (selected)="select('multi')" />
+		<app-chess-mode-ia (selected)="showIaModal = true" />
+	</div>
+
+	@if (showIaModal) {
+		<app-ia-level-modal
+			(levelSelected)="onIaLevelSelected($event)"
+			(cancel)="showIaModal = false"
+		/>
+	}
 </div>
