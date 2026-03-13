@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, inject, signal, input } from '@angular/co
 import { ChessComponent } from '../chess-board/chess-board.component';
 import { SocketService, GameState } from '../../services/socket.service';
 import { IaLevel } from '../chess-mode-select/ia-level-modal/ia-level-modal';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-chess-ia',
@@ -11,7 +12,8 @@ import { IaLevel } from '../chess-mode-select/ia-level-modal/ia-level-modal';
   styleUrls: ['./chess-ia.component.scss']
 })
 export class ChessIaComponent implements OnInit, OnDestroy {
-  private socket = inject(SocketService);
+	private socket = inject(SocketService);
+	auth = inject(AuthService);
 
 	level       = input<IaLevel>('intermediaire');
 	gameId      = signal<string>('');

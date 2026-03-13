@@ -24,39 +24,48 @@ $cell: var(--cell);
 // ─── Cases ──────────────────────────────────────────────────────────────────
 
 .square {
-  width: $cell;
-  height: $cell;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  cursor: pointer;
-  transition: background 0.12s;
+	width: $cell;
+	height: $cell;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+	cursor: pointer;
+	transition: background 0.12s;
 
-  &.light { background: #3a2c14; }
-  &.dark  { background: #110d06; }
+	&.light { background: #3a2c14; }
+	&.dark  { background: #110d06; }
 
-  &.last-move {
-    &.light { background: #5a4520; }
-    &.dark  { background: #2a1e0a; }
-  }
+	&.last-move-from {
+		background: #8b383588 !important;
+		box-shadow: 
+			inset 0 0 0 2px $gold,
+			inset 0 0 12px #8a6a2a;
+	}
 
-  &.in-check {
-    background: rgba(220, 50, 50, 0.55) !important;
-    box-shadow: inset 0 0 12px rgba(220, 50, 50, 0.8);
-  }
+	&.last-move-to {
+		background: #556b2f88 !important;
+		box-shadow: 
+			inset 0 0 0 2px $gold,
+			inset 0 0 12px #8a6a2a;
+	}
 
-  &.selected { background: rgba($gold, 0.55) !important; }
+	&.in-check {
+		background: rgba(220, 50, 50, 0.55) !important;
+		box-shadow: inset 0 0 12px rgba(220, 50, 50, 0.8);
+	}
 
-  &.valid-target {
-    &.light { background: #4a3818; }
-    &.dark  { background: #1e1608; }
-  }
+	&.selected { background: rgba($gold, 0.55) !important; }
 
-  &:hover:not(.selected) {
-    &.light { background: #4a3818; }
-    &.dark  { background: #1e1608; }
-  }
+	&.valid-target {
+		&.light { background: #4a3818; }
+		&.dark  { background: #1e1608; }
+	}
+
+	&:hover:not(.selected) {
+		&.light { background: #4a3818; }
+		&.dark  { background: #1e1608; }
+	}
 }
 
 // ─── Coordonnées dans les cases ─────────────────────────────────────────────

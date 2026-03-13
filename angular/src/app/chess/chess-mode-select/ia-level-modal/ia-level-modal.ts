@@ -18,8 +18,8 @@ export class IaLevelModal {
 
 	levels: { key: IaLevel; label: string; icon: string; desc: string }[] = [
 		{ key: 'novice',        label: 'Joueur occasionnel', icon: '🐣', desc: 'Idéal pour apprendre' },
-		{ key: 'intermediaire', label: 'Amateur',            icon: '🌱', desc: 'Attention, peut te surprendre' },
-		{ key: 'expert',        label: 'Joueur club',        icon: '🎓', desc: 'Prépare-toi à un vrai défi' },
+		{ key: 'intermediaire', label: 'Joueur club',        icon: '🎓', desc: 'Attention, peut te surprendre' },
+		{ key: 'expert',        label: 'Entraîneur',         icon: '🌟', desc: 'Prépare-toi à un vrai défi' },
 	];
 
 	confirm() {

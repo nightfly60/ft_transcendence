@@ -15,7 +15,7 @@ import { Leaderboard } from './leaderboard/leaderboard';
 export const routes: Routes = [
 	{ path: '', component: Home },
 	{ path: 'login', component: LoginPage },
-	{ path: 'game', component: GameComponent },
+	{ path: 'game', component: GameComponent, canActivate: [authGuard] },
 	{ path: 'chat-box', component: ChatBox},
 	{ path: 'profile/:id', component: ProfileComponent, canActivate: [authGuard] },
 	{ path: 'profile/edit/:id', component: ProfileEditComponent, canActivate: [authGuard] },

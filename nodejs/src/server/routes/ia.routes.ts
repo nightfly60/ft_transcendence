@@ -17,7 +17,7 @@ interface NiveauParams {
 export const levelIA: Record<string, NiveauParams> = {
 	novice: { depth: 2, errorChance: 0.4 },
 	intermediaire: { depth: 4, errorChance: 0.3 },
-	expert: { depth: 6, errorChance: 0.1 },
+	expert: { depth: 6, errorChance: 0.0 },
 };
 
 export function getIAMove(fen: string, level: string): Promise<string> {
