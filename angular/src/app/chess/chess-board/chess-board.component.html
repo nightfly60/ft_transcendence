@@ -78,6 +78,12 @@
         @if (userName()) {
           <span class="vs-player">{{ userName() }}</span>
         }
+		@if (mode() === 'ia' && aiLevel()) {
+			<span class="vs-sep">vs</span>
+			<span class="vs-player">
+				{{ aiLevel() === 'novice' ? 'Joueur occasionnel 🐣' : aiLevel() === 'intermediaire' ? 'Joueur club 🎓' : 'Entraîneur 🌟' }}
+			</span>
+		}
         <div class="multi-actions">
           <button class="action-btn flip-btn-top" (click)="manualFlip.set(!manualFlip())" title="Retourner l'échiquier">↕</button>
         </div>

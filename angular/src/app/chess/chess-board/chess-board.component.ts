@@ -4,6 +4,7 @@ import { Board, Piece, PieceColor, PieceType, SYMBOLS, initBoard } from './chess
 import { PlayerPanelComponent } from './player-panel/player-panel.component';
 import { BoardGridComponent } from './board-grid/board-grid.component';
 import { MoveHistoryComponent } from './move-history/move-history.component';
+import { IaLevel } from '../chess-mode-select/ia-level-modal/ia-level-modal';
 
 type PromotionPiece = Extract<PieceType, 'Q' | 'R' | 'B' | 'N'>;
 
@@ -26,6 +27,7 @@ export class ChessComponent {
   abandon      = output<void>();
   quit         = output<void>();
   proposeDraw  = output<void>();
+  aiLevel = input<'novice' | 'intermediaire' | 'expert' | null>(null);
 
   userName = input<string>('');
 
