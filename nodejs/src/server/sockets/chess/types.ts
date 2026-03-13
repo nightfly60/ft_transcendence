@@ -31,6 +31,7 @@ export interface MoveResult {
 
 export interface SoloIAGame extends ChessGame {
 	iaLevel: string;
+	playerColor: 'w' | 'b';
 }
 
 export const DEFAULT_CONTEXT: GameContext = {

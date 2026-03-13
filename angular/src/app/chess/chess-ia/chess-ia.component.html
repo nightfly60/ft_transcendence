@@ -1,21 +1,27 @@
-<div *ngIf="waiting()">
-  <p>Connexion à la partie IA...</p>
-</div>
+@if (waiting()) {
+	<div>
+		<p>Connexion à la partie IA...</p>
+	</div>
+}
 
-<div *ngIf="!waiting() && gameState() as state">
-  <app-chess
-    [gameId]="gameId()"
-    [mode]="'ia'"
-    [myColor]="'w'"
-    [externalBoard]="state.board"
-    [externalTurn]="state.turn"
-    [externalStatus]="state.gameStatus"
-    [externalHistory]="state.moveHistory"
-    [externalCaptured]="state.captured"
-    [externalLastMove]="state.lastMove"
-    [externalValidMoves]="state.validMoves"
-	[disabled]="iaThinking()"
-    (movePlayed)="onMovePlayed($event)"
-    (resign)="onResign()"
-  />
-</div>
+@if (!waiting()) {
+	@if (gameState(); as state) {
+		<div>
+		<app-chess
+			[gameId]="gameId()"
+			[mode]="'ia'"
+			[myColor]="playerColor()"
+			[externalBoard]="state.board"
+			[externalTurn]="state.turn"
+			[externalStatus]="state.gameStatus"
+			[externalHistory]="state.moveHistory"
+			[externalCaptured]="state.captured"
+			[externalLastMove]="state.lastMove"
+			[externalValidMoves]="state.validMoves"
+			[disabled]="iaThinking()"
+			(movePlayed)="onMovePlayed($event)"
+			(resign)="onResign()"
+		/>
+		</div>
+	}
+}

@@ -153,7 +153,7 @@ export class ChessComponent {
 >>>>>>> 5266b90d (ia liee front)
     if (this.showPromotion()) return;
     const color = this.myColor();
-    if (this.mode() === 'multi' || this.mode() === 'ia' && color && this.turn() !== color) return;
+    if (this.mode() === 'multi' || (this.mode() === 'ia' && color && this.turn() !== color)) return;
     const { r, c } = event;
     const sel = this.selected();
     const extMoves = this.externalValidMoves();

@@ -1,7 +1,7 @@
 import { Component, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-export type IaLevel = 'novice' | 'intermediaire' | 'fort' | 'expert';
+export type IaLevel = 'novice' | 'intermediaire' | 'expert';
 
 @Component({
 	selector: 'app-ia-level-modal',
@@ -19,7 +19,7 @@ export class IaLevelModal {
 	levels: { key: IaLevel; label: string; icon: string; desc: string }[] = [
 		{ key: 'novice',        label: 'Joueur occasionnel', icon: '🐣', desc: 'Idéal pour apprendre' },
 		{ key: 'intermediaire', label: 'Amateur',            icon: '🌱', desc: 'Attention, peut te surprendre' },
-		{ key: 'fort',          label: 'Joueur club',        icon: '🎓', desc: 'Prépare-toi à un vrai défi' },
+		{ key: 'expert',        label: 'Joueur club',        icon: '🎓', desc: 'Prépare-toi à un vrai défi' },
 	];
 
 	confirm() {
