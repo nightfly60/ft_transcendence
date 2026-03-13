@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS Profile (
     bio VARCHAR(255),
     elo BIGINT,
     id_user INT NOT NULL UNIQUE,
-    FOREIGN KEY(id_user) REFERENCES \`User\`(id)
+    FOREIGN KEY(id_user) REFERENCES \`User\`(id) ON DELETE CASCADE
 );
 
 -- Table Game
@@ -34,10 +34,10 @@ CREATE TABLE IF NOT EXISTS Game (
     id_player_second INT NOT NULL,
     nb_cuts BIGINT,
     timestamp DATETIME,
-    id_winner INT NULL,
-    FOREIGN KEY(id_winner) REFERENCES \`User\`(id),
-    FOREIGN KEY(id_player_one) REFERENCES \`User\`(id),
-    FOREIGN KEY(id_player_second) REFERENCES \`User\`(id)
+    id_winner INT NOT NULL,
+    FOREIGN KEY(id_winner) REFERENCES \`User\`(id) ON DELETE CASCADE,
+    FOREIGN KEY(id_player_one) REFERENCES \`User\`(id) ON DELETE CASCADE,
+    FOREIGN KEY(id_player_second) REFERENCES \`User\`(id) ON DELETE CASCADE
 );
 
 -- Table Achievements
@@ -54,8 +54,8 @@ CREATE TABLE IF NOT EXISTS friends (
     id_user_1 INT NOT NULL,
     id_user_2 INT NOT NULL,
     PRIMARY KEY(id_user_1, id_user_2),
-    FOREIGN KEY(id_user_1) REFERENCES \`User\`(id),
-    FOREIGN KEY(id_user_2) REFERENCES \`User\`(id)
+    FOREIGN KEY(id_user_1) REFERENCES \`User\`(id) ON DELETE CASCADE,
+    FOREIGN KEY(id_user_2) REFERENCES \`User\`(id) ON DELETE CASCADE
 );
 
 -- Table User_Achievements
@@ -64,8 +64,18 @@ CREATE TABLE IF NOT EXISTS User_achievements (
     id_achievement INT NOT NULL,
     progression VARCHAR(255),
     PRIMARY KEY(id_user, id_achievement),
-    FOREIGN KEY(id_user) REFERENCES \`User\`(id),
-    FOREIGN KEY(id_achievement) REFERENCES Achievements(id)
+    FOREIGN KEY(id_user) REFERENCES \`User\`(id) ON DELETE CASCADE,
+    FOREIGN KEY(id_achievement) REFERENCES Achievements(id) ON DELETE CASCADE
+);
+
+-- Table User_API
+CREATE TABLE IF NOT EXISTS User_API (
+    id_user INT NOT NULL,
+    usages INT DEFAULT 0,
+    reset_date DATETIME,
+	secret_key VARCHAR(255),
+    PRIMARY KEY(id_user),
+	FOREIGN KEY(id_user) REFERENCES \`User\`(id) ON DELETE CASCADE
 );
 EOSQL
 

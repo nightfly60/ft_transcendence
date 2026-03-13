@@ -211,6 +211,27 @@ $font:       'Cormorant Garamond', serif;
 	gap: 1rem;
 	margin-top: 2rem;
 	width: 100%;
+	margin-bottom: 2rem;
+}
+
+.api-section {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1rem;
+	margin-top: 2rem;
+	width: 100%;
+	// margin-bottom: 2rem;
+}
+
+.generate-api {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 1rem;
+	// margin-top: 2rem;
+	width: 100%;
+	// margin-bottom: 2rem;
 }
 
 .twofa-title {
@@ -222,7 +243,7 @@ $font:       'Cormorant Garamond', serif;
 
 .twofa-subtitle {
 	font-size: 0.85rem;
-	color: #aaa;
+	color: #cfcfcf;
 	margin: 0;
 }
 
@@ -280,4 +301,17 @@ $font:       'Cormorant Garamond', serif;
 		letter-spacing: normal;
 		font-size: 0.85rem;
 	}
+}
+
+.api-input {
+	width: 100%;
+	padding: 0.6rem 1rem;
+	border: 1px solid #d4af37;
+	border-radius: 6px;
+	background: rgba(255,255,255,0.05);
+	color: white;
+	font-size: 1.1rem;
+	letter-spacing: 0.3em;
+	text-align: center;
+	outline: none;
 }

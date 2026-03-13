@@ -141,6 +141,7 @@
 					<div class="xp-track">
 						<div class="xp-fill" [style.width.%]="a.progress / a.objective * 100 > 100 ? 100 : a.progress / a.objective * 100"></div>
 					</div>
+					<div class="achievement-desc">{{ a.progress }} / {{ a.objective }}</div>
 				</div>
 			</ng-container>
 		</div>
