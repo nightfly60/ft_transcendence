@@ -66,7 +66,7 @@ passport.use(new Strategy({
 
 				const [profile_result]: any = await pool.query(
 					'INSERT INTO `Profile` (id_user, elo, xp, path_img) VALUES (?, ?, ?, ?)',
-					[user_result.insertId, Number(process.env.BASE_ELO) || 400, 0, file]
+					[user_result.insertId, 400, 0, file]
 				);
 			} catch (err: any)
 			{
