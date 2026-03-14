@@ -39,16 +39,6 @@ INSERT INTO Profile (xp, path_img, bio, elo, id_user) VALUES
 (2800, '/avatars/ivan.png',    'Maître de la défense',              1380, 9),
 (1100, '/avatars/judy.png',    'Aime les longues parties',          1100, 10);
 
--- Achievements
-INSERT INTO Achievements (name, objective, description, type) VALUES
-('Premier sang',   1,   'Gagner votre première partie', 'win'),
-('Conquérant',     5,   'Gagner 5 parties', 'win'),
-('Centenaire',     100, 'Jouer 100 parties', 'game'),
-('Vétéran',        50,  'Jouer 50 parties', 'game'),
-('Elite',          1500,  'Atteindre un elo de 1500', 'elo'),
-('Clutch',         20,   'Jouer une partie de plus de 20 coups', 'upper_cut'),
-('Marathonien',    80,  'Jouer une partie de plus de 80 coups', 'upper_cut');
-
 -- Games (id_winner référence un User existant)
 INSERT INTO Game (nb_cuts, timestamp, id_winner, id_player_one, id_player_second) VALUES
 (12, '2025-01-10 14:23:00', 1, 1, 2),
