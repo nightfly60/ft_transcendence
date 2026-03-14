@@ -63,6 +63,9 @@ router.get('/users/:id', async (req, res) => {
 router.post('/users', async (req, res) => {
 	const { username, password, email } = req.body;
 
+	if (!username || !password || !email)
+		return res.status(400).json({ error: 'All the informations must be given (username, password, email)' })
+
 	try
 	{
 		const hash = await bcrypt.hash(password, Number(process.env.BCRYPT_SALT_ROUNDS) || 10);
