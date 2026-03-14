@@ -65,7 +65,7 @@ AI tools were not used to automatically generate the complete project or major a
 
 ## 4. Usage Documentation
 The following documentation provides information to use and configure the website:
-- [.env example](.env.example) - Setup the website
+- [.env example](.env.example.md) - Setup the website
 - [API documentation](API-Documentation.md) - Public API usage
 
 ## 5. Team Information
