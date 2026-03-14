@@ -1,0 +1,37 @@
+<div class="page-wrapper">
+	<app-leaderboard-background></app-leaderboard-background>
+
+	<div class="leaderboard-container">
+		<app-leaderboard-search
+			[searchQuery]="searchQuery"
+			(searchChange)="onSearch($event)">
+		</app-leaderboard-search>
+
+		<app-leaderboard-controls
+			(sortByXP)="sortByXP()"
+			(sortByLevel)="sortByLevel()">
+		</app-leaderboard-controls>
+
+		<div class="leaderboard-list">
+			@for (p of pagedData; track p.id) {
+				<app-leaderboard-card
+					[player]="p"
+					(profileOpen)="openPlayerProfile($event)">
+				</app-leaderboard-card>
+			}
+
+			@if (filteredData.length === 0) {
+				<div class="no-results">Aucun joueur trouvé.</div>
+			}
+		</div>
+
+		<mat-paginator
+			[length]="filteredData.length"
+			[pageSize]="5"
+			[pageSizeOptions]="[5, 10, 25]"
+			(page)="onPageChange($event)"
+			aria-label="Sélectionner une page">
+		</mat-paginator>
+	</div>
+	
+</div>

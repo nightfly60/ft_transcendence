@@ -1,0 +1,126 @@
+$gold:       #c9a84c;
+$gold-light: #e8c060;
+$white:      #f5f0e8;
+$muted:      #a09070;
+$font:       'Cormorant Garamond', serif;
+
+.leaderboard-card-wrapper {
+  position: relative;
+
+  button {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover .leaderboard-card {
+      transform: translateX(8px);
+      box-shadow: 0 8px 30px rgba(201, 168, 76, 0.3);
+      border-color: $gold-light;
+    }
+
+    &:active .leaderboard-card {
+      transform: translateX(4px);
+    }
+  }
+}
+
+.leaderboard-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2rem;
+  padding: 1.2rem 1.8rem;
+  border: 2px solid $gold;
+  background: linear-gradient(135deg, rgba(6, 6, 6, 0.6) 0%, rgba(20, 15, 10, 0.6) 100%);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, $gold-light, transparent);
+    opacity: 0.5;
+  }
+}
+
+.player-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  text-align: left;
+  min-width: 0;
+}
+
+.player-name {
+  font-size: clamp(1rem, 2.5vw, 1.4rem);
+  color: $white;
+  font-weight: 700;
+  letter-spacing: 1px;
+  word-break: break-word;
+}
+
+.leaderboard-stats {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  flex-wrap: wrap;
+  min-width: fit-content;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  min-width: 80px;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: $muted;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
+}
+
+.leaderboard-font {
+  font-size: clamp(0.90rem, 2.2vw, 1.3rem);
+  color: $gold-light;
+  font-style: normal;
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(232, 192, 96, 0.2);
+}
+
+@media (max-width: 768px) {
+  .leaderboard-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .leaderboard-stats {
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+    gap: 1rem;
+  }
+
+  .player-info {
+    width: 100%;
+    text-align: center;
+  }
+}

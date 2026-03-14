@@ -1,0 +1,78 @@
+@if (showEndgame()) {
+  <app-endgame-overlay
+    [gameStatus]="gameStatus()"
+    [mode]="mode()"
+    [myColor]="myColor()"
+    [turn]="turn()"
+    (replay)="onReplay()"
+    (quit)="onQuit()"
+  />
+}
+
+@if (showPromotion()) {
+  <app-promotion-dialog
+    [pieces]="promotionItems()"
+    (select)="selectPromotion($any($event))"
+  />
+}
+
+<div class="game-area">
+  <div class="board-section">
+    @if (mode() === 'multi' && whiteName() && blackName()) {
+      <div class="vs-banner">
+        <span class="vs-player">{{ isFlipped() ? blackName() : whiteName() }}</span>
+        <span class="vs-sep">vs</span>
+        <span class="vs-player">{{ isFlipped() ? whiteName() : blackName() }}</span>
+        @if (gameStatus() !== 'checkmate' && gameStatus() !== 'stalemate' && gameStatus() !== 'draw' && gameStatus() !== 'resign') {
+          <div class="multi-actions">
+            <button class="action-btn draw-btn" (click)="proposeDraw.emit()" title="Proposer nulle">½</button>
+            <button class="action-btn abandon-btn" (click)="onAbandon()" title="Abandonner">⚑</button>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="vs-banner">
+        @if (userName()) {
+          <span class="vs-player">{{ userName() }}</span>
+        }
+		@if (mode() === 'ia' && aiLevel()) {
+			<span class="vs-sep">vs</span>
+			<span class="vs-player">
+				{{ aiLevel() === 'novice' ? 'Joueur occasionnel 🐣' : aiLevel() === 'intermediaire' ? 'Joueur club 🎓' : 'Entraîneur 🌟' }}
+			</span>
+		}
+        <div class="multi-actions">
+          <button class="action-btn flip-btn-top" (click)="manualFlip.set(!manualFlip())" title="Retourner l'échiquier">↕</button>
+        </div>
+      </div>
+    }
+	<app-player-panel
+	[icon]="isFlipped() ? '♔' : '♚'"
+	[name]="isFlipped() ? 'Blancs' : 'Noirs'"
+	[active]="isFlipped() ? turn() === 'w' : turn() === 'b'"
+	[captured]="isFlipped() ? capturedSymbols('b') : capturedSymbols('w')"
+	/>
+	<app-board-grid
+	[board]="board()"
+	[selected]="selected()"
+	[validMoves]="validMoves()"
+	[lastMove]="lastMove()"
+	[checkSquare]="checkSquare()"
+	[flipped]="isFlipped()"
+	(squareClick)="onSquareClick($event)"
+	/>
+	<app-player-panel
+	[icon]="isFlipped() ? '♚' : '♔'"
+	[name]="isFlipped() ? 'Noirs' : 'Blancs'"
+	[active]="isFlipped() ? turn() === 'b' : turn() === 'w'"
+	[captured]="isFlipped() ? capturedSymbols('w') : capturedSymbols('b')"
+	/>
+
+    <button class="mobile-reset-btn" (click)="resetGame()">Nouvelle partie</button>
+  </div>
+  <app-move-history
+    [pairs]="movePairs()"
+    [isEmpty]="moveHistory().length === 0"
+    (reset)="resetGame()"
+  />
+</div>

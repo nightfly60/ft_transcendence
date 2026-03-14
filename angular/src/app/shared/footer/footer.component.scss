@@ -1,0 +1,117 @@
+$black:     #0a0a0a;
+$gold:      #c9a84c;
+$cream:     #e8dfc8;
+$muted:     #a09070;
+$font-body: 'Cormorant Garamond', serif;
+
+.footer {
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(12px);
+  font-family: $font-body;
+  position: relative;
+  z-index: 10;
+
+  // ligne or en haut
+  &::before {
+    content: '';
+    display: block;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba($gold, 0.5), transparent);
+  }
+}
+
+.footer-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 36px 24px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+// BRAND
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+
+  .brand-icon {
+    font-size: 22px;
+    color: $gold;
+    filter: drop-shadow(0 0 6px rgba($gold, 0.35));
+  }
+
+  .brand-name {
+    font-family: $font-body;
+    font-size: 1.1rem;
+    font-style: italic;
+    font-weight: 400;
+    color: $gold;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+}
+
+// ORNEMENT
+.footer-ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: rgba($gold, 0.5);
+  font-size: 1rem;
+  margin-bottom: 20px;
+
+  &::before,
+  &::after {
+    content: '';
+    height: 1px;
+    width: 60px;
+    background: linear-gradient(to right, transparent, rgba($gold, 0.35));
+  }
+
+  &::after {
+    transform: scaleX(-1);
+  }
+}
+
+// LIENS
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 28px;
+  margin-bottom: 24px;
+
+  a {
+    font-family: $font-body;
+    color: $muted;
+    text-decoration: none;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+
+    &:hover {
+      color: $cream;
+    }
+  }
+}
+
+// COPYRIGHT
+.footer-copy {
+  font-family: $font-body;
+  font-size: 0.85rem;
+  color: rgba($muted, 0.45);
+  margin: 0;
+  letter-spacing: 0.05em;
+  font-style: italic;
+}
+
+@media (max-width: 480px) {
+  .footer-content {
+    padding: 28px 16px 20px;
+  }
+}

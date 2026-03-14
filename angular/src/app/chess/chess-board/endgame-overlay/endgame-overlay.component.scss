@@ -1,0 +1,85 @@
+.endgame-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  animation: fadeIn 0.3s ease;
+}
+
+.endgame-dialog {
+  background: #1a1a1a;
+  border: 1px solid #444;
+  border-radius: 12px;
+  padding: 2.5rem 3rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+}
+
+.endgame-icon {
+  font-size: 4rem;
+  line-height: 1;
+}
+
+.endgame-title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: 'Cormorant Garamond', serif;
+  letter-spacing: 0.08em;
+  color: #f0d9b5;
+}
+
+.endgame-sub {
+  margin: 0;
+  font-size: 1rem;
+  color: #aaa;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.endgame-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.replay-btn {
+  flex: 1;
+  padding: 0.6rem 1.5rem;
+  background: #b58863;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Cormorant Garamond', serif;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  &:hover { background: #a07050; }
+}
+
+.quit-btn {
+  flex: 1;
+  padding: 0.6rem 1.5rem;
+  background: transparent;
+  color: #aaa;
+  border: 1px solid rgba(170, 170, 170, 0.4);
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: 'Cormorant Garamond', serif;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  &:hover { background: rgba(170, 170, 170, 0.1); color: #fff; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}

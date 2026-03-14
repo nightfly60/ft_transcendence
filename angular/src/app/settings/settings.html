@@ -1,0 +1,91 @@
+<div class="page-wrapper">
+	<div class="floating-piece">♜</div>
+	<div class="floating-piece">♝</div>
+	<div class="floating-piece">♛</div>
+	<div class="floating-piece">♞</div>
+	<div class="floating-piece">♟</div>
+	<div class="floating-piece">♚</div>
+	<div class="chessboard-bg">
+		@for (cell of cells; track $index) {
+			<div [style.background]="cell.light ? '#f5f0e8' : 'transparent'"></div>
+		}
+	</div>
+
+	@if (auth.isLoggedIn()) {
+		<div class="profile-page">
+			<header class="profile-header">
+				<div class="avatar-ring">
+					<img
+						class="avatar-img"
+						[src]="auth.getAvatarUrl()"
+						alt="Avatar"
+						(error)="$any($event.target).src = '/avatars/default-avatar.png'"
+					/>
+				</div>
+				<div class="header-info">
+					<h1 class="username">{{ auth.getUsername() }}</h1>
+				</div>
+			</header>
+
+			<div class="gold-separator"></div>
+
+			<div class="twofa-section">
+				<h2 class="twofa-title">Authentification à deux facteurs</h2>
+				<p class="twofa-subtitle">Faites comme Lucas: renforcez la sécurité de votre compte</p>
+
+				<button class="btn-submit" (click)="enable2fa()" [disabled]="qrcodeDataUrl !== ''">
+					<span>Activer l' A2F</span>
+				</button>
+
+				@if (tokenErrorEnable) {
+					<span class="field-error">{{ tokenErrorEnable }}</span>
+				}
+
+				@if (qrcodeDataUrl !== '') {
+					<div class="qr-block">
+						<p class="qr-instruction">Scannez ce QR code avec votre application d'authentification</p>
+						<img class="qr-image" [src]="qrcodeDataUrl" alt="QR Code 2FA">
+						<div class="confirm-form">
+							<input
+								type="text"
+								class="token-input"
+								[(ngModel)]="token"
+								name="token"
+								placeholder="Code à 6 chiffres"
+								maxlength="6"
+								required
+							/>
+							<button class="btn-submit" (click)="confirm2fa()">Confirmer</button>
+							@if (tokenErrorConfirm) {
+								<span class="field-error">{{ tokenErrorConfirm }}</span>
+							}
+						</div>
+					</div>
+				}
+			</div>
+
+			<div class="gold-separator"></div>
+
+			<div class="api-section">
+				<h2 class="twofa-title">API Publique</h2>
+				<p class="twofa-subtitle">Communication avec la database via API</p>
+
+				<div class="generate-api">
+					<label
+						type="text"
+						class="api-input"
+					>
+					{{ api_key || "Vous n'avez pas encore de clé" }}
+					</label>
+					<button class="btn-submit" (click)="genAPIKey()">Generer une clé</button>
+				</div>
+				@if (apiError) {
+					<span class="field-error">{{ apiError }}</span>
+				}
+
+
+			</div>
+
+		</div>
+	}
+</div>

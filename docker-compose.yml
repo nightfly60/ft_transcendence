@@ -1,0 +1,83 @@
+services:
+  mariadb:
+    build: ./mariadb
+    container_name: mariadb
+    env_file:
+      - .env
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    networks:
+      - transcendence_network
+
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    env_file:
+      - .env
+    ports:
+      - "${NGINX_PORT}:443"
+    volumes:
+      - ./data:/var/www/html
+      - certs:/etc/ssl
+    restart: always
+    depends_on:
+      - nodejs
+    networks:
+      - transcendence_network
+
+  nodejs:
+    build:
+      context: ./nodejs
+      target: development
+    container_name: nodejs
+    env_file:
+      - .env
+    restart: always
+    volumes:
+      - ./nodejs/src:/app/src
+      - avatars:/app/src/server/public/avatars
+      - vite_cache:/app/node_modules/.vite
+      - certs:/etc/ssl:ro
+    networks:
+      - transcendence_network
+
+  angular:
+    build: ./angular
+    container_name: angular
+    volumes:
+      - ./angular/src:/app/src
+    networks:
+      - transcendence_network
+    env_file:
+      - .env
+
+volumes:
+  db_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/${LOGIN}/volumes/db_data
+  vite_cache:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/${LOGIN}/volumes/vite_cache
+  avatars:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/${LOGIN}/volumes/avatars
+  certs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/${LOGIN}/volumes/certs
+
+networks:
+  transcendence_network:
+    driver: bridge

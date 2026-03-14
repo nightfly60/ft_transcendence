@@ -1,0 +1,196 @@
+// ── Design tokens (shared with chess components) ─────────────────────────────
+$black:     #0a0a0a;
+$white:     #f0d9b5;   // matches endgame-title / promotion square color
+$gold:      #c9a84c;
+$font-body: 'Cormorant Garamond', serif;
+
+// ── Surface scale (solid, matching chessboard component) ─────────────────────
+$surface-0: #111111;   // deepest — window background
+$surface-1: #1a1a1a;   // base panel  — mirrors .endgame-dialog
+$surface-2: #1e1e1e;   // raised panel — mirrors .promotion-dialog
+$surface-3: #252520;   // subtle lift for header / input bar
+
+// ── Border & accent colours ───────────────────────────────────────────────────
+$border-soft:   #333;
+$border-mid:    #444;   // mirrors .endgame-dialog border
+$border-strong: #555;   // mirrors .promotion-dialog border
+$gold-dim:      rgba($gold, 0.30);
+$gold-mid:      rgba($gold, 0.60);
+$gold-bright:   $gold;
+
+// ── Text scale ────────────────────────────────────────────────────────────────
+$text-primary:  $white;          // #f0d9b5 — matches endgame-title
+$text-secondary: #aaa;           // mirrors .endgame-sub
+$text-muted:    #666;
+
+// ── Host ──────────────────────────────────────────────────────────────────────
+:host {
+  display: block;
+}
+
+// ── Chat window ───────────────────────────────────────────────────────────────
+.chat-window {
+  position: relative;
+  width: 420px;
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: $font-body;
+  color: $text-primary;
+
+  background: $surface-1;
+  border: 1px solid $border-mid;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);  // mirrors .endgame-dialog shadow
+
+  // Thin gold rule along the top edge
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, $gold-mid, transparent);
+    pointer-events: none;
+    z-index: 10;
+  }
+}
+
+// ── Messages area ─────────────────────────────────────────────────────────────
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  scrollbar-width: thin;
+  scrollbar-color: $gold-dim transparent;
+
+  &::-webkit-scrollbar        { width: 3px; }
+  &::-webkit-scrollbar-track  { background: transparent; }
+  &::-webkit-scrollbar-thumb  { background: $gold-dim; border-radius: 2px; }
+}
+
+// ── Individual message ────────────────────────────────────────────────────────
+.message {
+  max-width: 75%;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  animation: fadeUp 0.22s ease;
+
+  &.incoming { align-self: flex-start; }
+  &.outgoing { align-self: flex-end; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(7px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ── Bubble ────────────────────────────────────────────────────────────────────
+.bubble {
+  padding: 10px 15px;
+  font-family: $font-body;
+  font-size: 1rem;
+  line-height: 1.65;
+  border-radius: 0;   // hard-edged, matching board square geometry
+}
+
+.incoming .bubble {
+  background: $surface-3;
+  color: #ddd;                      // mirrors .promotion-dialog p colour
+  border-left: 2px solid $gold-dim;
+}
+
+.outgoing .bubble {
+  background: #b58863;              // mirrors .mobile-reset-btn / promotion squares
+  color: #fff;
+  border-right: 2px solid #7a5a3f;
+}
+
+// ── Timestamp ─────────────────────────────────────────────────────────────────
+.timestamp {
+  font-family: $font-body;
+  font-size: 0.65rem;
+  font-style: italic;
+  color: $text-muted;
+  letter-spacing: 0.04em;
+}
+
+.incoming .timestamp { padding-left: 4px; }
+.outgoing .timestamp { text-align: right; padding-right: 4px; }
+
+// ── Input area ────────────────────────────────────────────────────────────────
+.chat-input-area {
+  padding: 12px 14px;
+  border-top: 1px solid $border-mid;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-shrink: 0;
+  background: $surface-3;
+}
+
+.input-wrap {
+  flex: 1;
+  background: $surface-0;
+  border: 1px solid $border-strong;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  transition: border-color 0.18s ease;
+
+  &.focused {
+    border-color: $gold;
+    box-shadow: 0 0 0 1px rgba($gold, 0.15);
+  }
+}
+
+.chat-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: $text-primary;
+  font-family: $font-body;
+  font-size: 1rem;
+  padding: 11px 0;
+
+  &::placeholder {
+    color: $text-muted;
+    font-style: italic;
+    letter-spacing: 0.03em;
+  }
+}
+
+// ── Send button ───────────────────────────────────────────────────────────────
+.send-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 0;
+  background: #b58863;              // mirrors .mobile-reset-btn
+  border: 2px solid #b58863;       // mirrors .promotion-choices button border
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #fff;
+  transition:
+    background   0.18s ease,
+    border-color 0.18s ease,
+    transform    0.10s ease;
+
+  svg { width: 15px; height: 15px; }
+
+  &:hover {
+    background: #a07050;            // mirrors .mobile-reset-btn:hover
+    border-color: #a07050;
+  }
+
+  &:active { transform: scale(0.93); }
+}

@@ -1,0 +1,19 @@
+<div class="leaderboard-card-wrapper">
+	<button (click)="profileOpen.emit(player.id)">
+		<div class="leaderboard-card">
+			<div class="player-info">
+				<div class="player-name">{{ player.username }}</div>
+			</div>
+			<div class="leaderboard-stats">
+				<div class="stat-item">
+					<span class="stat-label">XP</span>
+					<span class="leaderboard-font">{{ player.xp }}</span>
+				</div>
+				<div class="stat-item">
+					<span class="stat-label">ELO</span>
+					<span class="leaderboard-font">{{ player.elo }}</span>
+				</div>
+			</div>
+		</div>
+	</button>
+</div>

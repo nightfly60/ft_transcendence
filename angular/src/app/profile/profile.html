@@ -1,0 +1,159 @@
+<div class="page-wrapper">
+
+	<div class="floating-piece">♜</div>
+	<div class="floating-piece">♝</div>
+	<div class="floating-piece">♛</div>
+	<div class="floating-piece">♞</div>
+	<div class="floating-piece">♟</div>
+	<div class="floating-piece">♚</div>
+
+	<div class="chessboard-bg">
+		<div *ngFor="let cell of cells" [style.background]="cell.light ? '#f5f0e8' : 'transparent'"></div>
+	</div>
+
+	<div class="profile-page" *ngIf="data">
+
+		<!-- header -> profile -->
+		<header class="profile-header">
+		<div class="avatar-ring">
+			<img
+			class="avatar-img"
+			[src]="data.path_img"
+			alt="Avatar"
+			(error)="$any($event.target).src = '/avatars/default-avatar.png'"
+			/>
+		</div>
+
+		<div class="header-info">
+			<h1 class="username">{{ data.username }}</h1>
+			<div class="online-status">
+				<span class="status-dot" [class.online]="isOnline"></span>
+				<span class="status-text" [class.online]="isOnline">{{ isOnline ? 'En ligne' : 'Hors ligne' }}</span>
+			</div>
+			<p class="bio">{{ data.bio || 'Pas d\'information.' }}</p>
+		</div>
+
+		<div class="header-elo">
+			<span class="elo-label">ELO</span>
+			<span class="elo-value">{{ data.elo }}</span>
+		</div>
+
+		<div class="header-actions">
+		<!-- modifier si c'est mon profile -->
+		<ng-container *ngIf="auth.getUserId() === data.id">
+			<button class="edit-btn" (click)="goToEdit()">✎ Modifier le profil</button>
+		</ng-container>
+
+		<!-- ami si c'est le profie de quelqu'un d'autre -->
+		<ng-container *ngIf="auth.getUserId() !== data.id">
+			<button 
+			class="friend-btn"
+			[class.is-friend]="isFriend"
+			(click)="toggleFriend()">
+			{{ isFriend ? '✓ Ami' : '+ Ajouter en ami' }}
+			</button>
+		</ng-container>
+		</div>
+
+		</header>
+
+		<div class="gold-separator"></div>
+
+		<!-- Les stats -> statsRows -->
+		<section class="stats-grid">
+		<div class="stat-card">
+			<span class="stat-icon">♟</span>
+			<span class="stat-value">{{ data.nb_parties ?? 0 }}</span>
+			<span class="stat-label">Parties jouées</span>
+		</div>
+		<div class="stat-card">
+			<span class="stat-icon">⚔</span>
+			<span class="stat-value">{{ (data.winrate ?? 15) }}%</span>
+			<span class="stat-label">Victoires</span>
+		</div>
+		<div class="stat-card" style="cursor: pointer;" (click)="goToFriends()">
+			<span class="stat-icon">♞</span>
+			<span class="stat-value">{{ data.nb_friends ?? 0 }}</span>
+			<span class="stat-label">Amis</span>
+		</div>
+		<div class="stat-card">
+			<span class="stat-icon">★</span>
+			<span class="stat-value">{{ level }}</span>
+			<span class="stat-label">Niveau</span>
+		</div>
+		</section>
+
+		<!-- l'xp avec progression + niveau -->
+		<section class="xp-section">
+		<div class="xp-meta">
+			<span class="xp-label">Progression - Niveau {{ level }}</span>
+			<span class="xp-total">{{ data.xp }} XP</span>
+		</div>
+		<div class="xp-track">
+			<div class="xp-fill" [style.width.%]="xpPercent"></div>
+			<div class="xp-glow" [style.width.%]="xpPercent"></div>
+			<span class="xp-marker">{{ xpInLevel }} / {{ XP_PER_LEVEL }}</span>
+		</div>
+		</section>
+
+		<!-- history -->
+		<section class="achievements-section">
+			<div class="gold-separator" style="margin-bottom: 2rem;"></div>
+			<div class="achievements-header">
+				<span class="xp-label">Historique des parties</span>
+			</div>
+
+			<div class="achievements-grid">
+				<div 
+				class="achievement-card" 
+				*ngFor="let g of visibleGames">
+				<span class="game-win-icon" *ngIf="g.id_winner === data.id">★ Victoire</span>
+				<span class="game-lose-icon" *ngIf="g.id_winner != data.id && g.id_winner">★ Defaite</span>
+				<span class="game-draw-icon" *ngIf="null == g.id_winner">★ Match Nul</span>
+				<span class="achievement-name">{{ g.username_player_one }} contre {{ g.username_player_second }}</span>
+				<span class="achievement-desc">Le {{ g.timestamp | date: 'dd/MM/yyyy'}}</span>
+				<span class="achievement-desc">Partie en {{ g.nb_cuts }} coups</span>
+				</div>
+			</div>
+		</section>
+
+		<!-- achievements -->
+		<section class="achievements-section" *ngIf="data.achievements?.length">
+		<div class="gold-separator" style="margin-bottom: 2rem;"></div>
+		<div class="achievements-header">
+			<span class="xp-label">Succès</span>
+			</div>
+
+		<div class="achievements-grid">
+			<ng-container *ngFor="let a of visibleAchievements">
+				<div class="achievement-card-done" *ngIf="+a.progress >= +a.objective">
+					<span class="achievement-name">{{ a.name }}</span>
+					<span class="achievement-desc">{{ a.description }}</span>
+					<div class="xp-track">
+						<div class="xp-fill" [style.width.%]="a.progress / a.objective * 100 > 100 ? 100 : a.progress / a.objective * 100"></div>
+					</div>
+				</div>
+			</ng-container>
+			<ng-container *ngFor="let a of visibleAchievements">
+				<div class="achievement-card locked" *ngIf="+a.progress < +a.objective">
+					<span class="achievement-name">{{ a.name }}</span>
+					<span class="achievement-desc">{{ a.description }}</span>
+					<div class="xp-track">
+						<div class="xp-fill" [style.width.%]="a.progress / a.objective * 100 > 100 ? 100 : a.progress / a.objective * 100"></div>
+					</div>
+					<div class="achievement-desc">{{ a.progress }} / {{ a.objective }}</div>
+				</div>
+			</ng-container>
+		</div>
+
+		<button 
+			class="show-more-btn" 
+			*ngIf="data.achievements.length > 3"
+			(click)="toggleAchievements()">
+			{{ showAll ? 'Réduire' : 'Voir tout (' + data.achievements.length + ')' }}
+		</button>
+		</section>
+
+	</div>
+</div>
+

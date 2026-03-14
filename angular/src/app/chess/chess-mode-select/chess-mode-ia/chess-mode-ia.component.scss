@@ -1,0 +1,75 @@
+$black:     #0a0a0a;
+$gold:      #c9a84c;
+$gold-light: #e8c060;
+$cream:     #e8dfc8;
+$muted:     #a09070;
+$font-body: 'Cormorant Garamond', serif;
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba($gold, 0.25);
+  padding: 48px 40px;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  font-family: $font-body;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
+
+  &:hover {
+    transform: translateY(-6px);
+    border-color: $gold;
+    box-shadow: 0 8px 32px rgba($gold, 0.2);
+  }
+
+}
+
+.card-icon {
+  font-size: 4rem;
+  color: $gold;
+  margin-bottom: 20px;
+}
+
+.card-title {
+  font-size: clamp(1.6rem, 3vw, 2rem);
+  font-style: italic;
+  font-weight: 400;
+  color: $cream;
+  margin: 0 0 10px;
+  letter-spacing: 0.05em;
+}
+
+.card-desc {
+  flex: 1;
+  color: $muted;
+  font-size: 1.15rem;
+  line-height: 1.6;
+  margin: 0 0 32px;
+}
+
+.card-btn {
+  width: 100%;
+  padding: 12px 0;
+  border: 1px solid rgba($gold, 0.5);
+  background: transparent;
+  color: $gold;
+  font-family: $font-body;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+
+  &:hover {
+    background: $gold;
+    color: $black;
+  }
+}
