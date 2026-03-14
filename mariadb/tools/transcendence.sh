@@ -77,6 +77,16 @@ CREATE TABLE IF NOT EXISTS User_API (
     PRIMARY KEY(id_user),
 	FOREIGN KEY(id_user) REFERENCES \`User\`(id) ON DELETE CASCADE
 );
+
+INSERT INTO Achievements (name, objective, description, type) VALUES
+('Premier sang',   1,   'Gagner votre première partie', 'win'),
+('Conquérant',     5,   'Gagner 5 parties', 'win'),
+('Centenaire',     100, 'Jouer 100 parties', 'game'),
+('Vétéran',        50,  'Jouer 50 parties', 'game'),
+('Elite',          1500,  'Atteindre un elo de 1500', 'elo'),
+('Clutch',         20,   'Jouer une partie de plus de 20 coups', 'upper_cut'),
+('Marathonien',    80,  'Jouer une partie de plus de 80 coups', 'upper_cut');
 EOSQL
+
 
 echo "BASE DE DONNEE A JOUR ET VIDE"
