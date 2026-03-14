@@ -44,7 +44,6 @@ async function rejoinGame(socket: Socket, gameId: string, game: MultiGame, userI
     disconnectTimers.delete(timerKey);
     disconnectTimerStarts.delete(timerKey);
     socket.to(gameId).emit('opponent_back');
-    console.log(`[find_game] timer annulé pour timerKey=${timerKey}`);
   }
 
   if (socket.data.id_game && socket.data.id_game !== gameId) socket.leave(socket.data.id_game);
@@ -59,7 +58,6 @@ async function rejoinGame(socket: Socket, gameId: string, game: MultiGame, userI
     const elapsed = Date.now() - opponentTimerStart;
     const remaining = Math.max(0, Math.ceil((DISCONNECT_TIMEOUT_MS - elapsed) / 1000));
     socket.emit('opponent_left', { seconds: remaining });
-    console.log(`[find_game] adversaire userId=${opponentId} toujours absent, ${remaining}s restantes`);
   }
 
   const userMap = await fetchUsernames([game.whiteUserId, game.blackUserId]);
@@ -69,7 +67,6 @@ async function rejoinGame(socket: Socket, gameId: string, game: MultiGame, userI
     blackUsername: userMap[game.blackUserId] ?? 'Noir',
   });
   socket.emit('game_state', buildGameState(game));
-  console.log(`[find_game] userId=${userId} rejoint gameId=${gameId} en tant que ${color}`);
 }
 
 /**
@@ -91,7 +88,6 @@ async function createGame(io: Server, socket: Socket, waitingSocketId: string): 
   const blackSocket = io.sockets.sockets.get(black)!;
   const whiteUserId = whiteSocket.data.userId as number;
   const blackUserId = blackSocket.data.userId as number;
-  console.log(`[find_game] match: white=${white}(userId=${whiteUserId}) vs black=${black}(userId=${blackUserId})`);
 
   let result: ResultSetHeader;
   try {
@@ -127,7 +123,6 @@ async function createGame(io: Server, socket: Socket, waitingSocketId: string): 
   io.to(gameId).emit('game_state', buildGameState(game));
 
   setWaitingPlayer(null);
-  console.log(`[find_game] partie créée gameId=${gameId}`);
 }
 
 /**
@@ -142,39 +137,26 @@ async function createGame(io: Server, socket: Socket, waitingSocketId: string): 
  */
 export function registerFindGame(io: Server, socket: Socket): void {
   socket.on('find_game', async () => {
-    const ts = () => new Date().toISOString();
     const userId = socket.data.userId as number;
-    console.log(`\n[${ts()}][find_game] >>> RECU userId=${userId} socket=${socket.id}`);
-    console.log(`[${ts()}][find_game]     waitingPlayer=${waitingPlayer ?? 'NULL'}`);
-    console.log(`[${ts()}][find_game]     playerGames=${JSON.stringify([...playerGames])}`);
 
     const existingGameId = playerGames.get(userId);
-    console.log(`[${ts()}][find_game]     existingGameId=${existingGameId ?? 'aucun'}`);
-
     if (existingGameId) {
       const game = multiGames.get(existingGameId);
-      console.log(`[${ts()}][find_game]     game trouvé: ${game ? `status=${game.gameStatus}` : 'INTROUVABLE dans multiGames'}`);
       if (game && game.gameStatus !== 'checkmate' && game.gameStatus !== 'stalemate' && game.gameStatus !== 'draw' && game.gameStatus !== 'resign') {
-        console.log(`[${ts()}][find_game]     => rejoinGame`);
         await rejoinGame(socket, existingGameId, game, userId);
         return;
       }
-      console.log(`[${ts()}][find_game]     => partie terminée, suppression playerGames userId=${userId}`);
       playerGames.delete(userId);
     }
 
     const waiting = waitingPlayer;
     const waitingSocket = waiting ? io.sockets.sockets.get(waiting) : null;
-    console.log(`[${ts()}][find_game]     waitingSocket trouvé: ${waitingSocket ? `userId=${waitingSocket.data.userId}` : 'NULL'}`);
 
     if (waitingSocket && waitingSocket.data.userId !== userId) {
-      console.log(`[${ts()}][find_game]     => createGame avec waitingSocket=${waiting}`);
       await createGame(io, socket, waiting!);
     } else {
       setWaitingPlayer(socket.id);
       socket.emit('waiting');
-      console.log(`[${ts()}][find_game]     => userId=${userId} mis en attente (socket=${socket.id})`);
     }
-    console.log(`[${ts()}][find_game] <<< FIN\n`);
   });
 }

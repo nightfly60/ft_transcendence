@@ -3,6 +3,7 @@ import { IncomingMessage, Server as HttpServer, ServerResponse } from 'http';
 import jwt from 'jsonwebtoken';
 import { registerChessEvents } from './chess/events/index.js';
 import { registerChatEvents } from './chat.js';
+import { registerPresenceEvents } from './presence.js';
 
 
 export function initSockets(httpServer: HttpServer<typeof IncomingMessage, typeof ServerResponse>): void {
@@ -31,8 +32,9 @@ export function initSockets(httpServer: HttpServer<typeof IncomingMessage, typeo
     }
   });
 
-  io.on('connection', (socket) => {
+  io.on('connection', async (socket) => {
     console.log(`[socket] connecté id=${socket.id} userId=${socket.data.userId}`);
+    registerPresenceEvents(io, socket);
     registerChessEvents(io, socket);
     registerChatEvents(io, socket);
   });
