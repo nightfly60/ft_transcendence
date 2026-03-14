@@ -1,9 +1,11 @@
-import { Component, effect, input, output, signal } from '@angular/core';
+import { Component, computed, effect, input, output, signal } from '@angular/core';
 import { GameMode } from '../chess-mode-select/chess-mode-select.component';
 import { Board, Piece, PieceColor, PieceType, SYMBOLS, initBoard } from './chess.types';
 import { PlayerPanelComponent } from './player-panel/player-panel.component';
 import { BoardGridComponent } from './board-grid/board-grid.component';
 import { MoveHistoryComponent } from './move-history/move-history.component';
+import { EndgameOverlayComponent } from './endgame-overlay/endgame-overlay.component';
+import { PromotionDialogComponent } from './promotion-dialog/promotion-dialog.component';
 import { IaLevel } from '../chess-mode-select/ia-level-modal/ia-level-modal';
 
 type PromotionPiece = Extract<PieceType, 'Q' | 'R' | 'B' | 'N'>;
@@ -11,7 +13,7 @@ type PromotionPiece = Extract<PieceType, 'Q' | 'R' | 'B' | 'N'>;
 @Component({
   selector: 'app-chess',
   standalone: true,
-  imports: [PlayerPanelComponent, BoardGridComponent, MoveHistoryComponent],
+  imports: [PlayerPanelComponent, BoardGridComponent, MoveHistoryComponent, EndgameOverlayComponent, PromotionDialogComponent],
   templateUrl: './chess-board.component.html',
   styleUrl: './chess-board.component.scss',
 })
@@ -54,6 +56,10 @@ export class ChessComponent {
   showPromotion    = signal<boolean>(false);
   pendingPromotion = signal<{ from: [number,number]; to: [number,number] } | null>(null);
   readonly promotionPieces: PromotionPiece[] = ['Q', 'R', 'B', 'N'];
+
+  promotionItems = computed(() =>
+    this.promotionPieces.map(p => ({ type: p, symbol: this.promotionSymbol(p) }))
+  );
 
   manualFlip   = signal<boolean>(false);
   showEndgame  = signal<boolean>(false);

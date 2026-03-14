@@ -1,0 +1,10 @@
+<div class="promotion-overlay">
+  <div class="promotion-dialog">
+    <p>Choisissez la pièce</p>
+    <div class="promotion-choices">
+      @for (p of pieces(); track p.type) {
+        <button (click)="select.emit(p.type)">{{ p.symbol }}</button>
+      }
+    </div>
+  </div>
+</div>

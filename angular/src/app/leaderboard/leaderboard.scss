@@ -235,6 +235,144 @@ $font:       'Cormorant Garamond', serif;
   text-shadow: 0 0 10px rgba(232, 192, 96, 0.2);
 }
 
+// Barre de recherche
+.search-wrapper {
+  margin-bottom: 1.5rem;
+  width: 100%;
+
+  .search-field {
+    width: 100%;
+    display: block;
+  }
+
+  ::ng-deep {
+    // Force le champ à prendre toute la largeur
+    .mat-mdc-form-field {
+      display: block !important;
+      width: 100% !important;
+    }
+
+    .mat-mdc-form-field-infix {
+      width: auto !important;
+    }
+    // Background du champ
+    .mat-mdc-text-field-wrapper {
+      background: rgba(6, 6, 6, 0.6) !important;
+    }
+
+    // Bordure outline
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: $gold !important;
+    }
+
+    // Hover
+    .mdc-text-field--outlined:not(.mdc-text-field--disabled):hover .mdc-notched-outline__leading,
+    .mdc-text-field--outlined:not(.mdc-text-field--disabled):hover .mdc-notched-outline__notch,
+    .mdc-text-field--outlined:not(.mdc-text-field--disabled):hover .mdc-notched-outline__trailing {
+      border-color: $gold-light !important;
+    }
+
+    // Focus
+    .mdc-text-field--focused .mdc-notched-outline__leading,
+    .mdc-text-field--focused .mdc-notched-outline__notch,
+    .mdc-text-field--focused .mdc-notched-outline__trailing {
+      border-color: $gold-light !important;
+      border-width: 2px !important;
+    }
+
+    // Texte saisi
+    .mat-mdc-input-element {
+      color: $white !important;
+      font-family: $font !important;
+      font-size: 1rem;
+      caret-color: $gold-light;
+    }
+
+    // Label flottant
+    .mdc-floating-label {
+      color: $muted !important;
+      font-family: $font !important;
+    }
+
+    // Icône loupe
+    .mat-icon {
+      color: $gold !important;
+    }
+  }
+}
+
+// Paginator
+mat-paginator {
+  margin-top: 1.5rem;
+  border: 1px solid rgba($gold, 0.3);
+  border-radius: 8px;
+  padding: 0.3rem 0;
+}
+
+::ng-deep mat-paginator {
+  background: rgba(6, 6, 6, 0.6) !important;
+
+  .mat-mdc-paginator-container {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .mat-mdc-paginator-range-label {
+    color: $muted !important;
+    font-family: $font !important;
+    font-size: 1rem !important;
+  }
+
+  .mat-mdc-paginator-page-size-label {
+    color: $muted !important;
+    font-family: $font !important;
+    font-size: 1rem !important;
+  }
+
+  .mat-mdc-paginator-page-size-select {
+    .mat-mdc-select-trigger {
+      background: rgba(20, 15, 10, 0.8) !important;
+      border: 1px solid rgba($gold, 0.5) !important;
+      border-radius: 6px !important;
+      padding: 0.2rem 0.5rem !important;
+    }
+  }
+
+  .mat-mdc-select-value-text,
+  .mat-mdc-select-placeholder {
+    color: $white !important;
+    font-family: $font !important;
+    font-size: 1rem !important;
+  }
+
+  .mat-mdc-icon-button svg,
+  .mat-mdc-icon-button mat-icon {
+    color: $gold !important;
+    fill: $gold !important;
+  }
+
+  .mat-mdc-icon-button:disabled svg,
+  .mat-mdc-icon-button:disabled mat-icon {
+    color: rgba($gold, 0.3) !important;
+    fill: rgba($gold, 0.3) !important;
+  }
+
+  .mat-mdc-icon-button:hover:not(:disabled) {
+    background: rgba($gold, 0.1) !important;
+  }
+}
+
+// Message aucun résultat
+.no-results {
+  text-align: center;
+  color: $muted;
+  font-size: 1.1rem;
+  padding: 2rem;
+  letter-spacing: 1px;
+}
+
 // Responsive
 @media (max-width: 768px) {
   .page-wrapper {

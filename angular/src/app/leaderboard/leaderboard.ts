@@ -1,74 +1,90 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, ViewChild, AfterViewInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../services/auth.service';
+import { MatPaginatorModule, MatPaginator, PageEvent } from '@angular/material/paginator';
+import { LeaderboardBackgroundComponent } from './leaderboard-background/leaderboard-background.component';
+import { LeaderboardSearchComponent } from './leaderboard-search/leaderboard-search.component';
+import { LeaderboardControlsComponent } from './leaderboard-controls/leaderboard-controls.component';
+import { LeaderboardCardComponent } from './leaderboard-card/leaderboard-card.component';
 
 @Component({
   selector: 'app-leaderboard',
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    MatPaginatorModule,
+    LeaderboardBackgroundComponent,
+    LeaderboardSearchComponent,
+    LeaderboardControlsComponent,
+    LeaderboardCardComponent,
+  ],
   templateUrl: './leaderboard.html',
   styleUrl: './leaderboard.scss',
 })
-export class Leaderboard {
-	constructor(private http: HttpClient, private router: Router, public auth: AuthService, private cd: ChangeDetectorRef) {}
+export class Leaderboard implements AfterViewInit {
+  constructor(private http: HttpClient, public auth: AuthService, private cd: ChangeDetectorRef) {}
 
-	cells = Array.from({ length: 144 }, (_, i) => ({
-		light: (Math.floor(i / 12) + i) % 2 === 0
-	}));
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-	data: any = null;
+  data: any[] = [];
+  searchQuery = '';
+  pageSize = 5;
+  pageIndex = 0;
 
-	get getLeaderboard() {
-		return this.data;
-	}
+  get filteredData(): any[] {
+    if (!this.searchQuery.trim()) return this.data;
+    const q = this.searchQuery.trim().toLowerCase();
+    return this.data.filter(p => p.username.toLowerCase().includes(q));
+  }
 
-	ngOnInit() {
-		this.http.get('/api/leaderboard/index', {}).subscribe({
-			next: (data: any) => {
-				this.data = data;
+  get pagedData(): any[] {
+    const start = this.pageIndex * this.pageSize;
+    return this.filteredData.slice(start, start + this.pageSize);
+  }
 
-				for (var i = 0; this.data[i]; ++i)
-					this.data[i].xp = this.data[i].xp / 1000
-				this.cd.detectChanges();
-			},
-			error: (err) => {
-				console.log("ERROR", err);
-			}
-		})
-	}
+  ngAfterViewInit() {}
 
-	sortByXP(): any {
-		function compare( a: any, b: any ) {
-			if ( a.xp < b.xp ){
-				return 1;
-			}
-			if ( a.xp > b.xp ){
-				return -1;
-			}
-			return 0;
-		}
+  ngOnInit() {
+    this.http.get('/api/leaderboard/index', {}).subscribe({
+      next: (data: any) => {
+        this.data = data;
+        for (var i = 0; this.data[i]; ++i)
+          this.data[i].xp = this.data[i].xp / 1000;
+        this.cd.detectChanges();
+      },
+      error: (err) => {
+        console.log("ERROR", err);
+      }
+    });
+  }
 
-		this.data.sort(compare);
-		this.cd.detectChanges();
-	}
+  onSearch(query: string) {
+    this.searchQuery = query;
+    this.pageIndex = 0;
+    if (this.paginator) this.paginator.firstPage();
+    this.cd.detectChanges();
+  }
 
-	sortByLevel(): any {
-		function compare( a: any, b: any ) {
-			if ( a.elo < b.elo ){
-				return 1;
-			}
-			if ( a.elo > b.elo ){
-				return -1;
-			}
-			return 0;
-		}
+  onPageChange(event: PageEvent) {
+    this.pageSize = event.pageSize;
+    this.pageIndex = event.pageIndex;
+  }
 
-		this.data.sort(compare);
-		this.cd.detectChanges();
-	}
+  sortByXP(): any {
+    this.data.sort((a, b) => b.xp - a.xp);
+    this.pageIndex = 0;
+    if (this.paginator) this.paginator.firstPage();
+    this.cd.detectChanges();
+  }
 
-	openPlayerProfile(id: number): void {
-		window.location.href = `/profile/${id}`;
-	}
+  sortByLevel(): any {
+    this.data.sort((a, b) => b.elo - a.elo);
+    this.pageIndex = 0;
+    if (this.paginator) this.paginator.firstPage();
+    this.cd.detectChanges();
+  }
+
+  openPlayerProfile(id: number): void {
+    window.location.href = `/profile/${id}`;
+  }
 }

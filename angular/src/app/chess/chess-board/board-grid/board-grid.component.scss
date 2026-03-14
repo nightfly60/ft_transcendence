@@ -36,18 +36,23 @@ $cell: var(--cell);
 	&.light { background: #3a2c14; }
 	&.dark  { background: #110d06; }
 
-	&.last-move-from {
-		background: #8b383588 !important;
-		box-shadow: 
-			inset 0 0 0 2px $gold,
-			inset 0 0 12px #8a6a2a;
+	&.last-move-from::before,
+	&.last-move-to::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+		pointer-events: none;
 	}
 
-	&.last-move-to {
-		background: #556b2f88 !important;
-		box-shadow: 
-			inset 0 0 0 2px $gold,
-			inset 0 0 12px #8a6a2a;
+	&.last-move-from::before {
+		background: rgba($gold, 0.38);
+		box-shadow: inset 0 0 0 2px rgba($gold, 0.5);
+	}
+
+	&.last-move-to::before {
+		background: rgba($gold, 0.62);
+		box-shadow: inset 0 0 0 2px rgba($gold, 0.85);
 	}
 
 	&.in-check {
