@@ -16,7 +16,7 @@ import { finalizeGame } from './db.js';
  * @param gameId  Identifiant de la partie.
  * @param userId  Id du joueur absent.
  */
-function startForfeitTimer(io: Server, socket: Socket, gameId: string, userId: number): void {
+export function startForfeitTimer(io: Server, socket: Socket, gameId: string, userId: number): void {
   const timerKey = `${gameId}:${userId}`;
   if (disconnectTimers.has(timerKey)) return;
 
@@ -52,41 +52,25 @@ function startForfeitTimer(io: Server, socket: Socket, gameId: string, userId: n
  */
 export function registerLeaveGame(io: Server, socket: Socket): void {
   socket.on('leave_game', ({ gameId }: { gameId: string }) => {
-    const ts = () => new Date().toISOString();
     const userId = socket.data.userId as number;
-    console.log(`\n[${ts()}][leave_game] >>> RECU userId=${userId} socket=${socket.id} gameId=${gameId ?? 'NULL'}`);
-    console.log(`[${ts()}][leave_game]     waitingPlayer=${waitingPlayer ?? 'NULL'}`);
-    console.log(`[${ts()}][leave_game]     socket.data.id_game=${socket.data.id_game ?? 'NULL'}`);
 
     const game = gameId ? multiGames.get(gameId) : null;
-    console.log(`[${ts()}][leave_game]     game en mémoire: ${game ? `status=${game.gameStatus}` : 'INTROUVABLE'}`);
-
     const isActiveGame = game && game.gameStatus !== 'checkmate' && game.gameStatus !== 'stalemate' && game.gameStatus !== 'draw' && game.gameStatus !== 'resign';
-    console.log(`[${ts()}][leave_game]     isActiveGame=${!!isActiveGame}`);
 
     if (isActiveGame) {
       if (waitingPlayer === socket.id) {
         setWaitingPlayer(null);
-        console.log(`[${ts()}][leave_game]     => retiré de la file (était en attente)`);
         return;
       }
       startForfeitTimer(io, socket, gameId, userId);
-      console.log(`[${ts()}][leave_game]     => timer forfait démarré`);
       return;
     }
 
-    if (gameId) {
-      socket.leave(gameId);
-      console.log(`[${ts()}][leave_game]     => socket.leave(${gameId})`);
-    }
+    if (gameId) socket.leave(gameId);
 
     if (!game && waitingPlayer === socket.id) {
       setWaitingPlayer(null);
-      console.log(`[${ts()}][leave_game]     => retiré de la file (pas de game active, quittait le matchmaking)`);
-    } else {
-      console.log(`[${ts()}][leave_game]     => rien fait sur la file (game terminée ou pas en attente)`);
     }
-    console.log(`[${ts()}][leave_game] <<< FIN\n`);
   });
 }
 
@@ -115,6 +99,38 @@ export function registerDisconnect(io: Server, socket: Socket): void {
     if (disconnectTimers.has(timerKey)) return;
 
     startForfeitTimer(io, socket, gameId, userId);
-    console.log(`[disconnect] userId=${userId} déconnecté de gameId=${gameId}, timer 60s démarré`);
+  });
+}
+
+/**
+ * @brief Enregistre les événements de visibilité de page.
+ *
+ * `player_hidden` : l'utilisateur a changé d'onglet sans fermer le tab.
+ *   → démarre le timer de forfait si une partie est en cours.
+ * `player_visible` : l'utilisateur est revenu sur l'onglet.
+ *   → annule le timer de forfait.
+ */
+export function registerPlayerVisibility(io: Server, socket: Socket): void {
+  socket.on('player_hidden', () => {
+    const gameId = socket.data.id_game as string | undefined;
+    if (!gameId) return;
+    const userId = socket.data.userId as number;
+    const game = multiGames.get(gameId);
+    if (!game || game.gameStatus === 'checkmate' || game.gameStatus === 'stalemate' || game.gameStatus === 'draw' || game.gameStatus === 'resign') return;
+    startForfeitTimer(io, socket, gameId, userId);
+  });
+
+  socket.on('player_visible', () => {
+    const gameId = socket.data.id_game as string | undefined;
+    if (!gameId) return;
+    const userId = socket.data.userId as number;
+    const timerKey = `${gameId}:${userId}`;
+    const existing = disconnectTimers.get(timerKey);
+    if (existing) {
+      clearTimeout(existing);
+      disconnectTimers.delete(timerKey);
+      disconnectTimerStarts.delete(timerKey);
+      socket.to(gameId).emit('opponent_back');
+    }
   });
 }

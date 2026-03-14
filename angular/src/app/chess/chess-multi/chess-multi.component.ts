@@ -35,6 +35,9 @@ import { ChatBox } from '../../chat-box/chat-box';
     .draw-accept:hover { background: #a07050; }
     .draw-refuse { background: transparent; color: #aaa; border-color: rgba(170,170,170,0.4); }
     .draw-refuse:hover { background: rgba(170,170,170,0.1); }
+    :host {
+      user-select: none;
+    }
     .draw-refused-banner {
       padding: 6px 16px;
       font-family: 'Cormorant Garamond', serif;
@@ -77,38 +80,36 @@ export class ChessMultiComponent implements OnInit, OnDestroy {
   drawRefused    = signal<boolean>(false);
 
   private countdownInterval: ReturnType<typeof setInterval> | null = null;
-
-  private ts() { return new Date().toISOString(); }
+  private readonly onVisibilityChange = () => {
+    if (!this.gameId()) return;
+    if (document.hidden) this.socket.notifyHidden();
+    else this.socket.notifyVisible();
+  };
 
   ngOnInit() {
-    console.log(`[${this.ts()}][FRONT][ngOnInit] composant initialisé`);
-
     this.socket.onWaiting(() => {
-      console.log(`[${this.ts()}][FRONT][waiting] reçu → waiting=true`);
       this.waiting.set(true);
     });
 
     this.socket.onGameReady(({ gameId, color, whiteUsername, blackUsername }) => {
-      console.log(`[${this.ts()}][FRONT][game_ready] reçu gameId=${gameId} color=${color}`);
-      console.log(`[${this.ts()}][FRONT][game_ready] waiting avant=${this.waiting()} gameId avant=${this.gameId()}`);
       this.gameId.set(gameId);
       this.myColor.set(color);
       this.whiteUsername.set(whiteUsername);
       this.blackUsername.set(blackUsername);
       this.waiting.set(false);
-      console.log(`[${this.ts()}][FRONT][game_ready] waiting après=${this.waiting()} gameId après=${this.gameId()}`);
     });
 
     this.socket.onOpponentLeft(({ seconds }) => {
       this.countdown.set(seconds);
+      const endTime = Date.now() + seconds * 1000;
       this.countdownInterval = setInterval(() => {
-        const current = this.countdown();
-        if (current === null || current <= 1) {
+        const remaining = Math.ceil((endTime - Date.now()) / 1000);
+        if (remaining <= 0) {
           clearInterval(this.countdownInterval!);
           this.countdownInterval = null;
           this.countdown.set(null);
         } else {
-          this.countdown.set(current - 1);
+          this.countdown.set(remaining);
         }
       }, 1000);
     });
@@ -122,8 +123,7 @@ export class ChessMultiComponent implements OnInit, OnDestroy {
     });
 
     this.socket.onGameState(state => {
-      console.log(`[${this.ts()}][FRONT][game_state] reçu status=${state.gameStatus} gameId=${this.gameId()}`);
-      if (!this.gameId()) { console.log(`[${this.ts()}][FRONT][game_state] IGNORÉ (gameId vide)`); return; }
+      if (!this.gameId()) return;
       this.gameState.set(state);
       if (state.gameStatus === 'checkmate' || state.gameStatus === 'stalemate' || state.gameStatus === 'resign') {
         if (this.countdownInterval) {
@@ -133,7 +133,6 @@ export class ChessMultiComponent implements OnInit, OnDestroy {
         this.countdown.set(null);
         this.drawProposed.set(false);
         this.drawRefused.set(false);
-        console.log(`[${this.ts()}][FRONT][game_state] partie terminée → leaveGame(${this.gameId()})`);
         this.socket.leaveGame(this.gameId());
       }
     });
@@ -148,6 +147,7 @@ export class ChessMultiComponent implements OnInit, OnDestroy {
     });
 
     this.socket.findGame();
+    document.addEventListener('visibilitychange', this.onVisibilityChange);
   }
 
   onProposeDraw() {
@@ -171,7 +171,6 @@ export class ChessMultiComponent implements OnInit, OnDestroy {
 
   onResign() {
     const id = this.gameId();
-    console.log(`[${this.ts()}][FRONT][onResign] resignMulti(${id}) puis findGame`);
     if (id) this.socket.resignMulti(id);
     this.waiting.set(true);
     this.gameState.set(null);
@@ -182,12 +181,10 @@ export class ChessMultiComponent implements OnInit, OnDestroy {
 
   onAbandon() {
     const id = this.gameId();
-    console.log(`[${this.ts()}][FRONT][onAbandon] resignMulti(${id})`);
     if (id) this.socket.resignMulti(id);
   }
 
   onReplay() {
-    console.log(`[${this.ts()}][FRONT][onReplay] findGame, gameId courant=${this.gameId()}`);
     this.gameState.set(null);
     this.gameId.set('');
     this.myColor.set('');
@@ -196,12 +193,11 @@ export class ChessMultiComponent implements OnInit, OnDestroy {
   }
 
   onQuit() {
-    console.log(`[${this.ts()}][FRONT][onQuit] quit.emit`);
     this.quit.emit();
   }
 
   ngOnDestroy() {
-    console.log(`[${this.ts()}][FRONT][ngOnDestroy] leaveGame(${this.gameId()})`);
+    document.removeEventListener('visibilitychange', this.onVisibilityChange);
     if (this.countdownInterval) clearInterval(this.countdownInterval);
     this.socket.leaveGame(this.gameId());
     this.socket.offMultiListeners();

@@ -5,6 +5,7 @@
   // Desktop : place pour le panneau historique (220px) + gaps + padding
   --cell: min(calc((100vw - 320px) / 8), calc((100vh - 140px) / 8), 110px);
   display: block;
+  user-select: none;
 }
 
 // Tablette (<960px) : historique masqué, plateau pleine largeur
