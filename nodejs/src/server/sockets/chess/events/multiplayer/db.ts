@@ -2,6 +2,7 @@ import pool from '../../../../db.js';
 import { playerGames } from './state.js';
 import { updateElo } from './elo.js';
 import { updateXp } from './xp.js';
+import { updateAchievements } from './achievements.js';
 
 /**
  * @brief Clôture une partie : nettoie l'état en mémoire, persiste le résultat en BDD et met à jour les ELO.
@@ -27,4 +28,6 @@ export async function finalizeGame(
 	);
 	await updateElo(winnerId, whiteUserId, blackUserId);
 	await updateXp(winnerId, whiteUserId, blackUserId);
+	await updateAchievements(whiteUserId, winnerId, nbMoves);
+	await updateAchievements(blackUserId, winnerId, nbMoves);
 }
