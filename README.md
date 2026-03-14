@@ -220,7 +220,7 @@ Used MariaDB/MySQL in a containerized environment. Chosen for reliability, relat
 - These features improve communication, provide seamless game interactions, and enhance the overall user experience in the platform.
 
 ### [Gaming and user experience] Gamification system to reward users for their actions (Anas and Elena)
-- Minro module (1 pt)
+- Minor module (1 pt)
 - This system tracks ELO, XP, and achievements, displays a level progress bar on the user profile, and provides visual feedback for progression. All data is stored persistently in the database and clearly integrated into the profile interface.
 - These features motivate users, provide clear progression, and make the platform more engaging through visible rewards and achievements.
 
