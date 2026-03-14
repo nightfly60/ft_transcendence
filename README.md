@@ -10,7 +10,8 @@
 [7. Technical Stack](#7-technical-stack)\
 [8. Database Schema](#8-database-schema)\
 [9. Features List](#9-features-list)\
-[10. Modules](#10-modules)
+[10. Modules](#10-modules)\
+[11. Individual Contributions](#11-individual-contributions)
 
 ## 1. Description
 Our Transcendence is about developing an interactive web platorm based on the game of chess. Chess42 allows users to play in different modes: solo, against AI or against other players.
@@ -225,7 +226,7 @@ Used MariaDB/MySQL in a containerized environment. Chosen for reliability, relat
 
 ### Total score : 22 points 🎉
 
-## Individual Contributions
+## 11. Individual Contributions
 
 ### Gaël (lemarian)
 
