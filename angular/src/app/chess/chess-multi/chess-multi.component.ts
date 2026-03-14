@@ -78,17 +78,25 @@ export class ChessMultiComponent implements OnInit, OnDestroy {
 
   private countdownInterval: ReturnType<typeof setInterval> | null = null;
 
+  private ts() { return new Date().toISOString(); }
+
   ngOnInit() {
+    console.log(`[${this.ts()}][FRONT][ngOnInit] composant initialisé`);
+
     this.socket.onWaiting(() => {
+      console.log(`[${this.ts()}][FRONT][waiting] reçu → waiting=true`);
       this.waiting.set(true);
     });
 
     this.socket.onGameReady(({ gameId, color, whiteUsername, blackUsername }) => {
+      console.log(`[${this.ts()}][FRONT][game_ready] reçu gameId=${gameId} color=${color}`);
+      console.log(`[${this.ts()}][FRONT][game_ready] waiting avant=${this.waiting()} gameId avant=${this.gameId()}`);
       this.gameId.set(gameId);
       this.myColor.set(color);
       this.whiteUsername.set(whiteUsername);
       this.blackUsername.set(blackUsername);
       this.waiting.set(false);
+      console.log(`[${this.ts()}][FRONT][game_ready] waiting après=${this.waiting()} gameId après=${this.gameId()}`);
     });
 
     this.socket.onOpponentLeft(({ seconds }) => {
@@ -114,7 +122,8 @@ export class ChessMultiComponent implements OnInit, OnDestroy {
     });
 
     this.socket.onGameState(state => {
-      if (!this.gameId()) return;
+      console.log(`[${this.ts()}][FRONT][game_state] reçu status=${state.gameStatus} gameId=${this.gameId()}`);
+      if (!this.gameId()) { console.log(`[${this.ts()}][FRONT][game_state] IGNORÉ (gameId vide)`); return; }
       this.gameState.set(state);
       if (state.gameStatus === 'checkmate' || state.gameStatus === 'stalemate' || state.gameStatus === 'resign') {
         if (this.countdownInterval) {
@@ -122,6 +131,9 @@ export class ChessMultiComponent implements OnInit, OnDestroy {
           this.countdownInterval = null;
         }
         this.countdown.set(null);
+        this.drawProposed.set(false);
+        this.drawRefused.set(false);
+        console.log(`[${this.ts()}][FRONT][game_state] partie terminée → leaveGame(${this.gameId()})`);
         this.socket.leaveGame(this.gameId());
       }
     });
@@ -159,6 +171,7 @@ export class ChessMultiComponent implements OnInit, OnDestroy {
 
   onResign() {
     const id = this.gameId();
+    console.log(`[${this.ts()}][FRONT][onResign] resignMulti(${id}) puis findGame`);
     if (id) this.socket.resignMulti(id);
     this.waiting.set(true);
     this.gameState.set(null);
@@ -169,11 +182,12 @@ export class ChessMultiComponent implements OnInit, OnDestroy {
 
   onAbandon() {
     const id = this.gameId();
+    console.log(`[${this.ts()}][FRONT][onAbandon] resignMulti(${id})`);
     if (id) this.socket.resignMulti(id);
-    // Le serveur renverra game_state checkmate → la popup s'affichera
   }
 
   onReplay() {
+    console.log(`[${this.ts()}][FRONT][onReplay] findGame, gameId courant=${this.gameId()}`);
     this.gameState.set(null);
     this.gameId.set('');
     this.myColor.set('');
@@ -182,11 +196,12 @@ export class ChessMultiComponent implements OnInit, OnDestroy {
   }
 
   onQuit() {
-    this.socket.offMultiListeners();
+    console.log(`[${this.ts()}][FRONT][onQuit] quit.emit`);
     this.quit.emit();
   }
 
   ngOnDestroy() {
+    console.log(`[${this.ts()}][FRONT][ngOnDestroy] leaveGame(${this.gameId()})`);
     if (this.countdownInterval) clearInterval(this.countdownInterval);
     this.socket.leaveGame(this.gameId());
     this.socket.offMultiListeners();
