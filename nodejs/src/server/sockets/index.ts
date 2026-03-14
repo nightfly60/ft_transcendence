@@ -2,6 +2,7 @@ import { Server } from 'socket.io';
 import { IncomingMessage, Server as HttpServer, ServerResponse } from 'http';
 import jwt from 'jsonwebtoken';
 import { registerChessEvents } from './chess/events/index.js';
+import { registerChatEvents } from './chat.js';
 
 
 export function initSockets(httpServer: HttpServer<typeof IncomingMessage, typeof ServerResponse>): void {
@@ -33,5 +34,6 @@ export function initSockets(httpServer: HttpServer<typeof IncomingMessage, typeo
   io.on('connection', (socket) => {
     console.log(`[socket] connecté id=${socket.id} userId=${socket.data.userId}`);
     registerChessEvents(io, socket);
+    registerChatEvents(io, socket);
   });
 }

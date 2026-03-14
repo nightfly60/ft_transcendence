@@ -108,8 +108,8 @@
 				class="achievement-card" 
 				*ngFor="let g of visibleGames">
 				<span class="game-win-icon" *ngIf="g.id_winner === data.id">★ Victoire</span>
-				<span class="game-lose-icon" *ngIf="g.id_winner != data.id && g.id_winner != -1">★ Defaite</span>
-				<span class="game-lose-icon" *ngIf="-1 == g.id_winner">★ Match Nul</span>
+				<span class="game-lose-icon" *ngIf="g.id_winner != data.id && g.id_winner">★ Defaite</span>
+				<span class="game-draw-icon" *ngIf="null == g.id_winner">★ Match Nul</span>
 				<span class="achievement-name">{{ g.username_player_one }} contre {{ g.username_player_second }}</span>
 				<span class="achievement-desc">Le {{ g.timestamp | date: 'dd/MM/yyyy'}}</span>
 				<span class="achievement-desc">Partie en {{ g.nb_cuts }} coups</span>
@@ -141,6 +141,7 @@
 					<div class="xp-track">
 						<div class="xp-fill" [style.width.%]="a.progress / a.objective * 100 > 100 ? 100 : a.progress / a.objective * 100"></div>
 					</div>
+					<div class="achievement-desc">{{ a.progress }} / {{ a.objective }}</div>
 				</div>
 			</ng-container>
 		</div>

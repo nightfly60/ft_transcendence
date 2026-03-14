@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { GameComponent } from './chess/chess.component';
+import { ChatBox } from './chat-box/chat-box';
 import { Home } from './home/home';
 import { ErrorPageComponent } from './error-page/error-page';
 import { ProfileComponent } from './profile/profile';
@@ -16,6 +17,7 @@ export const routes: Routes = [
 	{ path: '', component: Home },
 	{ path: 'login', component: LoginPage },
 	{ path: 'game', component: GameComponent, canActivate: [authGuard] },
+	{ path: 'chat-box', component: ChatBox},
 	{ path: 'profile/:id', component: ProfileComponent, canActivate: [authGuard] },
 	{ path: 'profile/:id/friends', component: FriendsComponent, canActivate: [authGuard] },
 	{ path: 'profile/edit/:id', component: ProfileEditComponent, canActivate: [authGuard] },

@@ -151,7 +151,8 @@ export class ChessComponent {
     if (this.gameStatus() === 'checkmate' || this.gameStatus() === 'stalemate' || this.gameStatus() === 'draw' || this.gameStatus() === 'resign') return;
     if (this.showPromotion()) return;
     const color = this.myColor();
-    if (this.mode() === 'multi' || (this.mode() === 'ia' && color && this.turn() !== color)) return;
+    if (((this.mode() === 'multi' || this.mode() === 'ia') && color && this.turn() !== color))
+       return;
     const { r, c } = event;
     const sel = this.selected();
     const extMoves = this.externalValidMoves();
