@@ -1,35 +1,41 @@
 import { send } from 'process';
 import { Server, Socket } from 'socket.io';
+import { createGameConversation } from '../services/conversation.service';
+import pool from '../db.js';
+import { RowDataPacket } from "mysql2";
+import { saveMessage } from '../services/message.service';
 
  interface ChatMessage {
- 	text:		string;
+ 	id:			number;
+	text:		string;
  	senderId:	number;
  	timestamp:	Date;
  }
 
 export function registerChatEvents(io: Server, socket: Socket) {
-	socket.on('chat:find', () => {
-		//if game-chat: get gameId from socket.data
+	socket.on('chat:find', async () => {
 		const chatId = socket.data.id_game;
-		socket.join(chatId);
-		socket.emit('chat:ready', chatId, socket.data.userId);
+		const [rows] = await pool.execute<RowDataPacket[]>(
+			`SELECT id_conversation FROM Game WHERE id = ?`,
+			[Number(chatId)]
+  		);
+		socket.data.conversationId = rows[0].id_conversation;
+		socket.join(chatId); //what if no gameId yet?
+		//socket.join(`game_${gameId}`); better room name proposition
+		socket.emit('chat:ready', chatId, socket.data.userId, socket.data.conversationId);
 	});
 
-	socket.on('chat:send', (data: { chatId: string, message: string}) =>
+	socket.on('chat:send', async (data: { chatId: string, message: string}) =>
 	{
-		//enrich message with username + timestamp -> can store username in socket.data
-		const user: number = socket.data.userId;
-		//for dms need more user info like id, friends, online status
+		const userId: number = socket.data.userId;
+		const messageId = await saveMessage(socket.data.conversationId, userId, data.message);
 		const enriched: ChatMessage = {
+			id: messageId,
 			text: data.message,
-			senderId: user,
+			senderId: userId,
 			timestamp: new Date()
 		};
 		//chat content moderation happens here
 		io.to(data.chatId).emit('chat:receive', enriched);
-	});
-
-	socket.on('disconnect', () => {
-		console.log(`User disconnected: ${socket.id}`);
 	});
 }

@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS Game (
     id_player_one INT NOT NULL,
     id_player_second INT,
     id_winner INT,
-    id_conversation INT NOT NULL,
+    id_conversation INT NULL,
     FOREIGN KEY(id_player_one) REFERENCES \`User\`(id),
     FOREIGN KEY(id_player_second) REFERENCES \`User\`(id),
     FOREIGN KEY(id_winner) REFERENCES \`User\`(id),

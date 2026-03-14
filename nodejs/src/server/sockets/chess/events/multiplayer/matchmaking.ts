@@ -4,6 +4,7 @@ import pool from '../../../../db.js';
 import { MultiGame } from '../../types.js';
 import { makeGame, buildGameState } from '../../game.js';
 import { waitingPlayer, setWaitingPlayer, multiGames, playerGames, disconnectTimers } from './state.js';
+import { createGameConversation } from '../../../../services/conversation.service.js';
 
 /**
  * @brief Récupère les noms d'utilisateur depuis la base de données.
@@ -106,6 +107,8 @@ async function createGame(io: Server, socket: Socket, waitingSocketId: string): 
   const userMap = await fetchUsernames([whiteUserId, blackUserId]);
   const whiteUsername = userMap[whiteUserId] ?? 'Blanc';
   const blackUsername = userMap[blackUserId] ?? 'Noir';
+
+  createGameConversation(whiteUserId, blackUserId, result.insertId); // <------------- create chat gael
 
   io.to(white).emit('game_ready', { gameId, color: 'w', whiteUsername, blackUsername });
   io.to(black).emit('game_ready', { gameId, color: 'b', whiteUsername, blackUsername });
