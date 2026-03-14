@@ -10,7 +10,7 @@ export interface CastlingRights {
 export interface GameState {
   board: Board;
   turn: PieceColor;
-  gameStatus: 'playing' | 'check' | 'checkmate' | 'stalemate';
+  gameStatus: 'playing' | 'check' | 'checkmate' | 'stalemate' | 'resign';
   moveHistory: string[];
   captured: Piece[];
   lastMove: [[number, number], [number, number]] | null;
@@ -40,7 +40,7 @@ export class SocketService {
     this.socket.on('waiting', callback);
   }
 
-  onGameReady(callback: (data: { gameId: string; color: string }) => void) {
+  onGameReady(callback: (data: { gameId: string; color: string; whiteUsername: string; blackUsername: string }) => void) {
     this.socket.on('game_ready', callback);
   }
 
@@ -56,12 +56,21 @@ export class SocketService {
     this.socket.on('opponent_back', callback);
   }
 
+  proposeDraw(gameId: string) { this.socket.emit('propose_draw', { gameId }); }
+  acceptDraw(gameId: string)  { this.socket.emit('accept_draw',  { gameId }); }
+  refuseDraw(gameId: string)  { this.socket.emit('refuse_draw',  { gameId }); }
+
+  onDrawProposed(callback: () => void)  { this.socket.on('draw_proposed', callback); }
+  onDrawRefused(callback: () => void)   { this.socket.on('draw_refused',  callback); }
+
   offMultiListeners() {
     this.socket.off('waiting');
     this.socket.off('game_ready');
     this.socket.off('game_state');
     this.socket.off('opponent_left');
     this.socket.off('opponent_back');
+    this.socket.off('draw_proposed');
+    this.socket.off('draw_refused');
   }
 
   // ─── Solo ─────────────────────────────────────────────────────────────────
@@ -95,6 +104,24 @@ export class SocketService {
     this.socket.off('game_state');
   }
 
+  // ia
+	startSoloIA(level: 'novice' | 'intermediaire' | 'expert') {
+		this.socket.emit('start_solo_ia', { level });
+	}
+
+	sendSoloIAMove(gameId: string, from: string, to: string, promotion?: string) {
+		this.socket.emit('solo_ia_move', { gameId, from, to, promotion });
+	}
+
+	offSoloIAListeners() {
+		this.socket.off('solo_ready');
+		this.socket.off('game_state');
+	}
+
+	onSoloIAReady(callback: (data: { gameId: string; playerColor?: 'w' | 'b' }) => void) {
+		this.socket.on('solo_ready', callback);
+	}
+
   // ─── Common ───────────────────────────────────────────────────────────────
 
   reconnect(token: string) {
@@ -103,6 +130,22 @@ export class SocketService {
     this.socket.connect();
   }
 
+  findChat() {
+    this.socket.emit('chat:find');
+  }
+
+  onChatReady(callback : (chatId : string, userId : number) => void) {
+    this.socket.on('chat:ready', callback);
+  }
+
+  sendMessage(chatId : string, message : string) {
+    this.socket.emit('chat:send', ({ chatId, message }));
+  }
+
+  onReceiveMessage(callback : (data : { text: string; senderId: number; timestamp: Date}) => void) {
+    this.socket.on('chat:receive', callback);
+  }
+  
   disconnect() {
     this.socket.disconnect();
   }

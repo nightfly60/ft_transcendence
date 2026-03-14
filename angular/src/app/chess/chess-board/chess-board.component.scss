@@ -1,4 +1,4 @@
-// ─── Taille des cases ──────────────────────────────────────────────────────
+// ─── Taille des cases ────────────────────────────────────────────────────────
 // --cell est hérité par tous les enfants (board-grid, player-panel)
 
 :host {
@@ -16,7 +16,7 @@
   .game-area {
     flex-direction: column;
     align-items: center;
-    padding: 16px 24px;
+    padding: 4px 24px 16px;
     gap: 16px;
   }
 
@@ -36,7 +36,7 @@
   }
 
   .game-area {
-    padding: 8px 16px;
+    padding: 2px 16px 8px;
     gap: 6px;
   }
 
@@ -127,6 +127,81 @@
   text-transform: uppercase;
 }
 
+.multi-actions {
+  display: flex;
+  gap: 4px;
+  position: absolute;
+  right: 0;
+}
+
+.action-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  font-size: 0.85rem;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+  line-height: 1;
+}
+
+.draw-btn {
+  color: rgba(201, 168, 76, 0.5);
+  &:hover {
+    color: #c9a84c;
+    border-color: rgba(201, 168, 76, 0.4);
+    background: rgba(201, 168, 76, 0.08);
+  }
+}
+
+.abandon-btn {
+  color: rgba(224, 80, 80, 0.4);
+  &:hover {
+    color: #e05050;
+    border-color: rgba(224, 80, 80, 0.4);
+    background: rgba(224, 80, 80, 0.08);
+  }
+}
+
+.endgame-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.replay-btn {
+  flex: 1;
+  padding: 0.6rem 1.5rem;
+  background: #b58863;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Cormorant Garamond', serif;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  &:hover { background: #a07050; }
+}
+
+.quit-btn {
+  flex: 1;
+  padding: 0.6rem 1.5rem;
+  background: transparent;
+  color: #aaa;
+  border: 1px solid rgba(170, 170, 170, 0.4);
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: 'Cormorant Garamond', serif;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  &:hover { background: rgba(170, 170, 170, 0.1); color: #fff; }
+}
+
 // ─── Bouton rejouer mobile (sous le plateau) ──────────────────────────────────
 
 .mobile-reset-btn {
@@ -199,6 +274,45 @@
   }
 }
 
+// ─── Bannière joueurs (multi) ─────────────────────────────────────────────────
+
+.vs-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem 0.75rem;
+  width: calc(var(--cell) * 8);
+  min-height: 2rem;
+  font-family: 'Cormorant Garamond', serif;
+  letter-spacing: 0.12em;
+  position: relative;
+}
+
+.vs-player {
+  font-size: clamp(0.7rem, 2.5vw, 1.1rem);
+  font-weight: 700;
+  color: #f0d9b5;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  min-width: 0;
+  max-width: 44%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vs-sep {
+  font-size: clamp(0.65rem, 1.8vw, 0.8rem);
+  color: #c9a84c;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 0 0.25rem;
+  border-left: 1px solid rgba(201, 168, 76, 0.3);
+  border-right: 1px solid rgba(201, 168, 76, 0.3);
+  flex-shrink: 0;
+}
+
 // ─── Section échiquier ───────────────────────────────────────────────────────
 
 .board-section {
@@ -208,22 +322,11 @@
   gap: 10px;
 }
 
-.flip-btn {
-  background: transparent;
-  border: 1px solid rgba(#c9a84c, 0.3);
-  color: #a09070;
-  font-size: 1rem;
-  width: 2rem;
-  height: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%);
-  transition: border-color 0.2s, color 0.2s;
-
+.flip-btn-top {
+  color: rgba(201, 168, 76, 0.5);
   &:hover {
-    border-color: #c9a84c;
-    color: #e8dfc8;
+    color: #c9a84c;
+    border-color: rgba(201, 168, 76, 0.4);
+    background: rgba(201, 168, 76, 0.08);
   }
 }

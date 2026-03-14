@@ -1,31 +1,22 @@
 import { Server, Socket } from 'socket.io';
-import { ResultSetHeader } from 'mysql2';
-import pool from '../../../db.js';
 import { ChessGame } from '../types.js';
 import { makeGame, buildGameState, applyMoveToGame, parseAndValidate, toPromotionPiece } from '../game.js';
 
 const soloGames = new Map<string, ChessGame>();
+let soloGameCounter = 0;
 
-export function registerSoloEvents(io: Server, socket: Socket): void {
+export function registerSoloEvents(_io: Server, socket: Socket): void {
 
-  socket.on('start_solo', async () => {
+  socket.on('start_solo', () => {
     console.log(`[solo] start_solo reçu userId=${socket.data.userId}`);
-    try {
-      const [result] = await pool.query<ResultSetHeader>(
-        'INSERT INTO Game (timestamp, id_player_one) VALUES (NOW(), ?)',
-        [socket.data.userId]
-      );
-      const gameId = String(result.insertId);
-      console.log(`[solo] game créée gameId=${gameId}`);
-      const game = makeGame();
-      soloGames.set(gameId, game);
-      socket.join(gameId);
-      socket.emit('solo_ready', { gameId });
-      socket.emit('game_state', buildGameState(game));
-      console.log(`[solo] solo_ready + game_state envoyés gameId=${gameId}`);
-    } catch (err) {
-      console.error('[solo] erreur start_solo:', err);
-    }
+    const gameId = `solo_${++soloGameCounter}_${socket.id}`;
+    console.log(`[solo] game créée gameId=${gameId}`);
+    const game = makeGame();
+    soloGames.set(gameId, game);
+    socket.join(gameId);
+    socket.emit('solo_ready', { gameId });
+    socket.emit('game_state', buildGameState(game));
+    console.log(`[solo] solo_ready + game_state envoyés gameId=${gameId}`);
   });
 
   socket.on('solo_move', ({

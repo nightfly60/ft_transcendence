@@ -4,7 +4,7 @@ import {
 } from './types.js';
 import {
   initBoard, fromAlgebraic, getValidMoves, applyMove, computeGameStatus, computeValidMovesMap,
-} from './engine.js';
+} from './engine/index.js';
 
 /**
  * @brief Crée une nouvelle partie d'échecs en position initiale.
@@ -79,7 +79,7 @@ export function applyMoveToGame(
   game: ChessGame,
   fromR: number, fromC: number,
   toR: number, toC: number,
-  promotion: PieceType,
+  promotion?: PieceType,
 ): ChessGame {
   const ctx = getCtx(game);
   const files = 'abcdefgh';

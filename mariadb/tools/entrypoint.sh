@@ -58,10 +58,10 @@ CREATE TABLE IF NOT EXISTS Profile (
 CREATE TABLE IF NOT EXISTS Game (
     id INT AUTO_INCREMENT PRIMARY KEY,
     id_player_one INT NOT NULL,
-    id_player_second INT NOT NULL,
+    id_player_second INT DEFAULT NULL,
     nb_cuts BIGINT,
     timestamp DATETIME,
-    id_winner INT NOT NULL,
+    id_winner INT DEFAULT NULL,
     FOREIGN KEY(id_winner) REFERENCES \`User\`(id) ON DELETE CASCADE,
     FOREIGN KEY(id_player_one) REFERENCES \`User\`(id) ON DELETE CASCADE,
     FOREIGN KEY(id_player_second) REFERENCES \`User\`(id) ON DELETE CASCADE

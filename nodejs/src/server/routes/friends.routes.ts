@@ -107,4 +107,35 @@ router.get('/online/:targetId', requireAuth, async (req, res) => {
 	}
 });
 
+router.get('/list/:id', requireAuth, async (req, res) => {
+  const userId = parseInt(req.params['id'] as string);
+  if (isNaN(userId)) {
+    res.status(400).json({ error: 'Invalid ID' });
+    return;
+  }
+ 
+  try {
+	const [friends]: any = await pool.query(
+		`SELECT 
+			u.id,
+			u.username,
+			p.path_img,
+			p.elo,
+			u.last_seen
+		FROM friends f
+		JOIN User u ON u.id = f.id_user_2
+		JOIN Profile p ON p.id_user = u.id
+		WHERE f.id_user_1 = ?`,
+		[userId]
+	);
+	
+		res.status(200).json(friends);
+	}
+	catch (err)
+	{
+		console.error('Erreur liste amis:', err);
+		res.status(500).json({ error: 'Erreur serveur' });
+	}
+});
+
 export default router;

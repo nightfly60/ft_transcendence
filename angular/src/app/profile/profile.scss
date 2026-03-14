@@ -3,6 +3,7 @@ $black:      #0a0a0a;
 $white:      #f5f0e8;
 $cream:      #e8dfc8;
 $gold:       #c9a84c;
+$gray:       #c4bca5;
 $gold-light: #e8c060;
 $gold-dark:  #7a5c18;
 $muted:      #a09070;
@@ -488,4 +489,9 @@ $font-body:  'Cormorant Garamond', serif;
 .game-win-icon {
   font-size: 1.5rem;
   color: rgba($green, 0.5);
+}
+
+.game-draw-icon {
+  font-size: 1.5rem;
+  color: rgba($gray, 0.5);
 }

@@ -1,13 +1,52 @@
-import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, output, signal } from '@angular/core';
 import { GameState, SocketService } from '../../services/socket.service';
 import { ChessComponent } from '../chess-board/chess-board.component';
+import { ChatBox } from '../../chat-box/chat-box';
 
 @Component({
   selector: 'app-chess-multi',
   standalone: true,
-  imports: [ChessComponent],
+  imports: [ChessComponent, ChatBox],
   templateUrl: './chess-multi.component.html',
   styles: [`
+    .draw-banner {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 8px 16px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      letter-spacing: 0.1em;
+      border: 1px solid rgba(201, 168, 76, 0.4);
+      background: rgba(201, 168, 76, 0.08);
+      color: #c9a84c;
+      box-sizing: border-box;
+    }
+    .draw-accept, .draw-refuse {
+      padding: 0.3rem 1rem;
+      border-radius: 4px;
+      border: 1px solid;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+    }
+    .draw-accept { background: #b58863; color: #fff; border-color: #b58863; }
+    .draw-accept:hover { background: #a07050; }
+    .draw-refuse { background: transparent; color: #aaa; border-color: rgba(170,170,170,0.4); }
+    .draw-refuse:hover { background: rgba(170,170,170,0.1); }
+    .draw-refused-banner {
+      padding: 6px 16px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.1em;
+      color: #e05050;
+      text-align: center;
+      border: 1px solid rgba(224,80,80,0.3);
+      background: rgba(224,80,80,0.06);
+      box-sizing: border-box;
+    }
+
     .opponent-banner {
       width: 100%;
       padding: 8px 16px;
@@ -25,12 +64,17 @@ import { ChessComponent } from '../chess-board/chess-board.component';
 })
 export class ChessMultiComponent implements OnInit, OnDestroy {
   private socket = inject(SocketService);
+  quit = output<void>();
 
-  gameId    = signal<string>('');
-  myColor   = signal<string>('');
-  gameState = signal<GameState | null>(null);
-  waiting   = signal<boolean>(false);
-  countdown = signal<number | null>(null);
+  gameId        = signal<string>('');
+  myColor       = signal<string>('');
+  gameState     = signal<GameState | null>(null);
+  waiting       = signal<boolean>(false);
+  countdown     = signal<number | null>(null);
+  whiteUsername  = signal<string>('');
+  blackUsername  = signal<string>('');
+  drawProposed   = signal<boolean>(false);
+  drawRefused    = signal<boolean>(false);
 
   private countdownInterval: ReturnType<typeof setInterval> | null = null;
 
@@ -39,9 +83,11 @@ export class ChessMultiComponent implements OnInit, OnDestroy {
       this.waiting.set(true);
     });
 
-    this.socket.onGameReady(({ gameId, color }) => {
+    this.socket.onGameReady(({ gameId, color, whiteUsername, blackUsername }) => {
       this.gameId.set(gameId);
       this.myColor.set(color);
+      this.whiteUsername.set(whiteUsername);
+      this.blackUsername.set(blackUsername);
       this.waiting.set(false);
     });
 
@@ -68,17 +114,42 @@ export class ChessMultiComponent implements OnInit, OnDestroy {
     });
 
     this.socket.onGameState(state => {
+      if (!this.gameId()) return;
       this.gameState.set(state);
-      if (state.gameStatus === 'checkmate' || state.gameStatus === 'stalemate') {
+      if (state.gameStatus === 'checkmate' || state.gameStatus === 'stalemate' || state.gameStatus === 'resign') {
         if (this.countdownInterval) {
           clearInterval(this.countdownInterval);
           this.countdownInterval = null;
         }
         this.countdown.set(null);
+        this.socket.leaveGame(this.gameId());
       }
     });
 
+    this.socket.onDrawProposed(() => {
+      this.drawProposed.set(true);
+    });
+
+    this.socket.onDrawRefused(() => {
+      this.drawRefused.set(true);
+      setTimeout(() => this.drawRefused.set(false), 3000);
+    });
+
     this.socket.findGame();
+  }
+
+  onProposeDraw() {
+    this.socket.proposeDraw(this.gameId());
+  }
+
+  onAcceptDraw() {
+    this.drawProposed.set(false);
+    this.socket.acceptDraw(this.gameId());
+  }
+
+  onRefuseDraw() {
+    this.drawProposed.set(false);
+    this.socket.refuseDraw(this.gameId());
   }
 
   onMovePlayed(move: { from: string; to: string; promotion?: string }) {
@@ -94,6 +165,25 @@ export class ChessMultiComponent implements OnInit, OnDestroy {
     this.gameId.set('');
     this.myColor.set('');
     this.socket.findGame();
+  }
+
+  onAbandon() {
+    const id = this.gameId();
+    if (id) this.socket.resignMulti(id);
+    // Le serveur renverra game_state checkmate → la popup s'affichera
+  }
+
+  onReplay() {
+    this.gameState.set(null);
+    this.gameId.set('');
+    this.myColor.set('');
+    this.waiting.set(true);
+    this.socket.findGame();
+  }
+
+  onQuit() {
+    this.socket.offMultiListeners();
+    this.quit.emit();
   }
 
   ngOnDestroy() {

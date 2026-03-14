@@ -16,6 +16,7 @@ $font-body:  'Cormorant Garamond', serif;
   align-items: center;
   justify-content: space-between;
   padding: 0 40px;
+  user-select: none;
   height: 68px;
   background: rgba(0, 0, 0, 0.88);
   backdrop-filter: blur(16px);
@@ -124,6 +125,15 @@ $font-body:  'Cormorant Garamond', serif;
     align-items: center;
     gap: 12px;
 
+    .user-identity {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      &:hover .user-name { color: $gold; }
+      &:hover .user-avatar { border-color: $gold; }
+    }
+
     .user-avatar {
       background: $gold;
       width: 32px;
@@ -185,6 +195,7 @@ $font-body:  'Cormorant Garamond', serif;
 // MENU MOBILE
 .mobile-menu {
   display: none;
+  user-select: none;
 
   @media (max-width: 768px) {
     &.open {
@@ -227,6 +238,7 @@ $font-body:  'Cormorant Garamond', serif;
   display: flex;
   align-items: center;
   gap: 12px;
+  text-decoration: none;
   padding: 16px 28px 8px;
   border-top: 1px solid rgba($gold, 0.1);
   margin-top: 4px;

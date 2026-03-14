@@ -11,6 +11,7 @@ import { requireAuth, checkAPI } from './middleware/auth.middleware.js';
 import profileEditRouter from './routes/profile-edit.routes.js';
 import friendsRouter from './routes/friends.routes.js';
 import two_faRouter from './routes/2fa.routes.js';
+import iaRouter from './routes/ia.routes.js';
 import passport from 'passport';
 import fs from 'node:fs';
 import leaderboardRouter from './routes/leaderboard.routes.js'
@@ -35,10 +36,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.use('/avatars', (req, res, next) => {
-    next();
+	next();
 }, express.static(path.join(__dirname, 'public/avatars')));
 
-console.log('Serving avatars from:', path.join(__dirname, 'public/avatars'));
 
 app.use(cors());
 app.use(express.json({ limit: '5mb' }));
@@ -47,9 +47,10 @@ app.use(express.urlencoded({ limit: '5mb', extended: true }));
 app.use('/users', requireAuth, userRouter);
 app.use('/profile', requireAuth, profileRouter); 
 app.use('/profile-edit', requireAuth, profileEditRouter);
-app.use('/friends', requireAuth, friendsRouter);
-app.use('/2fa', requireAuth, two_faRouter);
-app.use('/leaderboard', requireAuth, leaderboardRouter);
+app.use('/friends', requireAuth, friendsRouter)
+app.use('/2fa', requireAuth, two_faRouter)
+app.use('/leaderboard', requireAuth, leaderboardRouter)
+app.use('/ia', iaRouter);
 app.use('/public_api', requireAuth, publicAPIRouter);
 app.use('/database', checkAPI, databaseRouter);
 
