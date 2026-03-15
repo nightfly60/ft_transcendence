@@ -1,0 +1,45 @@
+<div class="endgame-overlay">
+  <div class="endgame-dialog">
+    @if (gameStatus() === 'draw') {
+      <div class="endgame-icon">½</div>
+      <p class="endgame-title">Nulle</p>
+      <p class="endgame-sub">Match nul par accord</p>
+    } @else if (gameStatus() === 'stalemate') {
+      <div class="endgame-icon">½</div>
+      <p class="endgame-title">Pat</p>
+      <p class="endgame-sub">Nulle</p>
+    } @else if (gameStatus() === 'resign') {
+      @if (myColor() && turn() === myColor()) {
+        <div class="endgame-icon">♟</div>
+        <p class="endgame-title">Défaite</p>
+        <p class="endgame-sub">Abandon</p>
+      } @else if (myColor() && turn() !== myColor()) {
+        <div class="endgame-icon">♛</div>
+        <p class="endgame-title">Victoire !</p>
+        <p class="endgame-sub">Abandon adverse</p>
+      } @else {
+        <div class="endgame-icon">♚</div>
+        <p class="endgame-title">Abandon</p>
+        <p class="endgame-sub">Les {{ turn() === 'w' ? 'blancs' : 'noirs' }} ont abandonné</p>
+      }
+    } @else if (myColor() && turn() === myColor()) {
+      <div class="endgame-icon">♟</div>
+      <p class="endgame-title">Défaite</p>
+      <p class="endgame-sub">Échec et mat</p>
+    } @else if (myColor() && turn() !== myColor()) {
+      <div class="endgame-icon">♛</div>
+      <p class="endgame-title">Victoire !</p>
+      <p class="endgame-sub">Échec et mat</p>
+    } @else {
+      <div class="endgame-icon">♚</div>
+      <p class="endgame-title">Échec et mat</p>
+      <p class="endgame-sub">Les {{ turn() === 'w' ? 'blancs' : 'noirs' }} ont perdu</p>
+    }
+    @if (mode() === 'multi') {
+      <div class="endgame-actions">
+        <button class="replay-btn" (click)="replay.emit()">Rejouer</button>
+        <button class="quit-btn" (click)="quit.emit()">Quitter</button>
+      </div>
+    }
+  </div>
+</div>

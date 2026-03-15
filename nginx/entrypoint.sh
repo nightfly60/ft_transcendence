@@ -13,4 +13,6 @@ fi
 chmod 644 /etc/ssl/private/private-key.pem
 chmod 644 /etc/ssl/certs/selfsigned-cert.pem
 
+envsubst '${NGINX_PORT}${APP_PORT}${ANGULAR_PORT}' < /etc/nginx/nginx.conf > /tmp/nginx.conf && mv /tmp/nginx.conf /etc/nginx/nginx.conf
+
 exec nginx

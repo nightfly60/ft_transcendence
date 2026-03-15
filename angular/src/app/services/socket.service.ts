@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 import { Board, Piece, PieceColor } from '../chess/chess-board/chess.types';
 
@@ -19,12 +19,40 @@ export interface GameState {
   validMoves: Record<string, string[]>;
 }
 
+export interface OnlineUser {
+  id: number;
+  username: string;
+  path_img: string | null;
+}
+
 @Injectable({ providedIn: 'root' })
 export class SocketService {
   private socket: Socket = io(`${window.location.protocol}//${window.location.host}`, {
     path: '/socket.io/',
     auth: { token: localStorage.getItem('token') ?? '' },
   });
+
+  // ─── Présence ─────────────────────────────────────────────────────────────
+
+  onlineUsers = signal<OnlineUser[]>([]);
+
+  constructor() {
+    this.socket.on('online_users', ({ users }: { users: OnlineUser[] }) => {
+      this.onlineUsers.set(users);
+    });
+    this.socket.on('user_online', (user: OnlineUser) => {
+      this.onlineUsers.update(list =>
+        list.some(u => u.id === user.id) ? list : [...list, user]
+      );
+    });
+    this.socket.on('user_offline', ({ userId }: { userId: number }) => {
+      this.onlineUsers.update(list => list.filter(u => u.id !== userId));
+    });
+  }
+
+  isUserOnline(userId: number): boolean {
+    return this.onlineUsers().some(u => u.id === userId);
+  }
 
   // ─── Multiplayer ─────────────────────────────────────────────────────────
 
@@ -34,6 +62,14 @@ export class SocketService {
 
   leaveGame(gameId: string) {
     this.socket.emit('leave_game', { gameId });
+  }
+
+  notifyHidden() {
+    this.socket.emit('player_hidden');
+  }
+
+  notifyVisible() {
+    this.socket.emit('player_visible');
   }
 
   onWaiting(callback: () => void) {
@@ -121,6 +157,24 @@ export class SocketService {
 	onSoloIAReady(callback: (data: { gameId: string; playerColor?: 'w' | 'b' }) => void) {
 		this.socket.on('solo_ready', callback);
 	}
+
+// ─── Chat ───────────────────────────────────────────────────────────────
+
+  findChat() {
+      this.socket.emit('chat:find');
+    }
+
+    onChatReady(callback : (chatId : string, userId : number, conversationId: number) => void) {
+      this.socket.on('chat:ready', callback);
+    }
+
+    sendMessage(chatId : string, message : string) {
+      this.socket.emit('chat:send', ({ chatId, message }));
+    }
+
+    onReceiveMessage(callback : (data : { id : number, text: string; senderId: number; timestamp: Date}) => void) {
+      this.socket.on('chat:receive', callback);
+    }
 
 // ─── Chat ───────────────────────────────────────────────────────────────
 

@@ -2,7 +2,7 @@ import { Server, Socket } from 'socket.io';
 import { registerFindGame }                        from './matchmaking.js';
 import { registerMove }                            from './moves.js';
 import { registerResign }                          from './resign.js';
-import { registerLeaveGame, registerDisconnect }   from './disconnect.js';
+import { registerLeaveGame, registerDisconnect, registerPlayerVisibility } from './disconnect.js';
 import { registerDraw }                            from './draw.js';
 
 /**
@@ -18,4 +18,5 @@ export function registerMultiplayerEvents(io: Server, socket: Socket): void {
   registerLeaveGame(io, socket);
   registerDisconnect(io, socket);
   registerDraw(io, socket);
+  registerPlayerVisibility(io, socket);
 }

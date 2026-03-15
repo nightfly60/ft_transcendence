@@ -1,5 +1,6 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, inject, effect, signal } from '@angular/core';
 import { AuthService } from '../services/auth.service';
+import { SocketService } from '../services/socket.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
@@ -18,8 +19,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
 	id: string = '';
 	isFriend: boolean = false;
 	isOnline: boolean = false;
-	private pollingInterval: any = null;
+	private targetId = signal<number>(0);
 	private routeSub: Subscription | null = null;
+
+	private socket = inject(SocketService);
 
 	readonly XP_PER_LEVEL = 1000;
 	cells = Array.from({ length: 144 }, (_, i) => ({
@@ -52,7 +55,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
 		private http: HttpClient,
 		private cdr: ChangeDetectorRef,
 		public auth: AuthService
-	) {}
+	) {
+		effect(() => {
+			const id = this.targetId();
+			const online = id === Number(this.auth.getUserId()) || this.socket.isUserOnline(id);
+			if (this.isOnline !== online) {
+				this.isOnline = online;
+				this.cdr.markForCheck();
+			}
+		});
+	}
 
 	goToEdit() {
 		window.location.href = `/profile/edit/${this.data.id}`;
@@ -73,7 +85,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 					if (this.auth.getUserId() !== data.id) {
 						this.checkFriendStatus(data.id);
 					}
-					this.startPolling(data.id);
+					this.targetId.set(data.id);
 					this.cdr.markForCheck();
 				},
 				error: (err) => { this.router.navigate([`/${err.status}`]); this.cdr.markForCheck(); },
@@ -89,35 +101,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
 			});
 		}
 
-	startPolling(targetId: number) {
-		if (this.pollingInterval) {
-			clearInterval(this.pollingInterval);
-			this.pollingInterval = null;
-		}
-		if (!this.auth.isLoggedIn()) return;
-		this.checkOnlineStatus(targetId);
-		this.pollingInterval = setInterval(() => {
-			this.checkOnlineStatus(targetId);
-		}, 1000 * 30);
-	}
-
 	ngOnDestroy() {
-		if (this.pollingInterval) {
-			clearInterval(this.pollingInterval);
-			this.pollingInterval = null;
-		}
 		this.routeSub?.unsubscribe();
-	}
-
-	checkOnlineStatus(targetId: number) {
-		if (!this.auth.isLoggedIn()) return ;
-		this.http.get<{ isOnline: boolean }>(`/api/friends/online/${targetId}`).subscribe({
-			next: (res) => {
-				this.isOnline = res.isOnline;
-				this.cdr.markForCheck();
-			},
-			error: () => {}
-		});
 	}
 
 	toggleFriend() {

@@ -63,6 +63,29 @@
 					</div>
 				}
 			</div>
+
+			<div class="gold-separator"></div>
+
+			<div class="api-section">
+				<h2 class="twofa-title">API Publique</h2>
+				<p class="twofa-subtitle">Communication avec la database via API</p>
+
+				<div class="generate-api">
+					<label
+						type="text"
+						class="api-input"
+					>
+					{{ api_key || "Vous n'avez pas encore de clé" }}
+					</label>
+					<button class="btn-submit" (click)="genAPIKey()">Generer une clé</button>
+				</div>
+				@if (apiError) {
+					<span class="field-error">{{ apiError }}</span>
+				}
+
+
+			</div>
+
 		</div>
 	}
 </div>
