@@ -29,16 +29,17 @@ export class ChatBox implements OnInit, AfterViewChecked{
     constructor(private socket: SocketService, private http:HttpClient) {}
 
     ngOnInit(): void {
-      this.socket.findChat(); //get chat id from db or from game
+      this.socket.findChat(); //get chat id from game
       this.socket.onChatReady(( chatId, userId, conversationId ) => {
           this.chatID = chatId;
           this.userId = userId;
           this.conversationId = conversationId;
+          //check chat history
+          this.http.get<any[]>(`/api/conversation/${this.conversationId}/Message`).subscribe(history => {
+            this.messages.set(history.map(m => new Message(m.content, new Date(m.sent_at), m.id_sender, m.id)));
+          });
       });
-
-      this.http.get<any[]>(`/api/Conversation/${this.conversationId}/Message`).subscribe(history => {
-      this.messages.set(history.map(m => new Message(m.content, new Date(m.sent_at), m.id_sender, m.id)));
-      });
+      
 
       this.socket.onReceiveMessage(({id, text, senderId, timestamp}) => {
         const alreadyExists = this.messages().some(m => m.id === id);

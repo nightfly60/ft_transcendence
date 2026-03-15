@@ -74,8 +74,8 @@ INSERT INTO Achievements (name, objective, description, type) VALUES
 ('Clutch',         20,   'Jouer une partie de plus de 20 coups', 'upper_cut'),
 ('Marathonien',    80,  'Jouer une partie de plus de 80 coups', 'upper_cut');
 
--- Table Conversations
-CREATE TABLE IF NOT EXISTS Conversations (
+-- Table Conversation
+CREATE TABLE IF NOT EXISTS Conversation (
     id INT AUTO_INCREMENT PRIMARY KEY,
     type ENUM('game', 'dm'),
     created_at TIMESTAMP
@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS Message (
     id_sender INT NOT NULL,
     content VARCHAR(255),
     sent_at TIMESTAMP,
-    FOREIGN KEY(id_conversation) REFERENCES \`Conversations\`(id),
+    FOREIGN KEY(id_conversation) REFERENCES \`Conversation\`(id),
     FOREIGN KEY(id_sender) REFERENCES \`User\`(id)
 );
 
@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS Message (
 CREATE TABLE IF NOT EXISTS Conversation_Participants (
     id_conversation INT NOT NULL,
     id_participant INT NOT NULL,
-    FOREIGN KEY(id_conversation) REFERENCES \`Conversations\`(id),
+    FOREIGN KEY(id_conversation) REFERENCES \`Conversation\`(id),
     FOREIGN KEY(id_participant) REFERENCES \`User\`(id)
 );
 
@@ -112,7 +112,7 @@ CREATE TABLE IF NOT EXISTS Game (
     FOREIGN KEY(id_player_one) REFERENCES \`User\`(id),
     FOREIGN KEY(id_player_second) REFERENCES \`User\`(id),
     FOREIGN KEY(id_winner) REFERENCES \`User\`(id),
-    FOREIGN KEY(id_conversation) REFERENCES \`Conversations\`(id)
+    FOREIGN KEY(id_conversation) REFERENCES \`Conversation\`(id)
 );
 EOSQL
 

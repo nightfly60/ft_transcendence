@@ -17,6 +17,7 @@ import fs from 'node:fs';
 import leaderboardRouter from './routes/leaderboard.routes.js'
 import publicAPIRouter from './routes/public_api.routes.js';
 import databaseRouter from './routes/database.routes.js';
+import chatRouter from './routes/chat.routes.js';
 
 const options = {
 	key:  fs.readFileSync('/etc/ssl/private/private-key.pem'),
@@ -53,6 +54,7 @@ app.use('/leaderboard', requireAuth, leaderboardRouter)
 app.use('/ia', iaRouter);
 app.use('/public_api', requireAuth, publicAPIRouter);
 app.use('/database', checkAPI, databaseRouter);
+app.use('/conversation', requireAuth, chatRouter);
 
 app.use('/auth', authRouter);
 initSockets(httpServer);
