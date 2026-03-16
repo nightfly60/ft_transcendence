@@ -55,7 +55,7 @@ export class ChatBox implements OnInit, AfterViewChecked{
   }
 
   sendMessage() : void {
-    if (this.message.trim()) //add length check
+    if (this.message.trim()) //add length check, max limit = ?
     {
       this.message = this.message.trim();
       this.socket.sendMessage(this.chatID, this.message);

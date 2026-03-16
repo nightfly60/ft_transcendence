@@ -77,8 +77,12 @@ INSERT INTO Achievements (name, objective, description, type) VALUES
 -- Table Conversation
 CREATE TABLE IF NOT EXISTS Conversation (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    id_user_1 INT NOT NULL,
+    id_user_2 INT NOT NULL,
     type ENUM('game', 'dm'),
-    created_at TIMESTAMP
+    created_at TIMESTAMP,
+    FOREIGN KEY(id_user_1) REFERENCES \`User\`(id),
+    FOREIGN KEY(id_user_2) REFERENCES \`User\`(id)
 );
 
 -- Table Message
@@ -90,14 +94,6 @@ CREATE TABLE IF NOT EXISTS Message (
     sent_at TIMESTAMP,
     FOREIGN KEY(id_conversation) REFERENCES \`Conversation\`(id),
     FOREIGN KEY(id_sender) REFERENCES \`User\`(id)
-);
-
--- Table Conversation_Participants
-CREATE TABLE IF NOT EXISTS Conversation_Participants (
-    id_conversation INT NOT NULL,
-    id_participant INT NOT NULL,
-    FOREIGN KEY(id_conversation) REFERENCES \`Conversation\`(id),
-    FOREIGN KEY(id_participant) REFERENCES \`User\`(id)
 );
 
 -- Table Game

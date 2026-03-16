@@ -12,16 +12,12 @@ export async function createGameConversation(
 
     // 1. Create the conversation
     const [result] = await conn.execute<mysql.ResultSetHeader>(
-      `INSERT INTO Conversation (type, created_at) VALUES ('game', NOW())`
+      `INSERT INTO Conversation (id_user_1, id_user_2, type, created_at) VALUES (?, ?, 'game', NOW())`,
+      [player1Id, player2Id]
     );
     const conversationId = result.insertId;
-    // 2. Add both players as participants
-    await conn.execute(
-      `INSERT INTO Conversation_Participants (id_conversation, id_participant) VALUES (?, ?), (?, ?)`,
-      [conversationId, player1Id, conversationId, player2Id]
-    );
 
-    // 3. Link the conversation to the game
+    // 2. Link the conversation to the game
     await conn.execute(
       `UPDATE Game SET id_conversation = ? WHERE id = ?`,
       [conversationId, gameId]
