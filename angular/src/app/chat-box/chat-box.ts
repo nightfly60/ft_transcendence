@@ -26,6 +26,7 @@ export class ChatBox implements OnInit{
   message = '';
   messages = signal<Message[]>([]);
   panelOpen   = signal(false);
+  newMessages = signal(0);
   
   private scrollToBottom(): void {
     if (this.messagesContainer) {
@@ -60,6 +61,8 @@ export class ChatBox implements OnInit{
       if (!alreadyExists) {
         this.messages.update((prev) => [...prev, new Message(text, new Date(timestamp), senderId, id)]);
       }
+      if (senderId != this.userId && !this.panelOpen())
+          this.newMessages.update((prev) => prev + 1);
     });
   }
 
@@ -74,6 +77,7 @@ export class ChatBox implements OnInit{
 
   togglePanel(): void {
     this.panelOpen.update(v => !v);
+    this.newMessages.update(() => 0);
   }
 
   

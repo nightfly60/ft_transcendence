@@ -43,6 +43,9 @@
 	<!-- Bouton flottant -->
     <button class="chat-fab" (click)="togglePanel()" [class.open]="panelOpen()" title="Utilisateurs en ligne">
       <span class="fab-icon">💬</span>
+	  @if (newMessages() != 0) {
+	  	<span class="fab-badge">{{ newMessages() }}</span>
+	  }
     </button>
 
 	<!-- Panneau -->
