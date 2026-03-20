@@ -13,6 +13,10 @@ import { saveMessage } from '../services/message.service';
  }
 
 export function registerChatEvents(io: Server, socket: Socket) {
+	socket.on('chat:get_user', async () => {
+		socket.emit('chat:found_user', socket.data.userId);
+	})
+	
 	socket.on('chat:find', async () => {
 		const chatId = socket.data.id_game;
 		const [rows] = await pool.execute<RowDataPacket[]>(
@@ -37,5 +41,18 @@ export function registerChatEvents(io: Server, socket: Socket) {
 		};
 		//chat content moderation happens here
 		io.to(data.chatId).emit('chat:receive', enriched);
+	});
+
+	socket.on('dm:send', async (data: {dmId: string, message: string}) =>
+	{
+		const userId: number = socket.data.userId;
+		const messageId = await saveMessage(socket.data.conversationId, userId, data.message);
+		const enriched: ChatMessage = {
+			id: messageId,
+			text: data.message,
+			senderId: userId,
+			timestamp: new Date()
+		};
+		io.to(data.dmId).emit('dm:receive');
 	});
 }

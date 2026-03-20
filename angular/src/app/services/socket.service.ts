@@ -159,7 +159,15 @@ export class SocketService {
 	}
 
 // ─── Chat ───────────────────────────────────────────────────────────────
+  
+  getUser() {
+    this.socket.emit('chat:get_user');
+  }
 
+  onUserFound(callback : (userId : number) => void) {
+    this.socket.on('chat:user_found', callback);
+  }
+  
   findChat() {
     this.socket.emit('chat:find');
   }

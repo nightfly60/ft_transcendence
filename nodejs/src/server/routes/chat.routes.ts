@@ -5,6 +5,27 @@ import { RowDataPacket } from "mysql2";
 
 const router = Router();
 
+//get user dm conversations from DB
+router.get('/:id_user/conversations', async (req, res) => {
+  const { id_user } = req.params;
+  try {
+    const [rows] = await pool.execute<RowDataPacket[]>(
+      ` SELECT c.id, c.id_user_1, c.created_at
+      FROM Conversation c
+      JOIN User u ON u.id = c.id_user_1
+      WHERE c.id_user_1 = ?
+      ORDER BY c.created_at ASC`,
+      [id_user]
+    );
+    res.json(rows);
+  } catch (error) {
+    console.error('[GET conversations] error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+
+});
+
+//load message history for a conversation
 router.get("/:id_conversation/Message", async (req, res) => {
   const { id_conversation } = req.params;
   try {

@@ -1,43 +1,3 @@
-<!-- 
-	<body>
-		<div class="chat-window">
-			<div class="chat-messages" id="messages" #messagesContainer>
-				@for (message of messages(); track message.timestamp) {
-					@if (message.senderId === this.userId) {
-						<div class=" message outgoing">
-							<div class="bubble">{{ message.message }}</div>
-							<div class="timestamp">{{ message.timestamp | date: 'H:mm'}}</div>
-						</div>
-					}
-					@else
-					{
-						<div class="message incoming">
-							<div class="bubble">{{ message.message }}</div>
-							<div class="timestamp">{{ message.timestamp | date: 'H:mm'}}</div>
-						</div>
-					}
-				}
-			</div>
-			<div class="chat-input-area">
-				<div class="input-wrap">
-					<input type="text"
-					class="chat-input"
-					id="chatInput"
-					placeholder="Type a message…"
-					autocomplete="off"
-					[(ngModel)]="message" (keyup.enter)="sendMessage()"
-					/>
-				</div>
-				<button class="send-btn" id="sendBtn" title="Send" (click)="sendMessage()">
-					<svg viewBox="0 0 24 24">
-						<line x1="22" y1="2" x2="11" y2="13"></line>
-						<polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-					</svg>
-				</button>
-			</div>
-		</div>
-	</body>
--->
 
 <div class="chat-widget">
 	<!-- Bouton flottant -->
@@ -52,10 +12,67 @@
     @if (panelOpen()) {
 		<div class="chat-panel">
 			<!-- Header -->
-        <div class="panel-header">Chat de jeu
+        <div class="panel-header">
+			@if (activeDmId()) {
+				<button class="back-btn" (click)="backToList()">←</button>
+				<span class="panel-title">Insert username here</span>
+			} @else {
+				 <span class="panel-title">
+					{{ activeTab() === 'dms' ? 'Messages' : 'Partie en cours' }}
+				</span>
+			}
 			<button class="panel-close" (click)="panelOpen.set(false)">✕</button>
 		</div>
-		<div class="messages-list" id="messages" #messagesContainer>
+
+		 <!-- Onglets -->
+		<div class="panel-tabs">
+			<button class="tab-btn" [class.active]="activeTab() === 'dms'" (click)="setTab('dms')">Conversations</button>
+			<button class="tab-btn" [class.active]="activeTab() === 'game'" (click)="setTab('game')">Chat multijoueur</button>
+		</div>
+
+		<!-- Vue : liste des DMs -->
+		@if (activeTab() === 'dms' && !activeDmId()) {
+			<div class="panel-body">
+			@if (dmConversations().length === 0) {
+				<p class="empty-msg">Aucune conversation</p>
+			} @else {
+				@for (conv of dmConversations(); track conv.id) {
+				<div class="user-item" (click)="openDm(conv.id)">
+					<span class="user-name">{{ conv.user2 }}</span>
+					<span class="chat-arrow">›</span>
+				</div>
+				}
+			}
+			</div>
+		}
+
+		<!-- Vue : fenêtre DM ouverte -->
+		@if (activeTab() === 'dms' && activeDmId()) {
+			<div class="messages-list" #msgList>
+			@if (dmMessages().length === 0) {
+				<p class="empty-msg">Commencez la conversation !</p>
+			}
+			@for (msg of dmMessages(); track msg.id) {
+				<div class="msg-bubble" [class.mine]="msg.senderId === userId" [class.theirs]="msg.senderId !== userId">
+				<span class="msg-text">{{ msg.message }}</span>
+				</div>
+			}
+			</div>
+			<div class="msg-input-row">
+			<input
+				class="msg-input"
+				type="text"
+				[(ngModel)]="message"
+				(keyup.enter)="sendMessage()"
+				placeholder="Message..."
+				autocomplete="off"
+			/>
+			<button class="msg-send" (click)="sendMessage()">›</button>
+			</div>
+		}
+
+		@if (activeTab() === 'game') {
+			<div class="messages-list" id="messages" #messagesContainer>
 			@for (message of messages(); track message.timestamp) {
 				@if (message.senderId === this.userId) {
 					<div class="msg-bubble mine">
@@ -69,19 +86,20 @@
 					</div>
 				}
 			}
-		</div>
-		<div class="msg-input-row">
-		<input
-			class="msg-input"
-			type="text"
-			[value]="message"
-			(input)="message = $any($event.target).value"
-			(keyup.enter)="sendMessage()"
-			placeholder="Message..."
-			autocomplete="off"
-		/>
-		<button class="msg-send" (click)="sendMessage()">›</button>
-		</div>
+			</div>
+			<div class="msg-input-row">
+			<input
+				class="msg-input"
+				type="text"
+				[value]="message"
+				(input)="message = $any($event.target).value"
+				(keyup.enter)="sendMessage()"
+				placeholder="Message..."
+				autocomplete="off"
+			/>
+			<button class="msg-send" (click)="sendMessage()">›</button>
+			</div>
+		}
 	</div>
 	}
 </div>
