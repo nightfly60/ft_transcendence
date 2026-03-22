@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
+import { ChatUiService } from '../services/chat-ui.service';
 
 @Component({
 	selector: 'app-user',
@@ -54,7 +55,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
 		private router: Router,
 		private http: HttpClient,
 		private cdr: ChangeDetectorRef,
-		public auth: AuthService
+		public auth: AuthService,
+		private chatUi: ChatUiService
 	) {
 		effect(() => {
 			const id = this.targetId();
@@ -132,5 +134,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
 	goToFriends() {
 		this.router.navigate(['/profile', this.data.id, 'friends']);
+	}
+
+	startConversation() {
+		this.chatUi.requestDm(this.targetId());
+		console.log ("TARGET = ", this.targetId());
 	}
 }
