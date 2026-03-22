@@ -6,17 +6,20 @@ import { RowDataPacket } from "mysql2";
 const router = Router();
 
 //get user dm conversations from DB
-router.get('/:id_user/conversations', async (req, res) => {
+router.get('/user/:id_user/conversations', async (req, res) => {
   const { id_user } = req.params;
+   console.log('GET conversations hit, id_user:', req.params.id_user);
   try {
     const [rows] = await pool.execute<RowDataPacket[]>(
-      ` SELECT c.id, c.id_user_1, c.created_at
+      ` SELECT c.id, c.id_user_1, c.id_user_2, c.created_at
       FROM Conversation c
       JOIN User u ON u.id = c.id_user_1
       WHERE c.id_user_1 = ?
       ORDER BY c.created_at ASC`,
       [id_user]
     );
+    console.log(`[GET conversations] id_user: ${id_user}, rows fetched: ${rows.length}`);
+    console.log('[GET conversations] data:', rows);
     res.json(rows);
   } catch (error) {
     console.error('[GET conversations] error:', error);

@@ -14,6 +14,7 @@ import { saveMessage } from '../services/message.service';
 
 export function registerChatEvents(io: Server, socket: Socket) {
 	socket.on('chat:get_user', async () => {
+		console.log('GET user event ID =', socket.data.userId)
 		socket.emit('chat:found_user', socket.data.userId);
 	})
 	

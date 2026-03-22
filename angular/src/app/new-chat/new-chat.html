@@ -1,1 +1,122 @@
-<p>new-chat works!</p>
+@if (auth.isLoggedIn()) {
+
+	<!-- Bouton flottant -->
+    <button class="chat-fab" (click)="togglePanel()" [class.open]="panelOpen()" title="Chat">
+      <span class="fab-icon">💬</span>
+      <!-- @if (totalNotifications() > 0) {
+        <span class="fab-badge">{{ totalNotifications() }}</span>
+      } -->
+    </button>
+
+	@if (panelOpen()) {
+		<div class="chat-panel">
+			
+			<!-- Header -->
+			<div class="panel-header">
+				@if (activeDmId()) {
+					<button class="back-btn" (click)="backToList()">←</button>
+					<!-- <span class="panel-title">{{ activeDmUsername() }}</span> -->
+				} @else {
+					<span class="panel-title">
+					{{ activeTab() === 'dms' ? 'Messages' : 'Partie en cours' }}
+					</span>
+				}
+				<button class="panel-close" (click)="panelOpen.set(false)">✕</button>
+			</div>
+			
+			<!-- Onglets -->
+			<div class="panel-tabs">
+				<button class="tab-btn" [class.active]="activeTab() === 'dms'" (click)="setTab('dms')">
+					Messages
+					<!-- @if (totalDmNotifications() > 0) {
+					<span class="tab-count">{{ totalDmNotifications() }}</span>
+					} -->
+				</button>
+				<button class="tab-btn" [class.active]="activeTab() === 'game'" (click)="setTab('game')"
+					[disabled]="!isGameChatActive()">
+					Partie
+					@if (newMessages() > 0 && activeTab() !== 'game') {
+					<span class="tab-count">{{ newMessages() }}</span>
+					}
+				</button>
+			</div>
+
+			<!-- Vue : liste des DMs -->
+			@if (activeTab() === 'dms' && !activeDmId()) {
+				<div class="panel-body">
+					@if (dmConversations().length === 0) {
+					<p class="empty-msg">Aucune conversation</p>
+					} @else {
+					@for (conv of dmConversations(); track conv.id) {
+						<div class="user-item" (click)="openDm(conv.id!)">
+						<!-- <div class="user-avatar-wrap">
+							<img
+							[src]="conv.path_img || '/avatars/default-avatar.png'"
+							class="user-avatar"
+							(error)="$any($event.target).src = '/avatars/default-avatar.png'"
+							alt=""
+							/>
+						</div>
+						<span class="user-name">{{ conv.username }}</span> -->
+						<!-- @if (dmNotifications().get(conv.id)) {
+							<span class="fab-badge">{{ dmNotifications().get(conv.id) }}</span>
+						} -->
+						<span class="chat-arrow">›</span>
+						</div>
+					}
+					}
+				</div>
+			}
+
+			<!-- Vue : fenêtre DM ouverte -->
+			@if (activeTab() === 'dms' && activeDmId()) {
+				<div class="messages-list" #messagesContainer>
+					@if (dmMessages().length === 0) {
+					<p class="empty-msg">Commencez la conversation !</p>
+					}
+					@for (msg of dmMessages(); track msg.id) {
+					<div class="msg-bubble" [class.mine]="msg.senderId === userId" [class.theirs]="msg.senderId !== userId">
+						<span class="msg-text">{{ msg.message }}</span>
+					</div>
+					}
+				</div>
+				<div class="msg-input-row">
+					<input
+					class="msg-input"
+					type="text"
+					[(ngModel)]="message"
+					(keyup.enter)="sendMessage()"
+					placeholder="Message..."
+					autocomplete="off"
+					/>
+					<button class="msg-send" (click)="sendMessage()">›</button>
+				</div>
+			}
+
+			<!-- Vue : game chat -->
+			@if (activeTab() === 'game') {
+				<div class="messages-list" #messagesContainer>
+					@if (messages().length === 0) {
+					<p class="empty-msg">Aucun message</p>
+					}
+					@for (msg of messages(); track msg.id) {
+					<div class="msg-bubble" [class.mine]="msg.senderId === userId" [class.theirs]="msg.senderId !== userId">
+						<span class="msg-text">{{ msg.message }}</span>
+					</div>
+					}
+				</div>
+				<div class="msg-input-row">
+					<input
+					class="msg-input"
+					type="text"
+					[(ngModel)]="message"
+					(keyup.enter)="sendMessage()"
+					placeholder="Message..."
+					autocomplete="off"
+					/>
+					<button class="msg-send" (click)="sendMessage()">›</button>
+				</div>
+			}
+		</div>
+	}
+}

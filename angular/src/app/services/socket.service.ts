@@ -165,7 +165,7 @@ export class SocketService {
   }
 
   onUserFound(callback : (userId : number) => void) {
-    this.socket.on('chat:user_found', callback);
+    this.socket.on('chat:found_user', callback);
   }
   
   findChat() {

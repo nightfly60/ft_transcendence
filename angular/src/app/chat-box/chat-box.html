@@ -37,7 +37,7 @@
 				<p class="empty-msg">Aucune conversation</p>
 			} @else {
 				@for (conv of dmConversations(); track conv.id) {
-				<div class="user-item" (click)="openDm(conv.id)">
+				<div class="user-item" (click)="openDm(conv.id!)">
 					<span class="user-name">{{ conv.user2 }}</span>
 					<span class="chat-arrow">›</span>
 				</div>

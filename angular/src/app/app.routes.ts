@@ -12,6 +12,7 @@ import { TermsComponent } from './terms/terms';
 import { Settings } from './settings/settings';
 import { Leaderboard } from './leaderboard/leaderboard';
 import { FriendsComponent } from './friends/friends';
+import { NewChat } from './new-chat/new-chat';
 
 export const routes: Routes = [
 	{ path: '', component: Home },
@@ -30,4 +31,6 @@ export const routes: Routes = [
 	{ path: '403', component: ErrorPageComponent, data: { code: 403 } },
 	{ path: '500', component: ErrorPageComponent, data: { code: 500 } },
 	{ path: '**', redirectTo: '/404' },
+
+	{ path: 'new-chat', component: NewChat},
 ];
