@@ -9,18 +9,22 @@ const router = Router();
 //get user dm conversations from DB
 router.get('/user/:id_user/conversations', async (req, res) => {
   const { id_user } = req.params;
-   console.log('GET conversations hit, id_user:', req.params.id_user);
   try {
     const [rows] = await pool.execute<RowDataPacket[]>(
-      ` SELECT c.id, c.id_user_2, c.created_at
+      `SELECT c.id, c.created_at,
+      CASE WHEN c.id_user_1 = ? THEN c.id_user_2 ELSE c.id_user_1 END as otherUserId,
+      CASE WHEN c.id_user_1 = ? THEN u2.username ELSE u1.username END as username,
+      CASE WHEN c.id_user_1 = ? THEN p2.path_img ELSE p1.path_img END as path_img
       FROM Conversation c
-      JOIN User u ON u.id = c.id_user_1
-      WHERE c.id_user_1 = ?
-      ORDER BY c.created_at ASC`,
-      [id_user]
+      JOIN User u1 ON u1.id = c.id_user_1
+      JOIN User u2 ON u2.id = c.id_user_2
+      JOIN Profile p1 ON p1.id_user = c.id_user_1
+      JOIN Profile p2 ON p2.id_user = c.id_user_2
+      WHERE c.id_user_1 = ? OR c.id_user_2 = ?`,
+      [id_user, id_user, id_user, id_user, id_user]
     );
-    console.log(`[GET conversations] id_user: ${id_user}, rows fetched: ${rows.length}`);
-    console.log('[GET conversations] data:', rows);
+    // console.log(`[GET conversations] id_user: ${id_user}, rows fetched: ${rows.length}`);
+    // console.log('[GET conversations] data:', rows);
     res.json(rows);
   } catch (error) {
     console.error('[GET conversations] error:', error);
@@ -54,18 +58,26 @@ router.post('/dm', async (req, res) => {
   const { userId1, userId2 } = req.body;
   try {
     const conversationId = await createDMConversation(userId1, userId2);
+    console.log("POST conv fecthed");
     // fetch the other user's info to build a complete DmConversation
     const [rows] = await pool.execute<RowDataPacket[]>(
-      `SELECT username, path_img FROM User WHERE id = ?`,
+      `SELECT u.username, p.path_img 
+      FROM User u
+      JOIN Profile p ON p.id_user = u.id
+      WHERE u.id = ?`,
       [userId2]
     );
+    console.log("POST user info fetched");
     res.json({
       conv_id: conversationId,
       otherUserId: userId2,
+      username: rows[0].username,
+      path_img: rows[0].path_img,
       creation: new Date()
     });
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 export default router; 

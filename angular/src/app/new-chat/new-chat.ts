@@ -16,6 +16,8 @@ class Message {
 class DmConversation {
   constructor(public conv_id: number,
     public otherUserId : number,
+    public username : string,
+    public path_img: string,
     public creation : Date) {}
 }
 
@@ -69,7 +71,6 @@ export class NewChat implements OnInit{
     this.socket.getUser();
     this.socket.onUserFound((userId) => {
       this.userId = userId;
-      console.log("USER ID = ", this.userId);
       this.loadDmConversations();
     });
   }
@@ -94,15 +95,25 @@ export class NewChat implements OnInit{
     }
   }
 
-  loadDmConversations() { //check, what is inside a DM conversation?
-  this.http.get<DmConversation[]>(`/api/conversation/user/${this.userId}/conversations`)
-    .subscribe(convs => this.dmConversations.set(convs));
-  }
-
+  loadDmConversations() {
+  this.http.get<any[]>(`/api/conversation/user/${this.userId}/conversations`)
+    .subscribe(convs => {
+      this.dmConversations.set(convs.map(c => new DmConversation(
+        c.id,
+        c.otherUserId,
+        c.username,
+        c.path_img,
+        new Date(c.created_at)
+      )));
+    });
+}
 
   openDm(otherUserId: number) {
-   const existing = this.dmConversations().find(c => c.otherUserId === otherUserId);
-  if (existing) {
+    const existing = this.dmConversations().find(c =>
+      Number(c.otherUserId) === Number(otherUserId));
+    console.log('existing:', existing); // is this undefined on second click?
+    console.log('dmConversations:', this.dmConversations());
+    if (existing) {
     // conversation exists, just open it
     this.activeDmId.set(existing.conv_id);
     this.http.get<any[]>(`/api/conversation/${existing.conv_id}/Message`)
@@ -110,18 +121,23 @@ export class NewChat implements OnInit{
         this.dmMessages.set(history.map(m => 
           new Message(m.id, m.content, new Date(m.sent_at), m.id_sender)
         ));
-        console.log("EXISTING CONV", this.activeDmId());
       });
   } else {
     // no existing conversation, create a new one
     this.http.post<DmConversation>(`/api/conversation/dm`, {
     userId1: this.userId,
     userId2: otherUserId
-    })  .subscribe(newConv => {
+    })  .subscribe(response => {
+      const newConv = new DmConversation (
+        response.conv_id,
+        response.otherUserId,
+        response.username,
+        response.path_img,
+        new Date(response.creation)
+      )
     this.dmConversations.update(prev => [...prev, newConv]);
     this.activeDmId.set(newConv.conv_id);
     this.dmMessages.set([]);
-    console.log("NEW CONV", newConv.conv_id);
       });
     }
   }

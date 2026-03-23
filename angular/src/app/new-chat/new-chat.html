@@ -49,7 +49,7 @@
 					} @else {
 					@for (conv of dmConversations(); track conv.conv_id) {
 						<div class="user-item" (click)="openDm(conv.conv_id!)">
-						<!-- <div class="user-avatar-wrap">
+						<div class="user-avatar-wrap">
 							<img
 							[src]="conv.path_img || '/avatars/default-avatar.png'"
 							class="user-avatar"
@@ -57,10 +57,10 @@
 							alt=""
 							/>
 						</div>
-						<span class="user-name">{{ conv.username }}</span> -->
+						<span class="user-name">{{ conv.username }}</span> 
 						<!-- @if (dmNotifications().get(conv.id)) {
 							<span class="fab-badge">{{ dmNotifications().get(conv.id) }}</span>
-						} -->
+						}-->
 						<span class="chat-arrow">›</span>
 						</div>
 					}

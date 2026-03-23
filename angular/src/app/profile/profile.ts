@@ -138,6 +138,5 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
 	startConversation() {
 		this.chatUi.requestDm(this.targetId());
-		console.log ("TARGET = ", this.targetId());
 	}
 }
