@@ -18,7 +18,8 @@ class DmConversation {
     public otherUserId : number,
     public username : string,
     public path_img: string,
-    public creation : Date) {}
+    public creation : Date,
+    public room? : string) {}
 }
 
 type Tab = 'dms' | 'game';
@@ -49,7 +50,7 @@ export class NewChat implements OnInit{
   //game chat
   gameRoom = signal<string | null>(null); //replace chatId
   chatID = '';
-  conversationId = 0;
+  conv_id = 0;
   messages = signal<Message[]>([]);
 
   constructor(private socket: SocketService, private http:HttpClient, private chatUi: ChatUiService){
@@ -61,7 +62,7 @@ export class NewChat implements OnInit{
       if (targetUserId !== null) {
         this.panelOpen.set(true);
         this.activeTab.set('dms');
-        this.openDm(targetUserId); // find/create conversation with that user, not good
+        this.openDm(targetUserId); // find/create conversation with that user
         this.chatUi.openDmWithUser.set(null);
       }
     });
@@ -105,16 +106,22 @@ export class NewChat implements OnInit{
         c.path_img,
         new Date(c.created_at)
       )));
+      convs.forEach(conv => {
+        this.socket.joinDmRoom(conv.id);});
+      this.socket.onReceiveMessage(({id, text, senderId, timestamp, conv_id}) => {
+        if (conv_id == this.conv_id)
+          this.messages.update((prev) => [...prev, new Message(id, text, new Date(timestamp), senderId)]);
+        else
+          this.dmMessages.update((prev) => [...prev, new Message(id, text, new Date(timestamp), senderId)]);
+        if (senderId != this.userId && !this.panelOpen())
+          this.newMessages.update((prev) => prev + 1);
+      });
     });
 }
 
   openDm(otherUserId: number) {
-    const existing = this.dmConversations().find(c =>
-      Number(c.otherUserId) === Number(otherUserId));
-    console.log('existing:', existing); // is this undefined on second click?
-    console.log('dmConversations:', this.dmConversations());
+    const existing = this.dmConversations().find(c =>Number(c.otherUserId) === Number(otherUserId));
     if (existing) {
-    // conversation exists, just open it
     this.activeDmId.set(existing.conv_id);
     this.http.get<any[]>(`/api/conversation/${existing.conv_id}/Message`)
       .subscribe(history => {
@@ -123,7 +130,6 @@ export class NewChat implements OnInit{
         ));
       });
   } else {
-    // no existing conversation, create a new one
     this.http.post<DmConversation>(`/api/conversation/dm`, {
     userId1: this.userId,
     userId2: otherUserId
@@ -133,7 +139,7 @@ export class NewChat implements OnInit{
         response.otherUserId,
         response.username,
         response.path_img,
-        new Date(response.creation)
+        new Date(response.creation),
       )
     this.dmConversations.update(prev => [...prev, newConv]);
     this.activeDmId.set(newConv.conv_id);
@@ -142,5 +148,22 @@ export class NewChat implements OnInit{
     }
   }
 
-  sendMessage() {}
+  sendMessage() : void { //sanitize/check special characters against href ?
+    if (this.message.trim()) //add length check, max limit = ?
+    {
+      this.message = this.message.trim();
+      let room: string;
+      let id: number;
+      if (this.activeDmId()) {
+        room = 'dm:' + String(this.activeDmId());
+        id = Number(this.activeDmId());
+      }
+      else {
+        room  = 'chat:' + String(this.conv_id);
+        id = this.conv_id;
+      }
+      this.socket.sendMessage(room, this.message, id);
+      this.message = '';
+    }
+  }
 }

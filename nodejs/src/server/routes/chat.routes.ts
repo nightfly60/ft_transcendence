@@ -58,8 +58,6 @@ router.post('/dm', async (req, res) => {
   const { userId1, userId2 } = req.body;
   try {
     const conversationId = await createDMConversation(userId1, userId2);
-    console.log("POST conv fecthed");
-    // fetch the other user's info to build a complete DmConversation
     const [rows] = await pool.execute<RowDataPacket[]>(
       `SELECT u.username, p.path_img 
       FROM User u
@@ -67,7 +65,6 @@ router.post('/dm', async (req, res) => {
       WHERE u.id = ?`,
       [userId2]
     );
-    console.log("POST user info fetched");
     res.json({
       conv_id: conversationId,
       otherUserId: userId2,

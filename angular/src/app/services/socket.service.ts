@@ -164,6 +164,11 @@ export class SocketService {
     this.socket.emit('chat:get_user');
   }
 
+  joinDmRoom(conv_id : number) {
+    this.socket.emit('dm:join_room', conv_id);
+    console.log('SOCKET JOIN');
+  }
+
   onUserFound(callback : (userId : number) => void) {
     this.socket.on('chat:found_user', callback);
   }
@@ -176,11 +181,11 @@ export class SocketService {
     this.socket.on('chat:ready', callback);
   }
 
-  sendMessage(chatId : string, message : string) {
-    this.socket.emit('chat:send', ({ chatId, message }));
+  sendMessage(chatId : string, message : string, conv_id: number) {
+    this.socket.emit('chat:send', ({ chatId, message, conv_id }));
   }
 
-  onReceiveMessage(callback : (data : { id : number, text: string; senderId: number; timestamp: Date}) => void) {
+  onReceiveMessage(callback : (data : { id : number, text: string; senderId: number; timestamp: Date, conv_id: number}) => void) {
     this.socket.on('chat:receive', callback);
   }
 
