@@ -169,6 +169,10 @@ export class SocketService {
     console.log('SOCKET JOIN');
   }
 
+  notifyUser(conv_id: number, otherUserId: number) {
+    this.socket.emit('dm:new', conv_id, otherUserId);
+  }
+
   onUserFound(callback : (userId : number) => void) {
     this.socket.on('chat:found_user', callback);
   }

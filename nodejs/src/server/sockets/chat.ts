@@ -18,10 +18,12 @@ export function registerChatEvents(io: Server, socket: Socket) {
 	});
 	
 	socket.on('dm:join_room', async (conv_id : number) => {
-		console.log('BACKEND JOIN');
 		const dmRoom  =  'dm:' + String(conv_id);
-		console.log ("DM ROOM NAME = ", dmRoom);
 		socket.join(dmRoom);
+	});
+
+	socket.on('dm:new', async (conv_id: number, otherUserId:number) => {
+		io.to(`user:${otherUserId}`).emit('dm:join_room', conv_id);
 	});
 	
 	socket.on('chat:find', async () => {
@@ -51,7 +53,7 @@ export function registerChatEvents(io: Server, socket: Socket) {
 		io.to(data.chatId).emit('chat:receive', enriched, data.conv_id);
 	});
 
-	socket.on('dm:send', async (data: {dmId: string, message: string}) =>
+	socket.on('dm:send', async (data: {dmId: string, message: string}) => //still useful?
 	{
 		const userId: number = socket.data.userId;
 		const messageId = await saveMessage(socket.data.conversationId, userId, data.message);

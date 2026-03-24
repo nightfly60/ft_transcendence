@@ -141,6 +141,8 @@ export class NewChat implements OnInit{
         response.path_img,
         new Date(response.creation),
       )
+    this.socket.joinDmRoom(newConv.conv_id);
+    this.socket.notifyUser(newConv.conv_id, newConv.otherUserId);
     this.dmConversations.update(prev => [...prev, newConv]);
     this.activeDmId.set(newConv.conv_id);
     this.dmMessages.set([]);
