@@ -166,12 +166,23 @@ export class SocketService {
 
   joinDmRoom(conv_id : number) {
     this.socket.emit('dm:join_room', conv_id);
-    console.log('SOCKET JOIN');
   }
 
-  notifyUser(conv_id: number, otherUserId: number) {
-    this.socket.emit('dm:new', conv_id, otherUserId);
+  createDMConversation(otherUserId: number) {
+    this.socket.emit('dm:create', otherUserId);
   }
+
+  onDmConversationCreated(callback: (conv: any) =>  void) {
+    this.socket.on('dm:created', callback);
+  }
+
+  onNewDmConversation(callback: (conv: any) => void) {
+    this.socket.on('dm:new', callback);
+  }
+
+  // notifyUser(conv_id: number, otherUserId: number) {
+  //   this.socket.emit('dm:new', conv_id, otherUserId);
+  // }
 
   onUserFound(callback : (userId : number) => void) {
     this.socket.on('chat:found_user', callback);

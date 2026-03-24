@@ -48,7 +48,7 @@
 					<p class="empty-msg">Aucune conversation</p>
 					} @else {
 					@for (conv of dmConversations(); track conv.conv_id) {
-						<div class="user-item" (click)="openDm(conv.conv_id!)">
+						<div class="user-item" (click)="openConv(conv.conv_id!)">
 						<div class="user-avatar-wrap">
 							<img
 							[src]="conv.path_img || '/avatars/default-avatar.png'"

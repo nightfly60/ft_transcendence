@@ -74,6 +74,33 @@ export class NewChat implements OnInit{
       this.userId = userId;
       this.loadDmConversations();
     });
+
+    this.socket.onDmConversationCreated((conv: any) => {
+      const newConv = new DmConversation(
+        conv.conv_id,
+        conv.otherUserId,
+        conv.username,
+        conv.path_img,
+        new Date(conv.creation)
+    );
+
+    this.dmConversations.update(prev => [...prev, newConv]);
+    this.activeDmId.set(conv.conv_id);
+    this.dmMessages.set([]);
+    });
+
+    this.socket.onNewDmConversation((conv: any) => {
+    const newConv = new DmConversation(
+        conv.conv_id,
+        conv.otherUserId,
+        conv.username,
+        conv.path_img,
+        new Date(conv.creation)
+    );
+    // add to conversation list
+    this.dmConversations.update(prev => [...prev, newConv]);
+    // no need to joinDmRoom here since backend already did it server-side
+});
   }
 
   togglePanel(): void {
@@ -106,9 +133,11 @@ export class NewChat implements OnInit{
         c.path_img,
         new Date(c.created_at)
       )));
+      
       convs.forEach(conv => {
         this.socket.joinDmRoom(conv.id);});
-      this.socket.onReceiveMessage(({id, text, senderId, timestamp, conv_id}) => {
+      
+        this.socket.onReceiveMessage(({id, text, senderId, timestamp, conv_id}) => {
         if (conv_id == this.conv_id)
           this.messages.update((prev) => [...prev, new Message(id, text, new Date(timestamp), senderId)]);
         else
@@ -119,7 +148,21 @@ export class NewChat implements OnInit{
     });
 }
 
+  openConv(conv_id: number) {
+    this.activeDmId.set(conv_id);
+    this.http.get<any[]>(`/api/conversation/${conv_id}/Message`)
+      .subscribe(history => {
+        this.dmMessages.set(history.map(m => 
+          new Message(m.id, m.content, new Date(m.sent_at), m.id_sender)
+        ));
+    });
+  }
+
   openDm(otherUserId: number) {
+    if (!this.userId || this.userId === otherUserId) {
+      console.error('invalid dm target - same user or userId not set yet');
+      return;
+    }
     const existing = this.dmConversations().find(c =>Number(c.otherUserId) === Number(otherUserId));
     if (existing) {
     this.activeDmId.set(existing.conv_id);
@@ -130,23 +173,25 @@ export class NewChat implements OnInit{
         ));
       });
   } else {
-    this.http.post<DmConversation>(`/api/conversation/dm`, {
-    userId1: this.userId,
-    userId2: otherUserId
-    })  .subscribe(response => {
-      const newConv = new DmConversation (
-        response.conv_id,
-        response.otherUserId,
-        response.username,
-        response.path_img,
-        new Date(response.creation),
-      )
-    this.socket.joinDmRoom(newConv.conv_id);
-    this.socket.notifyUser(newConv.conv_id, newConv.otherUserId);
-    this.dmConversations.update(prev => [...prev, newConv]);
-    this.activeDmId.set(newConv.conv_id);
-    this.dmMessages.set([]);
-      });
+    this.socket.createDMConversation(otherUserId);
+
+    // this.http.post<DmConversation>(`/api/conversation/dm`, {
+    // userId1: this.userId,
+    // userId2: otherUserId
+    // })  .subscribe(response => {
+    //   const newConv = new DmConversation (
+    //     response.conv_id,
+    //     response.otherUserId,
+    //     response.username,
+    //     response.path_img,
+    //     new Date(response.creation),
+    //   )
+    // this.socket.joinDmRoom(newConv.conv_id);
+    // this.socket.notifyUser(newConv.conv_id, newConv.otherUserId);
+    // this.dmConversations.update(prev => [...prev, newConv]);
+    // this.activeDmId.set(newConv.conv_id);
+    // this.dmMessages.set([]);
+    //   });
     }
   }
 
