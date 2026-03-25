@@ -151,7 +151,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 		this.router.navigate(['/profile', this.data.id, 'friends']);
 	}
 
-	startConversation() { //obsolete
-		//this.chatUi.requestDm(this.targetId());
+	startConversation() {
+		this.chatUi.requestDm(this.data.id);
 	}
 }
