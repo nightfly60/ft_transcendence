@@ -70,6 +70,7 @@ export class ChatWidget implements OnInit{
   }
 
   ngOnInit(): void {
+    if (!this.auth.isLoggedIn()) return;
     this.socket.getUser();
     this.socket.onUserFound((userId) => {
       this.userId = userId;
@@ -97,6 +98,7 @@ export class ChatWidget implements OnInit{
           conv.path_img,
           new Date(conv.creation)
        );
+       console.log('NEW CONV RECEIVED');
       // add to conversation list
       this.dmConversations.update(prev => [...prev, newConv]);
       // no need to joinDmRoom here since backend already did it server-side
