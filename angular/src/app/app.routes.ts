@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { GameComponent } from './chess/chess.component';
-import { ChatBox } from './chat-box/chat-box';
 import { Home } from './home/home';
 import { ErrorPageComponent } from './error-page/error-page';
 import { ProfileComponent } from './profile/profile';
@@ -12,13 +11,11 @@ import { TermsComponent } from './terms/terms';
 import { Settings } from './settings/settings';
 import { Leaderboard } from './leaderboard/leaderboard';
 import { FriendsComponent } from './friends/friends';
-import { NewChat } from './new-chat/new-chat';
 
 export const routes: Routes = [
 	{ path: '', component: Home },
 	{ path: 'login', component: LoginPage },
 	{ path: 'game', component: GameComponent, canActivate: [authGuard] },
-	{ path: 'chat-box', component: ChatBox},
 	{ path: 'profile/:id', component: ProfileComponent, canActivate: [authGuard] },
 	{ path: 'profile/:id/friends', component: FriendsComponent, canActivate: [authGuard] },
 	{ path: 'profile/edit/:id', component: ProfileEditComponent, canActivate: [authGuard] },
@@ -31,6 +28,4 @@ export const routes: Routes = [
 	{ path: '403', component: ErrorPageComponent, data: { code: 403 } },
 	{ path: '500', component: ErrorPageComponent, data: { code: 500 } },
 	{ path: '**', redirectTo: '/404' },
-
-	{ path: 'new-chat', component: NewChat},
 ];

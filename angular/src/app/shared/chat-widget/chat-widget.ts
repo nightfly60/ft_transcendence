@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild, ElementRef, signal, effect, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
-import { SocketService } from '../services/socket.service';
+import { SocketService } from '../../services/socket.service';
 import { HttpClient } from '@angular/common/http';
-import { AuthService } from '../services/auth.service';
-import { ChatUiService } from '../services/chat-ui.service';
+import { AuthService } from '../../services/auth.service';
+import { ChatUiService } from '../../services/chat-ui.service';
 
 class Message {
  constructor( public id: number,
@@ -25,12 +25,12 @@ class DmConversation {
 type Tab = 'dms' | 'game';
 
 @Component({
-  selector: 'app-new-chat',
+  selector: 'app-chat-widget',
   imports: [FormsModule],
-  templateUrl: './new-chat.html',
-  styleUrl: './new-chat.scss',
+  templateUrl: './chat-widget.html',
+  styleUrl: './chat-widget.scss',
 })
-export class NewChat implements OnInit{
+export class ChatWidget implements OnInit{
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
 
   //shared

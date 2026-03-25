@@ -1,12 +1,11 @@
 import { Component, OnInit, OnDestroy, inject, output, signal } from '@angular/core';
 import { GameState, SocketService } from '../../services/socket.service';
 import { ChessComponent } from '../chess-board/chess-board.component';
-import { ChatBox } from '../../chat-box/chat-box';
 
 @Component({
   selector: 'app-chess-multi',
   standalone: true,
-  imports: [ChessComponent, ChatBox],
+  imports: [ChessComponent],
   templateUrl: './chess-multi.component.html',
   styles: [`
     .draw-banner {
