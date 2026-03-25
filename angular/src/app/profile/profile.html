@@ -117,7 +117,7 @@
 				<span class="game-draw-icon" *ngIf="null == g.id_winner">★ Match Nul</span>
 				<span class="achievement-name">{{ g.username_player_one }} contre {{ g.username_player_second }}</span>
 				<span class="achievement-desc">Le {{ g.timestamp | date: 'dd/MM/yyyy'}}</span>
-				<span class="achievement-desc">Partie en {{ g.nb_cuts / 2 | number:'1.0-0' }} coups</span>
+				<span class="achievement-desc">Partie en {{ g.nb_cuts }} coups</span>
 				</div>
 			</div>
 		</section>

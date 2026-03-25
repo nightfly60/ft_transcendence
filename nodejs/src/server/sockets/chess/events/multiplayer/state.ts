@@ -15,9 +15,6 @@ export const playerGames = new Map<number, string>();
 /** Timers de forfait actifs, indexés par `${gameId}:${userId}`. */
 export const disconnectTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
-/** Timestamp (Date.now()) du démarrage de chaque timer de forfait, même clé que disconnectTimers. */
-export const disconnectTimerStarts = new Map<string, number>();
-
 /** Offres de nulle en cours, indexées par gameId (valeur : socketId de l'offreur). */
 export const drawOffers = new Map<string, string>();
 

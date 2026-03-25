@@ -1,6 +1,12 @@
-import { Component, OnInit, signal, inject, ElementRef, ViewChild, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject, ElementRef, ViewChild, AfterViewChecked } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
-import { SocketService, OnlineUser } from '../../services/socket.service';
+
+interface OnlineUser {
+  id: number;
+  username: string;
+  path_img: string | null;
+}
 
 interface ChatMessage {
   text: string;
@@ -16,23 +22,32 @@ type Tab = 'online' | 'messages';
   templateUrl: './chat-widget.component.html',
   styleUrl: './chat-widget.component.scss',
 })
-export class ChatWidgetComponent implements OnInit, AfterViewChecked {
+export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChild('msgList') private msgList?: ElementRef<HTMLDivElement>;
 
-  auth          = inject(AuthService);
-  socketService = inject(SocketService);
+  auth       = inject(AuthService);
+  private http = inject(HttpClient);
 
   panelOpen   = signal(false);
   activeTab   = signal<Tab>('online');
+  onlineUsers = signal<OnlineUser[]>([]);
   chatWith    = signal<OnlineUser | null>(null);
 
   conversations = new Map<number, ChatMessage[]>();
   inputText = '';
   private shouldScroll = false;
 
-  get onlineUsers() { return this.socketService.onlineUsers; }
+  private pollInterval: ReturnType<typeof setInterval> | null = null;
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (!this.auth.isLoggedIn()) return;
+    this.fetchOnlineUsers();
+    this.pollInterval = setInterval(() => this.fetchOnlineUsers(), 15_000);
+  }
+
+  ngOnDestroy(): void {
+    if (this.pollInterval) clearInterval(this.pollInterval);
+  }
 
   ngAfterViewChecked(): void {
     if (this.shouldScroll) {
@@ -43,6 +58,7 @@ export class ChatWidgetComponent implements OnInit, AfterViewChecked {
 
   togglePanel(): void {
     this.panelOpen.update(v => !v);
+    if (this.panelOpen()) this.fetchOnlineUsers();
   }
 
   openChat(user: OnlineUser): void {
@@ -75,6 +91,13 @@ export class ChatWidgetComponent implements OnInit, AfterViewChecked {
 
   setTab(tab: Tab): void {
     this.activeTab.set(tab);
+  }
+
+  private fetchOnlineUsers(): void {
+    this.http.get<{ users: OnlineUser[] }>('/api/users/online').subscribe({
+      next: res => this.onlineUsers.set(res.users),
+      error: () => {},
+    });
   }
 
   private scrollToBottom(): void {

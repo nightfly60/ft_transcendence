@@ -3,13 +3,12 @@ import { IncomingMessage, Server as HttpServer, ServerResponse } from 'http';
 import jwt from 'jsonwebtoken';
 import { registerChessEvents } from './chess/events/index.js';
 import { registerChatEvents } from './chat.js';
-import { registerPresenceEvents } from './presence.js';
 
 
 export function initSockets(httpServer: HttpServer<typeof IncomingMessage, typeof ServerResponse>): void {
   const io = new Server(httpServer, {
     cors: {
-      origin: process.env.ALLOWED_ORIGINS || '*',
+      origin: '*',
       methods: ['GET', 'POST'],
     },
   });
@@ -32,10 +31,8 @@ export function initSockets(httpServer: HttpServer<typeof IncomingMessage, typeo
     }
   });
 
-  io.on('connection', async (socket) => {
+  io.on('connection', (socket) => {
     console.log(`[socket] connecté id=${socket.id} userId=${socket.data.userId}`);
-    socket.join(`user:${socket.data.userId}`); //add user to its own room for notifications
-    registerPresenceEvents(io, socket);
     registerChessEvents(io, socket);
     registerChatEvents(io, socket);
   });

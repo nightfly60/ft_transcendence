@@ -147,34 +147,27 @@ router.get('/google', passport.authenticate('google'), (req, res) => {
 router.get('/google/redirect', passport.authenticate('google', {session: false}), (req, res) => {
 	const user = req.user;
 
-	try
+	if (user.id == null)
 	{
-		if (user.id == null)
-		{
-			res.send(500);
-			return ;
-		}
-
-		const token = jwt.sign(
-		{
-			id: user.id,
-			email: user.mail,
-			username: user.username,
-			language: user.language || 'fr',
-			path_img: user.profile_image
-		},
-		process.env.JWT_SECRET!,
-		{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
-		);
-
-		res.redirect(`/?token=${token}`);
+		res.send(500);
 		return ;
-	}  catch (error: any)
-	{
-		console.log(error);
-		res.status(500).json({message: error.message})
 	}
+
+	const token = jwt.sign(
+	{
+		id: user.id,
+		email: user.mail,
+		username: user.username,
+		language: user.language || 'fr',
+		path_img: user.profile_image
+	},
+	process.env.JWT_SECRET!,
+	{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
+	);
+
+	res.redirect(`/?token=${token}`);
 	// res.status(200).json({ message: 'Connecté', token: token});
+	return ;
 })
 
 router.get('/intra42', passport.authenticate('intra42'), (req, res) => {
@@ -184,33 +177,26 @@ router.get('/intra42', passport.authenticate('intra42'), (req, res) => {
 router.get('/intra42/redirect', passport.authenticate('intra42', {session: false}), (req, res) => {
 	const user = req.user;
 
-	try
+	if (user.id == null)
 	{
-		if (user.id == null)
-		{
-			res.send(500);
-			return ;
-		}
-
-		const token = jwt.sign(
-		{
-			id: user.id,
-			email: user.mail,
-			username: user.username,
-			language: user.language || 'fr',
-			path_img: user.profile_image
-		},
-		process.env.JWT_SECRET!,
-		{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
-		);
-
-		res.redirect(`/?token=${token}`);
+		res.send(500);
 		return ;
-	} catch (error: any)
-	{
-		console.log(error);
-		res.status(500).json({message: error.message})
 	}
+
+	const token = jwt.sign(
+	{
+		id: user.id,
+		email: user.mail,
+		username: user.username,
+		language: user.language || 'fr',
+		path_img: user.profile_image
+	},
+	process.env.JWT_SECRET!,
+	{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
+	);
+
+	res.redirect(`/?token=${token}`);
+	return ;
 })
 
 

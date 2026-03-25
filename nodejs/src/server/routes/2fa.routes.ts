@@ -49,29 +49,20 @@ router.post('/enable', async (req, res) => {
 router.post('/confirm', async (req, res) => {
 	const {token, secret} = req.body;
 
-	try
-	{
-		const isValid = await verify({
-			secret,
-			token,
-			strategy: 'totp'
-		});
-	
-		if (!isValid.valid) return res.status(400).json({ message: 'Token invalide' });
-	
-		const [user_request]: any = await pool.query(
-			'UPDATE `User` SET two_fa = ?, two_fa_secret = ? WHERE id = ?',
-			[true, secret, req.user.id]
-		);
+	const isValid = await verify({
+		secret,
+		token,
+		strategy: 'totp'
+	});
 
-		res.status(200).json({ message: '2FA activé' });
-	}
-	catch (error: any)
-	{
-		console.log(error);
-		res.status(500).json({message: error.message})
-	}
+	if (!isValid.valid) return res.status(400).json({ message: 'Token invalide' });
 
+	const [user_request]: any = await pool.query(
+		'UPDATE `User` SET two_fa = ?, two_fa_secret = ? WHERE id = ?',
+		[true, secret, req.user.id]
+	);
+
+	res.status(200).json({ message: '2FA activé' });
 })
 
 export default router;

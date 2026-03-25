@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 import { Board, Piece, PieceColor } from '../chess/chess-board/chess.types';
 
@@ -19,40 +19,12 @@ export interface GameState {
   validMoves: Record<string, string[]>;
 }
 
-export interface OnlineUser {
-  id: number;
-  username: string;
-  path_img: string | null;
-}
-
 @Injectable({ providedIn: 'root' })
 export class SocketService {
   private socket: Socket = io(`${window.location.protocol}//${window.location.host}`, {
     path: '/socket.io/',
     auth: { token: localStorage.getItem('token') ?? '' },
   });
-
-  // ─── Présence ─────────────────────────────────────────────────────────────
-
-  onlineUsers = signal<OnlineUser[]>([]);
-
-  constructor() {
-    this.socket.on('online_users', ({ users }: { users: OnlineUser[] }) => {
-      this.onlineUsers.set(users);
-    });
-    this.socket.on('user_online', (user: OnlineUser) => {
-      this.onlineUsers.update(list =>
-        list.some(u => u.id === user.id) ? list : [...list, user]
-      );
-    });
-    this.socket.on('user_offline', ({ userId }: { userId: number }) => {
-      this.onlineUsers.update(list => list.filter(u => u.id !== userId));
-    });
-  }
-
-  isUserOnline(userId: number): boolean {
-    return this.onlineUsers().some(u => u.id === userId);
-  }
 
   // ─── Multiplayer ─────────────────────────────────────────────────────────
 
@@ -62,14 +34,6 @@ export class SocketService {
 
   leaveGame(gameId: string) {
     this.socket.emit('leave_game', { gameId });
-  }
-
-  notifyHidden() {
-    this.socket.emit('player_hidden');
-  }
-
-  notifyVisible() {
-    this.socket.emit('player_visible');
   }
 
   onWaiting(callback: () => void) {
@@ -158,7 +122,7 @@ export class SocketService {
 		this.socket.on('solo_ready', callback);
 	}
 
-// ─── Chat ───────────────────────────────────────────────────────────────
+  // ─── Chat ───────────────────────────────────────────────────────────────
   
   getUser() {
     this.socket.emit('chat:get_user');
