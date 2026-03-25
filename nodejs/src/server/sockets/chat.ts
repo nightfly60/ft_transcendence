@@ -70,15 +70,14 @@ export function registerChatEvents(io: Server, socket: Socket) {
 	});
 	
 	socket.on('chat:find', async () => {
-		const chatId = socket.data.id_game;
+		const gameId = socket.data.id_game;
 		const [rows] = await pool.execute<RowDataPacket[]>(
 			`SELECT id_conversation FROM Game WHERE id = ?`,
-			[Number(chatId)]
+			[Number(gameId)]
   		);
-		socket.data.conversationId = rows[0].id_conversation;
-		socket.join(chatId); //what if no gameId yet?
-		//socket.join(`game_${gameId}`); better room name proposition
-		socket.emit('chat:ready', chatId, socket.data.userId, socket.data.conversationId);
+		const conversationId = rows[0].id_conversation;
+		socket.join(`chat:${gameId}`);
+		socket.emit('chat:ready', gameId, conversationId);
 	});
 
 	socket.on('chat:send', async (data: { chatId: string, message: string, conv_id: number}) => //need rework for dms

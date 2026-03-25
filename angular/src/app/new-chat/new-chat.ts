@@ -48,15 +48,16 @@ export class NewChat implements OnInit{
   dmMessages = signal<Message[]>([]);             //track current conversation messages
   
   //game chat
-  gameRoom = signal<string | null>(null); //replace chatId
-  chatID = '';
-  conv_id = 0;
+  gameRoom = signal<string | null>(null); //replace chatId??
+  chatId = 0; //same as gameId, used for room name
+  conv_id = 0; //conversation id in DB
   messages = signal<Message[]>([]);
 
   constructor(private socket: SocketService, private http:HttpClient, private chatUi: ChatUiService){
     effect(() => {
       this.messages(); // track signal
       this.panelOpen(); // track signal
+      this.dmMessages();
       setTimeout(() => this.scrollToBottom(), 0);
       const targetUserId = this.chatUi.openDmWithUser();
       if (targetUserId !== null) {
@@ -90,17 +91,33 @@ export class NewChat implements OnInit{
     });
 
     this.socket.onNewDmConversation((conv: any) => {
-    const newConv = new DmConversation(
-        conv.conv_id,
-        conv.otherUserId,
-        conv.username,
-        conv.path_img,
-        new Date(conv.creation)
-    );
-    // add to conversation list
-    this.dmConversations.update(prev => [...prev, newConv]);
-    // no need to joinDmRoom here since backend already did it server-side
-});
+      const newConv = new DmConversation(
+          conv.conv_id,
+          conv.otherUserId,
+          conv.username,
+          conv.path_img,
+          new Date(conv.creation)
+       );
+      // add to conversation list
+      this.dmConversations.update(prev => [...prev, newConv]);
+      // no need to joinDmRoom here since backend already did it server-side
+    });
+
+    this.socket.onChatReady(( gameId, conversationId ) => {
+      this.chatId = gameId; //not good, conv id != chatId
+      this.conv_id = conversationId;
+      //check chat history
+      this.http.get<any[]>(`/api/conversation/${this.conv_id}/Message`).subscribe(history => {
+        this.messages.set(history.map(m => new Message(m.id, m.content, new Date(m.sent_at), m.id_sender)));
+      });
+      this.isGameChatActive.set(true);
+    });
+
+    this.socket.onChatEnd(() => {
+      this.conv_id = 0;
+      this.chatId = 0;
+      this.isGameChatActive.set(false);
+    });
   }
 
   togglePanel(): void {

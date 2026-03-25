@@ -78,6 +78,7 @@ export class SocketService {
 
   onGameReady(callback: (data: { gameId: string; color: string; whiteUsername: string; blackUsername: string }) => void) {
     this.socket.on('game_ready', callback);
+    this.socket.emit('chat:find');
   }
 
   sendMove(gameId: string, from: string, to: string, promotion?: string) {
@@ -192,8 +193,12 @@ export class SocketService {
     this.socket.emit('chat:find');
   }
 
-  onChatReady(callback : (chatId : string, userId : number, conversationId: number) => void) {
+  onChatReady(callback : (gameId : number, conversationId: number) => void) {
     this.socket.on('chat:ready', callback);
+  }
+
+  onChatEnd(callback: () => void) {
+    this.socket.on('chat:end', callback);
   }
 
   sendMessage(chatId : string, message : string, conv_id: number) {
