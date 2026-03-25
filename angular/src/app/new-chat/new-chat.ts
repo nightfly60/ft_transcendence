@@ -83,12 +83,11 @@ export class NewChat implements OnInit{
         conv.username,
         conv.path_img,
         new Date(conv.creation)
-    );
-
-    this.dmConversations.update(prev => [...prev, newConv]);
-    this.activeDmId.set(conv.conv_id);
-    this.dmMessages.set([]);
-    });
+      );
+      this.dmConversations.update(prev => [...prev, newConv]);
+      this.activeDmId.set(conv.conv_id);
+      this.dmMessages.set([]);
+      });
 
     this.socket.onNewDmConversation((conv: any) => {
       const newConv = new DmConversation(
@@ -104,13 +103,15 @@ export class NewChat implements OnInit{
     });
 
     this.socket.onChatReady(( gameId, conversationId ) => {
-      this.chatId = gameId; //not good, conv id != chatId
+      this.chatId = gameId;
       this.conv_id = conversationId;
       //check chat history
       this.http.get<any[]>(`/api/conversation/${this.conv_id}/Message`).subscribe(history => {
         this.messages.set(history.map(m => new Message(m.id, m.content, new Date(m.sent_at), m.id_sender)));
       });
       this.isGameChatActive.set(true);
+      this.activeTab.set('game');
+      console.log("GAME CHAT READY id = ", this.chatId, "CONV ID =", this.conv_id );
     });
 
     this.socket.onChatEnd(() => {
@@ -223,7 +224,7 @@ export class NewChat implements OnInit{
         id = Number(this.activeDmId());
       }
       else {
-        room  = 'chat:' + String(this.conv_id);
+        room  = String(this.chatId);
         id = this.conv_id;
       }
       this.socket.sendMessage(room, this.message, id);

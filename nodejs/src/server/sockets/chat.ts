@@ -68,6 +68,18 @@ export function registerChatEvents(io: Server, socket: Socket) {
 			creation: new Date()
 		});
 	});
+
+	// socket.on('game_ready', async () => {
+	// 	const gameId = socket.data.id_game;
+	// 	const [rows] = await pool.execute<RowDataPacket[]>(
+	// 		`SELECT id_conversation FROM Game WHERE id = ?`,
+	// 		[Number(gameId)]
+  	// 	);
+	// 	const conversationId = rows[0].id_conversation;
+	// 	socket.join(`${gameId}`);
+	// 	socket.emit('chat:ready', gameId, conversationId);
+	// 	console.log("CHAT FIND BACK");
+	// });
 	
 	socket.on('chat:find', async () => {
 		const gameId = socket.data.id_game;
@@ -76,8 +88,9 @@ export function registerChatEvents(io: Server, socket: Socket) {
 			[Number(gameId)]
   		);
 		const conversationId = rows[0].id_conversation;
-		socket.join(`chat:${gameId}`);
+		socket.join(`${gameId}`);
 		socket.emit('chat:ready', gameId, conversationId);
+		console.log("CHAT FIND OK CONV ID =", conversationId);
 	});
 
 	socket.on('chat:send', async (data: { chatId: string, message: string, conv_id: number}) => //need rework for dms

@@ -69,16 +69,16 @@ export class ChatBox implements OnInit{
       this.loadDmConversations();
     });
     //only look for chat if game_ready event 
-    this.socket.findChat(); //get chat id from game
-    this.socket.onChatReady(( chatId, userId, conversationId ) => {
-        this.chatID = chatId;
-        this.userId = userId;
-        this.conversationId = conversationId;
-        //check chat history
-        this.http.get<any[]>(`/api/conversation/${this.conversationId}/Message`).subscribe(history => {
-          this.messages.set(history.map(m => new Message(m.content, new Date(m.sent_at), m.id_sender, m.id)));
-        });
-    });
+    //this.socket.findChat(); //get chat id from game
+    // this.socket.onChatReady(( chatId, userId, conversationId ) => {
+    //     this.chatID = chatId;
+    //     this.userId = userId;
+    //     this.conversationId = conversationId;
+    //     //check chat history
+    //     this.http.get<any[]>(`/api/conversation/${this.conversationId}/Message`).subscribe(history => {
+    //       this.messages.set(history.map(m => new Message(m.content, new Date(m.sent_at), m.id_sender, m.id)));
+    //     });
+    // });
       
 
     this.socket.onReceiveMessage(({id, text, senderId, timestamp}) => { //share

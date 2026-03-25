@@ -20,7 +20,8 @@ router.get('/user/:id_user/conversations', async (req, res) => {
       JOIN User u2 ON u2.id = c.id_user_2
       JOIN Profile p1 ON p1.id_user = c.id_user_1
       JOIN Profile p2 ON p2.id_user = c.id_user_2
-      WHERE c.id_user_1 = ? OR c.id_user_2 = ?`,
+      WHERE (c.id_user_1 = ? OR c.id_user_2 = ?)
+      AND c.type = 'dm'`,
       [id_user, id_user, id_user, id_user, id_user]
     );
     // console.log(`[GET conversations] id_user: ${id_user}, rows fetched: ${rows.length}`);
@@ -54,7 +55,7 @@ router.get("/:id_conversation/Message", async (req, res) => {
   }
 });
 
-router.post('/dm', async (req, res) => {
+router.post('/dm', async (req, res) => { //useless ?
   const { userId1, userId2 } = req.body;
   try {
     const conversationId = await createDMConversation(userId1, userId2);

@@ -78,7 +78,6 @@ export class SocketService {
 
   onGameReady(callback: (data: { gameId: string; color: string; whiteUsername: string; blackUsername: string }) => void) {
     this.socket.on('game_ready', callback);
-    this.socket.emit('chat:find');
   }
 
   sendMove(gameId: string, from: string, to: string, promotion?: string) {
@@ -180,10 +179,6 @@ export class SocketService {
   onNewDmConversation(callback: (conv: any) => void) {
     this.socket.on('dm:new', callback);
   }
-
-  // notifyUser(conv_id: number, otherUserId: number) {
-  //   this.socket.emit('dm:new', conv_id, otherUserId);
-  // }
 
   onUserFound(callback : (userId : number) => void) {
     this.socket.on('chat:found_user', callback);
