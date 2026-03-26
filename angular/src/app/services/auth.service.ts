@@ -29,6 +29,7 @@ export class AuthService {
 	logout(): void {
 		localStorage.removeItem('token');
 		this.isLoggedIn.set(false);
+		window.location.href = '/';
 	}
 
 	getUsername(): string {
