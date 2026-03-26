@@ -108,10 +108,10 @@ async function createGame(io: Server, socket: Socket, waitingSocketId: string): 
   const whiteUsername = userMap[whiteUserId] ?? 'Blanc';
   const blackUsername = userMap[blackUserId] ?? 'Noir';
 
-  await createGameConversation(whiteUserId, blackUserId, result.insertId); // create chat gael
+  const conversationId = await createGameConversation(whiteUserId, blackUserId, result.insertId); // create chat gael
 
-  io.to(white).emit('game_ready', { gameId, color: 'w', whiteUsername, blackUsername});
-  io.to(black).emit('game_ready', { gameId, color: 'b', whiteUsername, blackUsername});
+  io.to(white).emit('game_ready', { gameId, color: 'w', whiteUsername, blackUsername, conversationId});
+  io.to(black).emit('game_ready', { gameId, color: 'b', whiteUsername, blackUsername, conversationId});
   io.to(gameId).emit('game_state', buildGameState(game));
 
   setWaitingPlayer(null);

@@ -40,7 +40,7 @@ export class SocketService {
     this.socket.on('waiting', callback);
   }
 
-  onGameReady(callback: (data: { gameId: string; color: string; whiteUsername: string; blackUsername: string }) => void) {
+  onGameReady(callback: (data: { gameId: string; color: string; whiteUsername: string; blackUsername: string, conversationId: number }) => void) {
     this.socket.on('game_ready', callback);
   }
 

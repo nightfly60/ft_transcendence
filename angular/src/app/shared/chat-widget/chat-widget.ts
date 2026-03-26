@@ -104,15 +104,26 @@ export class ChatWidget implements OnInit{
       // no need to joinDmRoom here since backend already did it server-side
     });
 
-    this.socket.onChatReady(( gameId, conversationId ) => { //might fire to only one socket
-      this.chatId = gameId;
+     this.socket.onGameReady(({ gameId, color, whiteUsername, blackUsername, conversationId }) => {
+      this.chatId = Number(gameId);
       this.conv_id = conversationId;
       this.http.get<any[]>(`/api/conversation/${this.conv_id}/Message`).subscribe(history => {
         this.messages.set(history.map(m => new Message(m.id, m.content, new Date(m.sent_at), m.id_sender)));
       });
       this.isGameChatActive.set(true);
       this.activeTab.set('game');
-    });
+      console.log("game chat ready");
+     });
+
+    // this.socket.onChatReady(( gameId, conversationId ) => { //might fire to only one socket
+    //   this.chatId = gameId;
+    //   this.conv_id = conversationId;
+    //   this.http.get<any[]>(`/api/conversation/${this.conv_id}/Message`).subscribe(history => {
+    //     this.messages.set(history.map(m => new Message(m.id, m.content, new Date(m.sent_at), m.id_sender)));
+    //   });
+    //   this.isGameChatActive.set(true);
+    //   this.activeTab.set('game');
+    // });
 
     this.socket.onChatEnd(() => {
       this.conv_id = 0;
@@ -192,24 +203,6 @@ export class ChatWidget implements OnInit{
       });
   } else {
     this.socket.createDMConversation(otherUserId);
-
-    // this.http.post<DmConversation>(`/api/conversation/dm`, {
-    // userId1: this.userId,
-    // userId2: otherUserId
-    // })  .subscribe(response => {
-    //   const newConv = new DmConversation (
-    //     response.conv_id,
-    //     response.otherUserId,
-    //     response.username,
-    //     response.path_img,
-    //     new Date(response.creation),
-    //   )
-    // this.socket.joinDmRoom(newConv.conv_id);
-    // this.socket.notifyUser(newConv.conv_id, newConv.otherUserId);
-    // this.dmConversations.update(prev => [...prev, newConv]);
-    // this.activeDmId.set(newConv.conv_id);
-    // this.dmMessages.set([]);
-    //   });
     }
   }
 
