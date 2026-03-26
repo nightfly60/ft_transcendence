@@ -104,8 +104,8 @@ export class ChatWidget implements OnInit{
       // no need to joinDmRoom here since backend already did it server-side
     });
 
-     this.socket.onGameReady(({ gameId, color, whiteUsername, blackUsername, conversationId }) => {
-      this.chatId = Number(gameId);
+      this.socket.onChatReady(( gameId, conversationId ) => { //might fire to only one socket
+      this.chatId = gameId;
       this.conv_id = conversationId;
       this.http.get<any[]>(`/api/conversation/${this.conv_id}/Message`).subscribe(history => {
         this.messages.set(history.map(m => new Message(m.id, m.content, new Date(m.sent_at), m.id_sender)));

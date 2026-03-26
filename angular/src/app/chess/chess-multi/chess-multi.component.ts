@@ -82,13 +82,13 @@ export class ChessMultiComponent implements OnInit, OnDestroy {
       this.waiting.set(true);
     });
 
-    this.socket.onGameReady(({ gameId, color, whiteUsername, blackUsername, conversationId }) => {
+    this.socket.onGameReady(({ gameId, color, whiteUsername, blackUsername}) => {
       this.gameId.set(gameId);
       this.myColor.set(color);
       this.whiteUsername.set(whiteUsername);
       this.blackUsername.set(blackUsername);
       this.waiting.set(false);
-      console.log("Multi game ready");
+      this.socket.findChat();
     });
 
     this.socket.onOpponentLeft(({ seconds }) => {
