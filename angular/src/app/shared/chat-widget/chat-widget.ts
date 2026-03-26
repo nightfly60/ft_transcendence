@@ -104,22 +104,29 @@ export class ChatWidget implements OnInit{
       // no need to joinDmRoom here since backend already did it server-side
     });
 
-    this.socket.onChatReady(( gameId, conversationId ) => {
+    this.socket.onChatReady(( gameId, conversationId ) => { //might fire to only one socket
       this.chatId = gameId;
       this.conv_id = conversationId;
-      //check chat history
       this.http.get<any[]>(`/api/conversation/${this.conv_id}/Message`).subscribe(history => {
         this.messages.set(history.map(m => new Message(m.id, m.content, new Date(m.sent_at), m.id_sender)));
       });
       this.isGameChatActive.set(true);
       this.activeTab.set('game');
-      console.log("GAME CHAT READY id = ", this.chatId, "CONV ID =", this.conv_id );
     });
 
     this.socket.onChatEnd(() => {
       this.conv_id = 0;
       this.chatId = 0;
       this.isGameChatActive.set(false);
+    });
+
+    this.socket.onReceiveMessage(({id, text, senderId, timestamp, conv_id}) => {
+      if (conv_id == this.conv_id)
+        this.messages.update((prev) => [...prev, new Message(id, text, new Date(timestamp), senderId)]);
+      else
+        this.dmMessages.update((prev) => [...prev, new Message(id, text, new Date(timestamp), senderId)]);
+      if (senderId != this.userId && !this.panelOpen())
+        this.newMessages.update((prev) => prev + 1);
     });
   }
 
@@ -156,15 +163,6 @@ export class ChatWidget implements OnInit{
       
       convs.forEach(conv => {
         this.socket.joinDmRoom(conv.id);});
-      
-        this.socket.onReceiveMessage(({id, text, senderId, timestamp, conv_id}) => {
-        if (conv_id == this.conv_id)
-          this.messages.update((prev) => [...prev, new Message(id, text, new Date(timestamp), senderId)]);
-        else
-          this.dmMessages.update((prev) => [...prev, new Message(id, text, new Date(timestamp), senderId)]);
-        if (senderId != this.userId && !this.panelOpen())
-          this.newMessages.update((prev) => prev + 1);
-      });
     });
 }
 

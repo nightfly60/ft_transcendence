@@ -108,11 +108,11 @@ async function createGame(io: Server, socket: Socket, waitingSocketId: string): 
   const whiteUsername = userMap[whiteUserId] ?? 'Blanc';
   const blackUsername = userMap[blackUserId] ?? 'Noir';
 
-  io.to(white).emit('game_ready', { gameId, color: 'w', whiteUsername, blackUsername });
-  io.to(black).emit('game_ready', { gameId, color: 'b', whiteUsername, blackUsername });
-  io.to(gameId).emit('game_state', buildGameState(game));
+  await createGameConversation(whiteUserId, blackUserId, result.insertId); // create chat gael
 
-  createGameConversation(whiteUserId, blackUserId, result.insertId); // <------------- create chat gael
+  io.to(white).emit('game_ready', { gameId, color: 'w', whiteUsername, blackUsername});
+  io.to(black).emit('game_ready', { gameId, color: 'b', whiteUsername, blackUsername});
+  io.to(gameId).emit('game_state', buildGameState(game));
 
   setWaitingPlayer(null);
   console.log(`[find_game] partie créée gameId=${gameId}`);

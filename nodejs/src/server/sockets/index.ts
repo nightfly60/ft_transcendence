@@ -33,7 +33,7 @@ export function initSockets(httpServer: HttpServer<typeof IncomingMessage, typeo
 
   io.on('connection', (socket) => {
     console.log(`[socket] connecté id=${socket.id} userId=${socket.data.userId}`);
-    socket.join(`user${socket.data.userId}`);
+    socket.join(`user:${socket.data.userId}`);
     registerChessEvents(io, socket);
     registerChatEvents(io, socket);
   });

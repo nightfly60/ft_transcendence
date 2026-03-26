@@ -11,6 +11,7 @@ import { createDMConversation } from '../services/conversation.service';
 	text:		string;
  	senderId:	number;
  	timestamp:	Date;
+	conv_id:	number;
  }
 
  interface DmConversation {
@@ -68,29 +69,16 @@ export function registerChatEvents(io: Server, socket: Socket) {
 			creation: new Date()
 		});
 	});
-
-	// socket.on('game_ready', async () => {
-	// 	const gameId = socket.data.id_game;
-	// 	const [rows] = await pool.execute<RowDataPacket[]>(
-	// 		`SELECT id_conversation FROM Game WHERE id = ?`,
-	// 		[Number(gameId)]
-  	// 	);
-	// 	const conversationId = rows[0].id_conversation;
-	// 	socket.join(`${gameId}`);
-	// 	socket.emit('chat:ready', gameId, conversationId);
-	// 	console.log("CHAT FIND BACK");
-	// });
 	
-	socket.on('chat:find', async () => {
+	socket.on('chat:find', async () => { 
 		const gameId = socket.data.id_game;
 		const [rows] = await pool.execute<RowDataPacket[]>(
 			`SELECT id_conversation FROM Game WHERE id = ?`,
 			[Number(gameId)]
   		);
 		const conversationId = rows[0].id_conversation;
-		socket.join(`${gameId}`);
+		//socket.join(`chat:${gameId}`); //should not do this...
 		socket.emit('chat:ready', gameId, conversationId);
-		console.log("CHAT FIND OK CONV ID =", conversationId);
 	});
 
 	socket.on('chat:send', async (data: { chatId: string, message: string, conv_id: number}) => //need rework for dms
@@ -101,22 +89,22 @@ export function registerChatEvents(io: Server, socket: Socket) {
 			id: messageId,
 			text: data.message,
 			senderId: userId,
-			timestamp: new Date()
+			timestamp: new Date(),
+			conv_id: data.conv_id
 		};
-		//chat content moderation happens here
-		io.to(data.chatId).emit('chat:receive', enriched, data.conv_id);
+		io.to(data.chatId).emit('chat:receive', enriched);
 	});
 
-	socket.on('dm:send', async (data: {dmId: string, message: string}) => //still useful?
-	{
-		const userId: number = socket.data.userId;
-		const messageId = await saveMessage(socket.data.conversationId, userId, data.message);
-		const enriched: ChatMessage = {
-			id: messageId,
-			text: data.message,
-			senderId: userId,
-			timestamp: new Date()
-		};
-		io.to(data.dmId).emit('dm:receive');
-	});
-}
+// 	socket.on('dm:send', async (data: {dmId: string, message: string}) => //still useful?
+// 	{
+// 		const userId: number = socket.data.userId;
+// 		const messageId = await saveMessage(socket.data.conversationId, userId, data.message);
+// 		const enriched: ChatMessage = {
+// 			id: messageId,
+// 			text: data.message,
+// 			senderId: userId,
+// 			timestamp: new Date()
+// 		};
+// 		io.to(data.dmId).emit('dm:receive');
+// 	});
+ }

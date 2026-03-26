@@ -165,6 +165,7 @@ export class SocketService {
   }
 
   onReceiveMessage(callback : (data : { id : number, text: string; senderId: number; timestamp: Date, conv_id: number}) => void) {
+    console.log("CHAT RECEIVE = ");
     this.socket.on('chat:receive', callback);
   }
 
