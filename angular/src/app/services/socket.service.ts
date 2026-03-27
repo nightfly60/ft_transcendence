@@ -122,6 +122,25 @@ export class SocketService {
 		this.socket.on('solo_ready', callback);
 	}
 
+// ─── Chat ───────────────────────────────────────────────────────────────
+
+  findChat() {
+    this.socket.emit('chat:find');
+  }
+
+  onChatReady(callback : (chatId : string, userId : number, conversationId: number) => void) {
+    this.socket.on('chat:ready', callback);
+  }
+
+  sendMessage(chatId : string, message : string) {
+    this.socket.emit('chat:send', ({ chatId, message }));
+  }
+
+  onReceiveMessage(callback : (data : { id : number, text: string; senderId: number; timestamp: Date}) => void) {
+    this.socket.on('chat:receive', callback);
+  }
+
+
   // ─── Common ───────────────────────────────────────────────────────────────
 
   reconnect(token: string) {
@@ -130,22 +149,6 @@ export class SocketService {
     this.socket.connect();
   }
 
-  findChat() {
-    this.socket.emit('chat:find');
-  }
-
-  onChatReady(callback : (chatId : string, userId : number) => void) {
-    this.socket.on('chat:ready', callback);
-  }
-
-  sendMessage(chatId : string, message : string) {
-    this.socket.emit('chat:send', ({ chatId, message }));
-  }
-
-  onReceiveMessage(callback : (data : { text: string; senderId: number; timestamp: Date}) => void) {
-    this.socket.on('chat:receive', callback);
-  }
-  
   disconnect() {
     this.socket.disconnect();
   }

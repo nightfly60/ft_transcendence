@@ -4,6 +4,7 @@ import pool from '../../../../db.js';
 import { MultiGame } from '../../types.js';
 import { makeGame, buildGameState } from '../../game.js';
 import { waitingPlayer, setWaitingPlayer, multiGames, playerGames, disconnectTimers } from './state.js';
+import { createGameConversation } from '../../../../services/conversation.service.js';
 
 /**
  * @brief Récupère les noms d'utilisateur depuis la base de données.
@@ -111,6 +112,8 @@ async function createGame(io: Server, socket: Socket, waitingSocketId: string): 
   io.to(black).emit('game_ready', { gameId, color: 'b', whiteUsername, blackUsername });
   io.to(gameId).emit('game_state', buildGameState(game));
 
+  createGameConversation(whiteUserId, blackUserId, result.insertId);
+  
   setWaitingPlayer(null);
   console.log(`[find_game] partie créée gameId=${gameId}`);
 }

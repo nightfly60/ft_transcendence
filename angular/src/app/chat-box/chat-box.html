@@ -1,48 +1,43 @@
-<!DOCTYPE html>
-<!-- Write your comments here -->
-<html lang="en">
-<head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>Chat</title>
-	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<div class="chat-widget">
+	<!-- Bouton flottant -->
+    <button class="chat-fab" (click)="togglePanel()" [class.open]="panelOpen()" title="Utilisateurs en ligne">
+      <span class="fab-icon">💬</span>
+    </button>
 
-</head>
-<body>
-	<div class="chat-window">
-		<div class="chat-messages" id="messages" #messagesContainer>
-			 @for (message of messages(); track message.timestamp) {
+	<!-- Panneau -->
+    @if (panelOpen()) {
+		<div class="chat-panel">
+			<!-- Header -->
+        <div class="panel-header">Chat de jeu
+			<button class="panel-close" (click)="panelOpen.set(false)">✕</button>
+		</div>
+		<div class="messages-list" id="messages" #messagesContainer>
+			@for (message of messages(); track message.timestamp) {
 				@if (message.senderId === this.userId) {
-					<div class=" message outgoing">
-						<div class="bubble">{{ message.message }}</div>
-						<div class="timestamp">{{ message.timestamp | date: 'H:mm'}}</div>
+					<div class="msg-bubble mine">
+						<div class="msg-text">{{ message.message }}</div>
 					</div>
 				}
 				@else
 				{
-					<div class="message incoming">
-						<div class="bubble">{{ message.message }}</div>
-						<div class="timestamp">{{ message.timestamp | date: 'H:mm'}}</div>
+					<div class="msg-bubble theirs">
+						<div class="msg-text">{{ message.message }}</div>
 					</div>
 				}
 			}
 		</div>
-		<div class="chat-input-area">
-			<div class="input-wrap">
-				<input type="text"
-				class="chat-input"
-				id="chatInput"
-				placeholder="Type a message…"
-				autocomplete="off"
-				[(ngModel)]="message" (keyup.enter)="sendMessage()"
-				/>
-			</div>
-			<button class="send-btn" id="sendBtn" title="Send" (click)="sendMessage()">
-				<svg viewBox="0 0 24 24">
-					<line x1="22" y1="2" x2="11" y2="13"></line>
-					<polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-				</svg>
-			</button>
+		<div class="msg-input-row">
+		<input
+			class="msg-input"
+			type="text"
+			[value]="message"
+			(input)="message = $any($event.target).value"
+			(keyup.enter)="sendMessage()"
+			placeholder="Message..."
+			autocomplete="off"
+		/>
+		<button class="msg-send" (click)="sendMessage()">›</button>
 		</div>
 	</div>
-</body>
+	}
+</div>
