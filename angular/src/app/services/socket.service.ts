@@ -136,8 +136,32 @@ export class SocketService {
     this.socket.emit('chat:send', ({ chatId, message }));
   }
 
-  onReceiveMessage(callback : (data : { id : number, text: string; senderId: number; timestamp: Date}) => void) {
-    this.socket.on('chat:receive', callback);
+  onReceiveMessage(callback : (data : { id : number, text: string; senderId: number; timestamp: Date, convId: number}) => void) {
+    this.socket.on('chat:receive', callback); //add conv db id
+  }
+
+  getUser() {
+    this.socket.emit('chat:get_user');
+  }
+
+  onUserFound(callback : (userId : number) => void) {
+    this.socket.on('chat:found_user', callback);
+  }
+
+  joinDmRoom(conv_id : number) {
+    this.socket.emit('dm:join_room', conv_id);
+  }
+
+  createDMConversation(otherUserId: number) {
+    this.socket.emit('dm:create', otherUserId);
+  }
+
+  onDmConversationCreated(callback: (conv: any) =>  void) {
+    this.socket.on('dm:created', callback);
+  }
+
+  onNewDmConversation(callback: (conv: any) => void) {
+    this.socket.on('dm:new', callback);
   }
 
 

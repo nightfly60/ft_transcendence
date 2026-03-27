@@ -62,7 +62,7 @@ export class ChatBox implements OnInit{
     });
   }
 
-  sendMessage() : void {
+  sendMessage() : void { //add conversation Id
     if (this.message.trim()) //add length check, max limit = ?
     {
       this.message = this.message.trim();
