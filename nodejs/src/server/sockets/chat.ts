@@ -9,11 +9,11 @@ import { createDMConversation } from '../services/conversation.service.js';
 	text:		string;
  	senderId:	number;
  	timestamp:	Date;
-	//add conv db id
+	conversationId: number;
  }
 
  interface DmConversation {
-	conv_id: 		number,
+	conversationId: 		number,
 	otherUserId : 	number,
 	username : 		string,
 	path_img: 		string,
@@ -32,7 +32,7 @@ export function registerChatEvents(io: Server, socket: Socket) {
 		socket.emit('chat:ready', chatId, socket.data.userId, socket.data.conversationId);
 	});
 
-	socket.on('chat:send', async (data: { chatId: string, message: string}) =>
+	socket.on('chat:send', async (data: { chatId: string, message: string, conversationId: number}) =>
 	{
 		const userId: number = socket.data.userId;
 		const messageId = await saveMessage(socket.data.conversationId, userId, data.message);
@@ -41,13 +41,13 @@ export function registerChatEvents(io: Server, socket: Socket) {
 			text: data.message,
 			senderId: userId,
 			timestamp: new Date(),
-			convId:
+			conversationId: data.conversationId
 		};
 		io.to(data.chatId).emit('chat:receive', enriched);
 	});
 
-	socket.on('dm:join_room', async (conv_id : number) => {
-		const dmRoom  =  'dm:' + String(conv_id);
+	socket.on('dm:join_room', async (conversationId : number) => {
+		const dmRoom  =  'dm:' + String(conversationId);
 		socket.join(dmRoom);
 	});
 
@@ -63,7 +63,7 @@ export function registerChatEvents(io: Server, socket: Socket) {
 			[otherUserId]
 		);
 		const newConv: DmConversation = {
-			conv_id: conversationId,
+			conversationId: conversationId,
 			otherUserId: otherUserId,
 			username: rows[0].username,
 			path_img: rows[0].path_img,
@@ -81,7 +81,7 @@ export function registerChatEvents(io: Server, socket: Socket) {
 			[userId] // User A's info, since that's the "other user" from B's perspective
 		);
 		io.to(`user:${otherUserId}`).emit('dm:new', {
-			conv_id: conversationId,
+			conversationId: conversationId,
 			otherUserId: userId,        // from B's perspective, A is the other user
 			username: userARows[0].username,
 			path_img: userARows[0].path_img,

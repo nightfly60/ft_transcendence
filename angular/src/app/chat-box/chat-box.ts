@@ -66,7 +66,7 @@ export class ChatBox implements OnInit{
     if (this.message.trim()) //add length check, max limit = ?
     {
       this.message = this.message.trim();
-      this.socket.sendMessage(this.chatID, this.message);
+      this.socket.sendMessage(this.chatID, this.message, this.conversationId);
       this.message = '';
     }
   }

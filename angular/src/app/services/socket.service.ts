@@ -132,7 +132,7 @@ export class SocketService {
     this.socket.on('chat:ready', callback);
   }
 
-  sendMessage(chatId : string, message : string) {
+  sendMessage(chatId : string, message : string, conversationId: number) {
     this.socket.emit('chat:send', ({ chatId, message }));
   }
 

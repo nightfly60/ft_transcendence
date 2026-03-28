@@ -1,1 +1,73 @@
-<p>direct-messages works!</p>
+@if(auth.isLoggedIn()) {
+  <div class="page-wrapper">
+    <div class="floating-piece">♜</div>
+    <div class="floating-piece">♝</div>
+    <div class="floating-piece">♛</div>
+    <div class="floating-piece">♞</div>
+    <div class="floating-piece">♟</div>
+    <div class="floating-piece">♚</div>
+
+    <div class="chessboard-bg">
+      @for (cell of cells; track $index) {
+        <div [style.background]="cell.light ? '#f5f0e8' : 'transparent'"></div>
+      }
+    </div>
+
+    <div class="dm-page">
+
+      <!-- Left: conversation list -->
+      <div class="dm-list">
+        @if (dmConversations().length === 0) {
+          <p class="empty-msg">Aucune conversation</p>
+        } @else {
+          @for (conv of dmConversations(); track conv.conv_id) {
+            <div class="user-item" [class.active]="activeDmId() === conv.conv_id" (click)="openConv(conv.conv_id!)">
+              <div class="user-avatar-wrap">
+                <img
+                  [src]="conv.path_img || '/avatars/default-avatar.png'"
+                  class="user-avatar"
+                  (error)="$any($event.target).src = '/avatars/default-avatar.png'"
+                  alt=""
+                />
+              </div>
+              <span class="user-name">{{ conv.username }}</span>
+              <span class="chat-arrow">›</span>
+            </div>
+          }
+        }
+      </div>
+
+      <!-- Right: active conversation -->
+      <div class="dm-chat">
+        @if (!activeDmId()) {
+          <div class="dm-placeholder">
+            <span>Sélectionnez une conversation</span>
+          </div>
+        } @else {
+          <div class="dm-messages" #messagesContainer>
+            @if (messages().length === 0) {
+              <p class="empty-msg">Commencez la conversation !</p>
+            }
+            @for (msg of messages(); track msg.id) {
+              <div class="msg-bubble" [class.mine]="msg.senderId === userId" [class.theirs]="msg.senderId !== userId">
+                <span class="msg-text">{{ msg.message }}</span>
+              </div>
+            }
+          </div>
+          <div class="msg-input-row">
+            <input
+              class="msg-input"
+              type="text"
+              [(ngModel)]="input"
+              (keyup.enter)="sendMessage()"
+              placeholder="Message..."
+              autocomplete="off"
+            />
+            <button class="msg-send" (click)="sendMessage()">›</button>
+          </div>
+        }
+      </div>
+
+    </div>
+  </div>
+}

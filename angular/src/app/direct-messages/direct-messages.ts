@@ -3,6 +3,7 @@ import { SocketService } from '../services/socket.service';
 import { ChatUiService } from "../services/chat-ui.service";
 import { HttpClient } from "@angular/common/http";
 import { AuthService } from '../services/auth.service'; //need to require auth to access
+import { FormsModule } from '@angular/forms';
 
 class Message {
  constructor( public id: number,
@@ -22,7 +23,7 @@ class DmConversation {
 
 @Component({
   selector: "app-direct-messages",
-  imports: [],
+  imports: [FormsModule],
   templateUrl: "./direct-messages.html",
   styleUrl: "./direct-messages.scss",
 })
@@ -35,6 +36,10 @@ export class DirectMessages implements OnInit{
   activeDmId = signal<number | null>(null);        // id of current open conversation
   messages = signal<Message[]>([]);
   auth = inject(AuthService);
+
+  cells = Array.from({ length: 144 }, (_, i) => ({
+		light: (Math.floor(i / 12) + i) % 2 === 0
+	}));
   
   constructor(private socket: SocketService, private http: HttpClient, private chatUi: ChatUiService) {
     effect(() => {
@@ -54,7 +59,7 @@ export class DirectMessages implements OnInit{
       this.loadDmConversations();
     });
 
-    this.socket.onDmConversationCreated((conv: any) => { //user stared new dm conversation
+    this.socket.onDmConversationCreated((conv: any) => { //user started new dm conversation
       const newConv = new DmConversation(
         conv.conv_id,
         conv.otherUserId,
@@ -135,7 +140,8 @@ export class DirectMessages implements OnInit{
     {
       this.input = this.input.trim();
       const room = 'dm:' + String(this.activeDmId());
-      this.socket.sendMessage(room, this.input);
+      const id = Number(this.activeDmId());
+      this.socket.sendMessage(room, this.input, id);
       this.input = '';
     }
   }
