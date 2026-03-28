@@ -26,4 +26,32 @@ router.get("/:id_conversation/Message", async (req, res) => {
   }
 });
 
+//get user dm conversations from DB
+router.get('/user/:id_user/conversations', async (req, res) => {
+  const { id_user } = req.params;
+  try {
+    const [rows] = await pool.execute<RowDataPacket[]>(
+      `SELECT c.id, c.created_at,
+      CASE WHEN c.id_user_1 = ? THEN c.id_user_2 ELSE c.id_user_1 END as otherUserId,
+      CASE WHEN c.id_user_1 = ? THEN u2.username ELSE u1.username END as username,
+      CASE WHEN c.id_user_1 = ? THEN p2.path_img ELSE p1.path_img END as path_img
+      FROM Conversation c
+      JOIN User u1 ON u1.id = c.id_user_1
+      JOIN User u2 ON u2.id = c.id_user_2
+      JOIN Profile p1 ON p1.id_user = c.id_user_1
+      JOIN Profile p2 ON p2.id_user = c.id_user_2
+      WHERE (c.id_user_1 = ? OR c.id_user_2 = ?)
+      AND c.type = 'dm'`,
+      [id_user, id_user, id_user, id_user, id_user]
+    );
+    // console.log(`[GET conversations] id_user: ${id_user}, rows fetched: ${rows.length}`);
+    // console.log('[GET conversations] data:', rows);
+    res.json(rows);
+  } catch (error) {
+    console.error('[GET conversations] error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+
+});
+
 export default router; 

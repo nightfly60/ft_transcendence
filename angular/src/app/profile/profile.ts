@@ -148,4 +148,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
 	goToFriends() {
 		this.router.navigate(['/profile', this.data.id, 'friends']);
 	}
+
+	startConversation() {
+		this.router.navigate(['/direct-messages'], {
+			queryParams: { userId: this.data.id } 
+		});
+	}
 }

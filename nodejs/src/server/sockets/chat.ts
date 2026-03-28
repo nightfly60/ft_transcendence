@@ -69,6 +69,7 @@ export function registerChatEvents(io: Server, socket: Socket) {
 			path_img: rows[0].path_img,
 			creation: new Date()
 		};
+		console.log("DM CREATED");
 		socket.emit('dm:created', newConv );
 		const targetSockets = await io.in(`user:${otherUserId}`).fetchSockets();
 		targetSockets.forEach(s => s.join(`dm:${conversationId}`));

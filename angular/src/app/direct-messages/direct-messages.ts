@@ -1,9 +1,9 @@
 import { Component, OnInit, signal, effect, inject, ElementRef, ViewChild } from "@angular/core";
 import { SocketService } from '../services/socket.service';
-import { ChatUiService } from "../services/chat-ui.service";
 import { HttpClient } from "@angular/common/http";
 import { AuthService } from '../services/auth.service'; //need to require auth to access
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Route, Router } from "@angular/router";
 
 class Message {
  constructor( public id: number,
@@ -41,22 +41,22 @@ export class DirectMessages implements OnInit{
 		light: (Math.floor(i / 12) + i) % 2 === 0
 	}));
   
-  constructor(private socket: SocketService, private http: HttpClient, private chatUi: ChatUiService) {
-    effect(() => {
-      this.messages();
-      const targetUserId = this.chatUi.openDmWithUser();
-      if (targetUserId != null) {
-        this.openDm(targetUserId);
-        this.chatUi.openDmWithUser.set(null);
-      }
-    });
-  }
+  constructor(  private socket: SocketService,
+                private http: HttpClient,
+                private route: ActivatedRoute,
+                private router: Router) {}
 
   ngOnInit(): void {
-    this.socket.getUser();
-    this.socket.onUserFound((userId) => {
-      this.userId = userId;
-      this.loadDmConversations();
+    this.userId = Number(this.auth.getUserId());
+    console.log("USER = ", this.userId);
+    this.loadDmConversations().then(() => {
+      const targetUserId = this.route.snapshot.queryParamMap.get('userId');
+      console.log("TARGET =", targetUserId);
+      if (targetUserId) {
+        this.openDm(Number(targetUserId));
+        // clean up the url
+      this.router.navigate([], { queryParams: {}, replaceUrl: true });
+      }
     });
 
     this.socket.onDmConversationCreated((conv: any) => { //user started new dm conversation
@@ -70,6 +70,7 @@ export class DirectMessages implements OnInit{
       this.dmConversations.update(prev => [...prev, newConv]);
       this.activeDmId.set(conv.conv_id);
       this.messages.set([]);
+      console.log("DM CREATED");
     });
 
     this.socket.onNewDmConversation((conv: any) => { //user was added to new dm conversation
@@ -81,6 +82,7 @@ export class DirectMessages implements OnInit{
         new Date(conv.creation)
       );
       this.dmConversations.update(prev => [...prev, newConv]);
+      console.log("NEW DM CONV");
     });
 
     this.socket.onReceiveMessage(({id, text, senderId, timestamp, convId}) => {
@@ -91,19 +93,21 @@ export class DirectMessages implements OnInit{
   }
 
   //find user's dm conversations, load and add them to a room for each conversation
-  loadDmConversations() {
-    this.http.get<any[]>(`/api/conversation/user/${this.userId}/conversations`)
-      .subscribe(convs => {
-        this.dmConversations.set(convs.map(c => new DmConversation(
-          c.id,
-          c.otherUserId,
-          c.username,
-          c.path_img,
-          new Date(c.created_at)
-        )));
-        convs.forEach(conv => {
-          this.socket.joinDmRoom(conv.id);});
-      });
+  loadDmConversations(): Promise<void> {
+    return new Promise((resolve) => {
+      this.http.get<any[]>(`/api/conversation/user/${this.userId}/conversations`)
+        .subscribe(convs => {
+          this.dmConversations.set(convs.map(c => new DmConversation(
+            c.id,
+            c.otherUserId,
+            c.username,
+            c.path_img,
+            new Date(c.created_at)
+          )));
+          convs.forEach(conv => this.socket.joinDmRoom(conv.id));
+          resolve(); // signal that loading is done
+        });
+    });
   }
 
   openDm(otherUserId: number) { //create new dm conversation
@@ -113,6 +117,7 @@ export class DirectMessages implements OnInit{
     }
     const existing = this.dmConversations().find(c =>Number(c.otherUserId) === Number(otherUserId));
     if (existing) {
+      console.log("existing");
       this.activeDmId.set(existing.conv_id);
       this.http.get<any[]>(`/api/conversation/${existing.conv_id}/Message`)
         .subscribe(history => {
@@ -122,6 +127,7 @@ export class DirectMessages implements OnInit{
         });
     } else {
       this.socket.createDMConversation(otherUserId);
+      console.log("create conv");
     }
 }
 
