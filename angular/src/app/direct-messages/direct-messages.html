@@ -15,8 +15,8 @@
 
     <div class="dm-page">
 
-      <!-- Left: conversation list -->
-      <div class="dm-list">
+      <!--Liste des conversations -->
+      <div class="dm-list" [class.mobile-hidden]="activeDmId()">
         @if (dmConversations().length === 0) {
           <p class="empty-msg">Aucune conversation</p>
         } @else {
@@ -37,23 +37,50 @@
         }
       </div>
 
-      <!-- Right: active conversation -->
-      <div class="dm-chat">
+      <!-- Conversation en cours -->
+      <div class="dm-chat" [class.mobile-hidden]="!activeDmId()">
+
+        <!-- Header vue mobile -->
+        @if (activeDmId()) {
+          <div class="mobile-chat-header">
+            <button class="back-btn" (click)="activeDmId.set(null)">‹</button>
+             <div class="mobile-avatar-wrap">
+                <img
+                  [src]="dmConversations().find(c => c.conversationId === activeDmId())?.path_img || '/avatars/default-avatar.png'"
+                  class="mobile-avatar"
+                  (error)="$any($event.target).src = '/avatars/default-avatar.png'"
+                  alt=""
+                />
+              </div>
+            <span class="mobile-title">
+              {{ dmConversations().find(c => c.conversationId === activeDmId())?.username }}
+            </span>
+          </div>
+        }
+
+        <!-- Message par defaut pour aucune conversation selectionnee -->
         @if (!activeDmId()) {
           <div class="dm-placeholder">
             <span>Sélectionnez une conversation</span>
           </div>
         } @else {
+          <!-- Messages -->
           <div class="dm-messages" #messagesContainer>
             @if (messages().length === 0) {
               <p class="empty-msg">Commencez la conversation !</p>
             }
             @for (msg of messages(); track msg.id) {
-              <div class="msg-bubble" [class.mine]="msg.senderId === userId" [class.theirs]="msg.senderId !== userId">
+              <div
+                class="msg-bubble"
+                [class.mine]="msg.senderId === userId"
+                [class.theirs]="msg.senderId !== userId"
+              >
                 <span class="msg-text">{{ msg.message }}</span>
               </div>
             }
           </div>
+
+          <!-- Barre d'input -->
           <div class="msg-input-row">
             <input
               class="msg-input"
@@ -67,7 +94,6 @@
           </div>
         }
       </div>
-
     </div>
   </div>
 }

@@ -1,24 +1,23 @@
 import { Component, OnInit, signal, effect, inject, ElementRef, ViewChild } from "@angular/core";
 import { SocketService } from '../services/socket.service';
 import { HttpClient } from "@angular/common/http";
-import { AuthService } from '../services/auth.service'; //need to require auth to access
+import { AuthService } from '../services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Route, Router } from "@angular/router";
 
 class Message {
- constructor( public id: number,
-              public message: string,
-              public timestamp: Date,
-              public senderId: number) {}
+ constructor( public id: number,                  //id du message dans la database
+              public message: string,             //contenu du message
+              public timestamp: Date,             //heure d'envoi
+              public senderId: number) {}         //id de l'utilisateur qui a envoye le message
 }
 
 class DmConversation {
-  constructor(public conversationId: number,
-    public otherUserId : number,
-    public username : string,
-    public path_img: string,
-    public creation : Date,
-    public room? : string) {}
+  constructor(public conversationId: number,    //id de la conversation dans la db
+    public otherUserId : number,                //id de l'utilisateur destinataire de la conversation
+    public username : string,                   //nom de l'utilisateur destinataire
+    public path_img: string,                    //photo de profil du destinataire
+    public creation : Date) {}                  //date de creation de la conversation
 }
 
 @Component({
@@ -30,39 +29,35 @@ class DmConversation {
 export class DirectMessages implements OnInit{
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
 
-  userId = 0;
+  userId = 0;                                         //id de l'utilisateur
   input ='';
-  dmConversations = signal<DmConversation[]>([]);   //list of user's dm conversations
-  activeDmId = signal<number | null>(null);        // id of current open conversation
-  messages = signal<Message[]>([]);
+  dmConversations = signal<DmConversation[]>([]);     //liste des conversations du joueur
+  activeDmId = signal<number | null>(null);           //id de la conversation en cours
+  messages = signal<Message[]>([]);                   //liste des messages de la conversation en cours
   auth = inject(AuthService);
 
   cells = Array.from({ length: 144 }, (_, i) => ({
 		light: (Math.floor(i / 12) + i) % 2 === 0
 	}));
   
-  constructor(  private socket: SocketService,
-                private http: HttpClient,
-                private route: ActivatedRoute,
-                private router: Router) {
+  constructor(  private socket: SocketService, private http: HttpClient, private route: ActivatedRoute, private router: Router) {
     effect(() => {
       this.messages();
       setTimeout(() => this.scrollToBottom(), 0);
     })
-                }
+  }
 
   ngOnInit(): void {
     this.userId = Number(this.auth.getUserId());
-    this.loadDmConversations().then(() => {
-      const targetUserId = this.route.snapshot.queryParamMap.get('userId');
+    this.loadDmConversations().then(() => {                                   //recupere les conversations de l'utilisateur
+      const targetUserId = this.route.snapshot.queryParamMap.get('userId');   //verifie si creation de conversation est en cours a partir du bouton sm sur le profil
       if (targetUserId) {
         this.openDm(Number(targetUserId));
-        // clean up the url
       this.router.navigate([], { queryParams: {}, replaceUrl: true });
       }
     });
 
-    this.socket.onDmConversationCreated((conv: DmConversation) => { //user started new dm conversation
+    this.socket.onDmConversationCreated((conv: DmConversation) => {           //l'utilisateur a cree une conversation
       const newConv = new DmConversation(
         conv.conversationId,
         conv.otherUserId,
@@ -75,7 +70,7 @@ export class DirectMessages implements OnInit{
       this.messages.set([]);
     });
 
-    this.socket.onNewDmConversation((conv: DmConversation) => { //user was added to new dm conversation
+    this.socket.onNewDmConversation((conv: DmConversation) => {               //l'utilisateur a ete ajoute a une conversation
       const newConv = new DmConversation(
         conv.conversationId,
         conv.otherUserId,
@@ -86,14 +81,13 @@ export class DirectMessages implements OnInit{
       this.dmConversations.update(prev => [...prev, newConv]);
     });
 
-    this.socket.onReceiveMessage(({id, text, senderId, timestamp, conversationId}) => {
+    this.socket.onReceiveMessage(({id, text, senderId, timestamp, conversationId}) => {   //message recu
       if (conversationId == this.activeDmId())
         this.messages.update((prev) => [...prev, new Message(id, text, new Date(timestamp), senderId)]);
-      // else show notification
     });
   }
 
-  //find user's dm conversations, load and add them to a room for each conversation
+  //cherche les conversations de l'utilisateur dans la db et rajoute l'utilisateur aux "rooms" de chacune
   loadDmConversations(): Promise<void> {
     return new Promise((resolve) => {
       this.http.get<any[]>(`/api/conversation/user/${this.userId}/conversations`)
@@ -111,7 +105,8 @@ export class DirectMessages implements OnInit{
     });
   }
 
-  openDm(otherUserId: number) { //create new dm conversation
+  //cree ou ouvre une conversation
+  openDm(otherUserId: number) { 
     if (!this.userId || this.userId === otherUserId) {
       console.error('invalid dm target - same user or userId not set yet');
       return;
@@ -130,7 +125,8 @@ export class DirectMessages implements OnInit{
     }
 }
 
-  openConv(conversationId: number) { //open conv after clicking in the list
+  //ouvre la conversation selectionee
+  openConv(conversationId: number) {
     this.activeDmId.set(conversationId);
     this.http.get<any[]>(`/api/conversation/${conversationId}/Message`)
       .subscribe(history => {
@@ -140,8 +136,9 @@ export class DirectMessages implements OnInit{
     });
   }
 
-  sendMessage() : void { //add conversation Id
-    if (this.input.trim()) //add length check, max limit = ?
+  //envoi message
+  sendMessage() : void {
+    if (this.input.trim())
     {
       this.input = this.input.trim();
       const room = 'dm:' + String(this.activeDmId());
@@ -151,6 +148,7 @@ export class DirectMessages implements OnInit{
     }
   }
 
+  //descend automatiquement vers le message le plus recent
   private scrollToBottom(): void {
     if (this.messagesContainer) {
       this.messagesContainer.nativeElement.scrollTop =

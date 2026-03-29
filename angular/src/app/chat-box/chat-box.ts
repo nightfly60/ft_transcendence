@@ -1,14 +1,13 @@
 import { Component, OnInit, ViewChild, ElementRef, signal, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { DatePipe } from '@angular/common';
 import { SocketService } from '../services/socket.service';
 import { HttpClient } from '@angular/common/http';
 
 class Message {
- constructor( public message: string,
-              public timestamp: Date,
-              public senderId: number,
-              public id?: number) {}
+ constructor( public message: string,          //contenu du message
+              public timestamp: Date,          //date d'envoi
+              public senderId: number,         //id de l'utilisateur qui a envoye le message
+              public id?: number) {}           //id du message dans la db
 }
 
 @Component({
@@ -20,13 +19,14 @@ class Message {
 
 export class ChatBox implements OnInit{
    @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
-  chatID = '';
-  conversationId = 0;
-  userId = 0; //replace with user object?
+  chatID = '';                                        //nom de la "room" de la partie en cours = a gameId
+  conversationId = 0;                                 //id du de la conversation dans la database
+  userId = 0;                                         //id de l'utilisateur
   message = '';
-  messages = signal<Message[]>([]);
-  panelOpen   = signal(false);
+  messages = signal<Message[]>([]);                   //liste des messages
+  panelOpen   = signal(false);                        //signal pour ouvrir et fermer le widget
   
+  //descend automatiquement vers les messages les plus recents
   private scrollToBottom(): void {
     if (this.messagesContainer) {
       this.messagesContainer.nativeElement.scrollTop =
@@ -36,25 +36,24 @@ export class ChatBox implements OnInit{
 
   constructor(private socket: SocketService, private http:HttpClient) {
     effect(() => {
-      this.messages(); // track signal
-      this.panelOpen(); // track signal
+      this.messages();
+      this.panelOpen();
       setTimeout(() => this.scrollToBottom(), 0);
     });
   }
 
   ngOnInit(): void {
-    this.socket.findChat(); //get chat id from game
+    this.socket.findChat();                                         //recupere gameId/chatId dans la socket
     this.socket.onChatReady(( chatId, userId, conversationId ) => {
         this.chatID = chatId;
         this.userId = userId;
         this.conversationId = conversationId;
-        //check chat history
-        this.http.get<any[]>(`/api/conversation/${this.conversationId}/Message`).subscribe(history => {
+        this.http.get<any[]>(`/api/conversation/${this.conversationId}/Message`).subscribe(history => {  //recupere l'historique du chat si la partie est toujours en cours
           this.messages.set(history.map(m => new Message(m.content, new Date(m.sent_at), m.id_sender, m.id)));
         });
     });   
 
-    this.socket.onReceiveMessage(({id, text, senderId, timestamp}) => {
+    this.socket.onReceiveMessage(({id, text, senderId, timestamp}) => { //message recu
       const alreadyExists = this.messages().some(m => m.id === id);
       if (!alreadyExists) {
         this.messages.update((prev) => [...prev, new Message(text, new Date(timestamp), senderId, id)]);
@@ -62,8 +61,9 @@ export class ChatBox implements OnInit{
     });
   }
 
-  sendMessage() : void { //add conversation Id
-    if (this.message.trim()) //add length check, max limit = ?
+  //envoi message
+  sendMessage() : void {
+    if (this.message.trim())
     {
       this.message = this.message.trim();
       this.socket.sendMessage(this.chatID, this.message, this.conversationId);
@@ -71,6 +71,7 @@ export class ChatBox implements OnInit{
     }
   }
 
+  //ouvre et ferme le widget
   togglePanel(): void {
     this.panelOpen.update(v => !v);
   }

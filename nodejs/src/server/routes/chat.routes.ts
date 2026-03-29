@@ -5,7 +5,7 @@ import { RowDataPacket } from "mysql2";
 
 const router = Router();
 
-//load message history for a conversation
+//recupere historique des messages d'une conversation
 router.get("/:id_conversation/Message", async (req, res) => {
   const { id_conversation } = req.params;
   try {
@@ -17,8 +17,6 @@ router.get("/:id_conversation/Message", async (req, res) => {
       ORDER BY m.sent_at ASC`,
       [id_conversation]
     );
-    // console.log(`[GET messages] d_conversation: ${id_conversation}, rows fetched: ${rows.length}`);
-    // console.log('[GET messages] data:', rows);
     res.json(rows);
   } catch (error) {
     console.error('[GET messages] error:', error);
@@ -26,7 +24,7 @@ router.get("/:id_conversation/Message", async (req, res) => {
   }
 });
 
-//get user dm conversations from DB
+//recupere les conversations DM d'un utilisateur
 router.get('/user/:id_user/conversations', async (req, res) => {
   const { id_user } = req.params;
   try {
@@ -44,8 +42,6 @@ router.get('/user/:id_user/conversations', async (req, res) => {
       AND c.type = 'dm'`,
       [id_user, id_user, id_user, id_user, id_user]
     );
-    // console.log(`[GET conversations] id_user: ${id_user}, rows fetched: ${rows.length}`);
-    // console.log('[GET conversations] data:', rows);
     res.json(rows);
   } catch (error) {
     console.error('[GET conversations] error:', error);

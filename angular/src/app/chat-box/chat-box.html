@@ -1,10 +1,10 @@
 <div class="chat-widget">
 	<!-- Bouton flottant -->
-    <button class="chat-fab" (click)="togglePanel()" [class.open]="panelOpen()" title="Utilisateurs en ligne">
+    <button class="chat-fab" (click)="togglePanel()" [class.open]="panelOpen()" title="Chat de jeu">
       <span class="fab-icon">💬</span>
     </button>
 
-	<!-- Panneau -->
+	<!-- Panneau widget ouvert-->
     @if (panelOpen()) {
 		<div class="chat-panel">
 			<!-- Header -->
@@ -26,6 +26,7 @@
 				}
 			}
 		</div>
+		<!-- Input -->
 		<div class="msg-input-row">
 		<input
 			class="msg-input"

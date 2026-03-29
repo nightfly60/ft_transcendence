@@ -1,6 +1,7 @@
 import pool from '../db.js';
 import mysql from 'mysql2/promise';
 
+//enregitre les messages dans la database
 export async function saveMessage(
   conversationId: number,
   senderId: number,

@@ -137,7 +137,7 @@ export class SocketService {
   }
 
   onReceiveMessage(callback : (data : { id : number, text: string; senderId: number; timestamp: Date, conversationId: number}) => void) {
-    this.socket.on('chat:receive', callback); //add conv db id
+    this.socket.on('chat:receive', callback);
   }
 
   getUser() {
