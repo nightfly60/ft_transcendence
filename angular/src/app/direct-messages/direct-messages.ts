@@ -44,7 +44,12 @@ export class DirectMessages implements OnInit{
   constructor(  private socket: SocketService,
                 private http: HttpClient,
                 private route: ActivatedRoute,
-                private router: Router) {}
+                private router: Router) {
+    effect(() => {
+      this.messages();
+      setTimeout(() => this.scrollToBottom(), 0);
+    })
+                }
 
   ngOnInit(): void {
     this.userId = Number(this.auth.getUserId());
@@ -143,6 +148,13 @@ export class DirectMessages implements OnInit{
       const id = Number(this.activeDmId());
       this.socket.sendMessage(room, this.input, id);
       this.input = '';
+    }
+  }
+
+  private scrollToBottom(): void {
+    if (this.messagesContainer) {
+      this.messagesContainer.nativeElement.scrollTop =
+        this.messagesContainer.nativeElement.scrollHeight;
     }
   }
 }
