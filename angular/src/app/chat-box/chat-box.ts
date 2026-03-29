@@ -25,7 +25,8 @@ export class ChatBox implements OnInit{
   message = '';
   messages = signal<Message[]>([]);                   //liste des messages
   panelOpen   = signal(false);                        //signal pour ouvrir et fermer le widget
-  
+  newMessages = signal(0);                            //compteur de notifications
+
   //descend automatiquement vers les messages les plus recents
   private scrollToBottom(): void {
     if (this.messagesContainer) {
@@ -55,9 +56,10 @@ export class ChatBox implements OnInit{
 
     this.socket.onReceiveMessage(({id, text, senderId, timestamp}) => { //message recu
       const alreadyExists = this.messages().some(m => m.id === id);
-      if (!alreadyExists) {
+      if (!alreadyExists)
         this.messages.update((prev) => [...prev, new Message(text, new Date(timestamp), senderId, id)]);
-      }
+      if (senderId != this.userId && !this.panelOpen())
+        this.newMessages.update((prev) => prev + 1);
     });
   }
 
@@ -74,5 +76,6 @@ export class ChatBox implements OnInit{
   //ouvre et ferme le widget
   togglePanel(): void {
     this.panelOpen.update(v => !v);
+    this.newMessages.set(0);
   }
 }

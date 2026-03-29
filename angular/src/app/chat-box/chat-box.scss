@@ -37,6 +37,23 @@ $font:     'Cormorant Garamond', serif;
   }
 
   .fab-icon { font-size: 1.4rem; line-height: 1; }
+
+  .fab-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 9px;
+    background: $gold;
+    color: $black;
+    font-size: 0.65rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 // ── Panneau ──────────────────────────────────────────────────────────────────
