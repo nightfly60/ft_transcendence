@@ -20,8 +20,8 @@
         @if (dmConversations().length === 0) {
           <p class="empty-msg">Aucune conversation</p>
         } @else {
-          @for (conv of dmConversations(); track conv.conv_id) {
-            <div class="user-item" [class.active]="activeDmId() === conv.conv_id" (click)="openConv(conv.conv_id!)">
+          @for (conv of dmConversations(); track conv.conversationId) {
+            <div class="user-item" [class.active]="activeDmId() === conv.conversationId" (click)="openConv(conv.conversationId)">
               <div class="user-avatar-wrap">
                 <img
                   [src]="conv.path_img || '/avatars/default-avatar.png'"

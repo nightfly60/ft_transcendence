@@ -133,10 +133,10 @@ export class SocketService {
   }
 
   sendMessage(chatId : string, message : string, conversationId: number) {
-    this.socket.emit('chat:send', ({ chatId, message }));
+    this.socket.emit('chat:send', ({ chatId, message, conversationId }));
   }
 
-  onReceiveMessage(callback : (data : { id : number, text: string; senderId: number; timestamp: Date, convId: number}) => void) {
+  onReceiveMessage(callback : (data : { id : number, text: string; senderId: number; timestamp: Date, conversationId: number}) => void) {
     this.socket.on('chat:receive', callback); //add conv db id
   }
 
@@ -148,8 +148,8 @@ export class SocketService {
     this.socket.on('chat:found_user', callback);
   }
 
-  joinDmRoom(conv_id : number) {
-    this.socket.emit('dm:join_room', conv_id);
+  joinDmRoom(conversationId : number) {
+    this.socket.emit('dm:join_room', conversationId);
   }
 
   createDMConversation(otherUserId: number) {

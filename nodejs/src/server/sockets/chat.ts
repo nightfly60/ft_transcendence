@@ -35,7 +35,7 @@ export function registerChatEvents(io: Server, socket: Socket) {
 	socket.on('chat:send', async (data: { chatId: string, message: string, conversationId: number}) =>
 	{
 		const userId: number = socket.data.userId;
-		const messageId = await saveMessage(socket.data.conversationId, userId, data.message);
+		const messageId = await saveMessage(data.conversationId, userId, data.message);
 		const enriched: ChatMessage = {
 			id: messageId,
 			text: data.message,
@@ -69,7 +69,6 @@ export function registerChatEvents(io: Server, socket: Socket) {
 			path_img: rows[0].path_img,
 			creation: new Date()
 		};
-		console.log("DM CREATED");
 		socket.emit('dm:created', newConv );
 		const targetSockets = await io.in(`user:${otherUserId}`).fetchSockets();
 		targetSockets.forEach(s => s.join(`dm:${conversationId}`));

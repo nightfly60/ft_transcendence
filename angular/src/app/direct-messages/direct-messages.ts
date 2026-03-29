@@ -13,7 +13,7 @@ class Message {
 }
 
 class DmConversation {
-  constructor(public conv_id: number,
+  constructor(public conversationId: number,
     public otherUserId : number,
     public username : string,
     public path_img: string,
@@ -48,10 +48,8 @@ export class DirectMessages implements OnInit{
 
   ngOnInit(): void {
     this.userId = Number(this.auth.getUserId());
-    console.log("USER = ", this.userId);
     this.loadDmConversations().then(() => {
       const targetUserId = this.route.snapshot.queryParamMap.get('userId');
-      console.log("TARGET =", targetUserId);
       if (targetUserId) {
         this.openDm(Number(targetUserId));
         // clean up the url
@@ -59,34 +57,32 @@ export class DirectMessages implements OnInit{
       }
     });
 
-    this.socket.onDmConversationCreated((conv: any) => { //user started new dm conversation
+    this.socket.onDmConversationCreated((conv: DmConversation) => { //user started new dm conversation
       const newConv = new DmConversation(
-        conv.conv_id,
+        conv.conversationId,
         conv.otherUserId,
         conv.username,
         conv.path_img,
         new Date(conv.creation)
       );
       this.dmConversations.update(prev => [...prev, newConv]);
-      this.activeDmId.set(conv.conv_id);
+      this.activeDmId.set(conv.conversationId);
       this.messages.set([]);
-      console.log("DM CREATED");
     });
 
-    this.socket.onNewDmConversation((conv: any) => { //user was added to new dm conversation
+    this.socket.onNewDmConversation((conv: DmConversation) => { //user was added to new dm conversation
       const newConv = new DmConversation(
-        conv.conv_id,
+        conv.conversationId,
         conv.otherUserId,
         conv.username,
         conv.path_img,
         new Date(conv.creation)
       );
       this.dmConversations.update(prev => [...prev, newConv]);
-      console.log("NEW DM CONV");
     });
 
-    this.socket.onReceiveMessage(({id, text, senderId, timestamp, convId}) => {
-      if (convId == this.activeDmId())
+    this.socket.onReceiveMessage(({id, text, senderId, timestamp, conversationId}) => {
+      if (conversationId == this.activeDmId())
         this.messages.update((prev) => [...prev, new Message(id, text, new Date(timestamp), senderId)]);
       // else show notification
     });
@@ -117,9 +113,8 @@ export class DirectMessages implements OnInit{
     }
     const existing = this.dmConversations().find(c =>Number(c.otherUserId) === Number(otherUserId));
     if (existing) {
-      console.log("existing");
-      this.activeDmId.set(existing.conv_id);
-      this.http.get<any[]>(`/api/conversation/${existing.conv_id}/Message`)
+      this.activeDmId.set(existing.conversationId);
+      this.http.get<any[]>(`/api/conversation/${existing.conversationId}/Message`)
         .subscribe(history => {
           this.messages.set(history.map(m => 
             new Message(m.id, m.content, new Date(m.sent_at), m.id_sender)
@@ -127,13 +122,12 @@ export class DirectMessages implements OnInit{
         });
     } else {
       this.socket.createDMConversation(otherUserId);
-      console.log("create conv");
     }
 }
 
-  openConv(conv_id: number) { //open conv after clicking in the list
-    this.activeDmId.set(conv_id);
-    this.http.get<any[]>(`/api/conversation/${conv_id}/Message`)
+  openConv(conversationId: number) { //open conv after clicking in the list
+    this.activeDmId.set(conversationId);
+    this.http.get<any[]>(`/api/conversation/${conversationId}/Message`)
       .subscribe(history => {
         this.messages.set(history.map(m => 
           new Message(m.id, m.content, new Date(m.sent_at), m.id_sender)
