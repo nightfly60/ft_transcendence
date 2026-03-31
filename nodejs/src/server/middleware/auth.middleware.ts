@@ -11,11 +11,11 @@ export const requireAuth = async (req: any, res: Response, next: NextFunction) =
 	}
 
 	try {
-		req.user = jwt.verify(token, process.env.JWT_SECRET || "...");
-		
+		const payload: any = jwt.verify(token, process.env.JWT_SECRET || "...");
+
 		const [rows]: any = await pool.query(
 			`SELECT * FROM User WHERE id = ?`,
-			[(req.user as any).id]
+			[payload.id]
 		);
 
 		if (rows.length === 0) {
@@ -24,8 +24,10 @@ export const requireAuth = async (req: any, res: Response, next: NextFunction) =
 
 		await pool.query(
 			`UPDATE User SET last_seen = NOW() WHERE id = ?`,
-			[(req.user as any).id]
+			[payload.id]
 		);
+
+		req.user = rows[0];
 
 		next();
 	} catch (err: any) {

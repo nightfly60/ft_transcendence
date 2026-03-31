@@ -1,6 +1,5 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, inject, effect, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { AuthService } from '../services/auth.service';
-import { SocketService } from '../services/socket.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
@@ -19,10 +18,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
 	id: string = '';
 	isFriend: boolean = false;
 	isOnline: boolean = false;
-	private targetId = signal<number>(0);
+	private pollingInterval: any = null;
 	private routeSub: Subscription | null = null;
-
-	private socket = inject(SocketService);
 
 	readonly XP_PER_LEVEL = 1000;
 	cells = Array.from({ length: 144 }, (_, i) => ({
@@ -55,16 +52,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 		private http: HttpClient,
 		private cdr: ChangeDetectorRef,
 		public auth: AuthService
-	) {
-		effect(() => {
-			const id = this.targetId();
-			const online = id === Number(this.auth.getUserId()) || this.socket.isUserOnline(id);
-			if (this.isOnline !== online) {
-				this.isOnline = online;
-				this.cdr.markForCheck();
-			}
-		});
-	}
+	) {}
 
 	goToEdit() {
 		window.location.href = `/profile/edit/${this.data.id}`;
@@ -85,7 +73,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 					if (this.auth.getUserId() !== data.id) {
 						this.checkFriendStatus(data.id);
 					}
-					this.targetId.set(data.id);
+					this.startPolling(data.id);
 					this.cdr.markForCheck();
 				},
 				error: (err) => { this.router.navigate([`/${err.status}`]); this.cdr.markForCheck(); },
