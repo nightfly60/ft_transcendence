@@ -158,28 +158,55 @@ export class SocketService {
 		this.socket.on('solo_ready', callback);
 	}
 
+// ─── Chat ───────────────────────────────────────────────────────────────
+
+  findChat() {
+    this.socket.emit('chat:find');
+  }
+
+  onChatReady(callback : (chatId : string, userId : number, conversationId: number) => void) {
+    this.socket.on('chat:ready', callback);
+  }
+
+  sendMessage(chatId : string, message : string, conversationId: number) {
+    this.socket.emit('chat:send', ({ chatId, message, conversationId }));
+  }
+
+  onReceiveMessage(callback : (data : { id : number, text: string; senderId: number; timestamp: Date, conversationId: number}) => void) {
+    this.socket.on('chat:receive', callback);
+  }
+
+  getUser() {
+    this.socket.emit('chat:get_user');
+  }
+
+  onUserFound(callback : (userId : number) => void) {
+    this.socket.on('chat:found_user', callback);
+  }
+
+  joinDmRoom(conversationId : number) {
+    this.socket.emit('dm:join_room', conversationId);
+  }
+
+  createDMConversation(otherUserId: number) {
+    this.socket.emit('dm:create', otherUserId);
+  }
+
+  onDmConversationCreated(callback: (conv: any) =>  void) {
+    this.socket.on('dm:created', callback);
+  }
+
+  onNewDmConversation(callback: (conv: any) => void) {
+    this.socket.on('dm:new', callback);
+  }
+
+
   // ─── Common ───────────────────────────────────────────────────────────────
 
   reconnect(token: string) {
     this.socket.disconnect();
     this.socket.auth = { token };
     this.socket.connect();
-  }
-
-  findChat() {
-    this.socket.emit('chat:find');
-  }
-
-  onChatReady(callback : (chatId : string, userId : number) => void) {
-    this.socket.on('chat:ready', callback);
-  }
-
-  sendMessage(chatId : string, message : string) {
-    this.socket.emit('chat:send', ({ chatId, message }));
-  }
-
-  onReceiveMessage(callback : (data : { text: string; senderId: number; timestamp: Date}) => void) {
-    this.socket.on('chat:receive', callback);
   }
 
   disconnect() {

@@ -101,8 +101,35 @@ export class ProfileComponent implements OnInit, OnDestroy {
 			});
 		}
 
+	startPolling(targetId: number) {
+		if (this.pollingInterval) {
+			clearInterval(this.pollingInterval);
+			this.pollingInterval = null;
+		}
+		if (!this.auth.isLoggedIn()) return;
+		this.checkOnlineStatus(targetId);
+		this.pollingInterval = setInterval(() => {
+			this.checkOnlineStatus(targetId);
+		}, 1000 * 30);
+	}
+
 	ngOnDestroy() {
+		if (this.pollingInterval) {
+			clearInterval(this.pollingInterval);
+			this.pollingInterval = null;
+		}
 		this.routeSub?.unsubscribe();
+	}
+
+	checkOnlineStatus(targetId: number) {
+		if (!this.auth.isLoggedIn()) return ;
+		this.http.get<{ isOnline: boolean }>(`/api/friends/online/${targetId}`).subscribe({
+			next: (res) => {
+				this.isOnline = res.isOnline;
+				this.cdr.markForCheck();
+			},
+			error: () => {}
+		});
 	}
 
 	toggleFriend() {
@@ -132,5 +159,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
 	goToFriends() {
 		this.router.navigate(['/profile', this.data.id, 'friends']);
+	}
+
+	startConversation() {
+		this.router.navigate(['/direct-messages'], {
+			queryParams: { userId: this.data.id } 
+		});
 	}
 }

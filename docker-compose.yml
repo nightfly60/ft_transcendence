@@ -58,14 +58,6 @@ services:
     env_file:
       - .env
 
-  # python:
-  #   build: ./python
-  #   container_name: python
-  #   env_file:
-  #     - .env
-  #   networks:
-  #     - transcendence_network
-
 volumes:
   db_data:
     driver: local

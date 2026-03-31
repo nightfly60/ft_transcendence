@@ -1,0 +1,99 @@
+@if(auth.isLoggedIn()) {
+  <div class="page-wrapper">
+    <div class="floating-piece">♜</div>
+    <div class="floating-piece">♝</div>
+    <div class="floating-piece">♛</div>
+    <div class="floating-piece">♞</div>
+    <div class="floating-piece">♟</div>
+    <div class="floating-piece">♚</div>
+
+    <div class="chessboard-bg">
+      @for (cell of cells; track $index) {
+        <div [style.background]="cell.light ? '#f5f0e8' : 'transparent'"></div>
+      }
+    </div>
+
+    <div class="dm-page">
+
+      <!--Liste des conversations -->
+      <div class="dm-list" [class.mobile-hidden]="activeDmId()">
+        @if (dmConversations().length === 0) {
+          <p class="empty-msg">Aucune conversation</p>
+        } @else {
+          @for (conv of dmConversations(); track conv.conversationId) {
+            <div class="user-item" [class.active]="activeDmId() === conv.conversationId" (click)="openConv(conv.conversationId)">
+              <div class="user-avatar-wrap">
+                <img
+                  [src]="conv.path_img || '/avatars/default-avatar.png'"
+                  class="user-avatar"
+                  (error)="$any($event.target).src = '/avatars/default-avatar.png'"
+                  alt=""
+                />
+              </div>
+              <span class="user-name">{{ conv.username }}</span>
+              <span class="chat-arrow">›</span>
+            </div>
+          }
+        }
+      </div>
+
+      <!-- Conversation en cours -->
+      <div class="dm-chat" [class.mobile-hidden]="!activeDmId()">
+
+        <!-- Header vue mobile -->
+        @if (activeDmId()) {
+          <div class="mobile-chat-header">
+            <button class="back-btn" (click)="activeDmId.set(null)">‹</button>
+             <div class="mobile-avatar-wrap">
+                <img
+                  [src]="dmConversations().find(c => c.conversationId === activeDmId())?.path_img || '/avatars/default-avatar.png'"
+                  class="mobile-avatar"
+                  (error)="$any($event.target).src = '/avatars/default-avatar.png'"
+                  alt=""
+                />
+              </div>
+            <span class="mobile-title">
+              {{ dmConversations().find(c => c.conversationId === activeDmId())?.username }}
+            </span>
+          </div>
+        }
+
+        <!-- Message par defaut pour aucune conversation selectionnee -->
+        @if (!activeDmId()) {
+          <div class="dm-placeholder">
+            <span>Sélectionnez une conversation</span>
+          </div>
+        } @else {
+          <!-- Messages -->
+          <div class="dm-messages" #messagesContainer>
+            @if (messages().length === 0) {
+              <p class="empty-msg">Commencez la conversation !</p>
+            }
+            @for (msg of messages(); track msg.id) {
+              <div
+                class="msg-bubble"
+                [class.mine]="msg.senderId === userId"
+                [class.theirs]="msg.senderId !== userId"
+              >
+                <span class="msg-text">{{ msg.message }}</span>
+              </div>
+            }
+          </div>
+
+          <!-- Barre d'input -->
+          <div class="msg-input-row">
+            <input
+              class="msg-input"
+              type="text"
+              [(ngModel)]="input"
+              (keyup.enter)="sendMessage()"
+              placeholder="Message..."
+              autocomplete="off"
+            />
+            <button class="msg-send" (click)="sendMessage()">›</button>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}

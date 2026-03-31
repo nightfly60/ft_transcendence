@@ -1,0 +1,406 @@
+$black:      #0a0a0a;
+$white:      #f5f0e8;
+$cream:      #e8dfc8;
+$gold:       #c9a84c;
+$gray:       #c4bca5;
+$gold-light: #e8c060;
+$gold-dark:  #7a5c18;
+$muted:      #a09070;
+$red:        #ff0000;
+$green:      #00ff40;
+$font:     'Cormorant Garamond', serif;
+
+$surface:  #141414;
+$border:   rgba(201, 168, 76, 0.2);
+
+:host { display: block; }
+
+// Image de fond
+
+.page-wrapper {
+background-color: $black;
+color: $white;
+font-family: $font;
+position: relative;
+min-height: 100vh;
+
+&::before {
+	content: '';
+	position: fixed;
+	inset: 0;
+	background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.85) 100%);
+	z-index: 1;
+	pointer-events: none;
+}
+&::after {
+	content: '';
+	position: fixed;
+	inset: 0;
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+	opacity: 0.4;
+	z-index: 1;
+	pointer-events: none;
+}
+}
+
+.chessboard-bg {
+	position: fixed;
+	inset: 0;
+	display: grid;
+	grid-template-columns: repeat(12, 1fr);
+	grid-template-rows: repeat(12, 1fr);
+	opacity: 0.07;
+	pointer-events: none;
+	z-index: 0;
+}
+
+.floating-piece {
+	position: fixed;
+	opacity: 0;
+	animation: drift 10s ease-in-out infinite;
+	z-index: 1;
+	pointer-events: none;
+	color: $gold;
+	&:nth-child(1) { top: 10%; left:  5%; font-size: 5.5rem; animation-delay: 0s; }
+	&:nth-child(2) { top: 70%; left:  8%; font-size: 7.5rem; animation-delay: 2s; }
+	&:nth-child(3) { top: 20%; right: 6%; font-size: 5.8rem; animation-delay: 4s; }
+	&:nth-child(4) { top: 80%; right:10%; font-size: 5.4rem; animation-delay: 5s; }
+	&:nth-child(5) { top: 50%; left:  3%; font-size: 5.2rem; animation-delay: 1s; }
+	&:nth-child(6) { top: 40%; right: 4%; font-size: 6rem;   animation-delay: 3s; }
+}
+@keyframes drift {
+	0%   { opacity: 0;    transform: translateY(20px) rotate(0deg); }
+	20%  { opacity: 0.14; }
+	80%  { opacity: 0.14; }
+	100% { opacity: 0;    transform: translateY(-30px) rotate(10deg); }
+}
+
+//Component DM
+
+.dm-page {
+  position: relative;
+  z-index: 2;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 4rem 3rem;
+  height: calc(100vh - 8rem);
+  display: flex;
+  gap: 0;
+
+  @media (max-width: 768px) {
+    padding: 2.5rem 1.5rem;
+    flex-direction: column;
+    height: auto;
+  }
+}
+
+// Liste des conversations DM
+.dm-list {
+  width: 280px;
+  flex-shrink: 0;
+  overflow-y: auto;
+  padding: 8px 0;
+  border: 2px solid $border;
+  border-right: none;
+  background: rgba(255, 255, 255, 0.02);
+
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: rgba($gold, 0.3); border-radius: 2px; }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    max-height: 200px;
+    border-right: 1px solid $border;
+    border-bottom: none;
+  }
+}
+
+.empty-msg {
+  text-align: center;
+  color: $muted;
+  font-size: 1rem;
+  padding: 24px 16px;
+  font-style: italic;
+}
+
+.user-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+  border-bottom: 2px solid rgba($gold, 0.06);
+
+  &:hover { background: rgba($gold, 0.06); }
+
+  &.active {
+    background: rgba($gold, 0.1);
+    border-left: 2px solid $gold;
+  }
+
+  .chat-arrow {
+    color: $muted;
+    font-size: 1.2rem;
+    margin-left: auto;
+  }
+}
+
+.user-avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+
+  .user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid $border;
+  }
+
+  .online-dot {
+    position: absolute;
+    bottom: 1px;
+    right: 1px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: $green;
+    border: 1.5px solid $black;
+  }
+}
+
+.user-name {
+  font-size: 1.1rem;
+  color: $white;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+//Conversation DM ouverte
+
+.dm-chat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border: 2px solid $border;
+  background: rgba(255, 255, 255, 0.02);
+  overflow: hidden;
+}
+
+.dm-placeholder {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $muted;
+  font-style: italic;
+  font-size: 1.05rem;
+}
+
+.dm-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 16px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  &::-webkit-scrollbar { width: 4px; }
+  // &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: rgba($gold, 0.3); border-radius: 2px; }
+}
+
+.msg-bubble {
+  max-width: 80%;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 1.03rem;
+  line-height: 1.5;
+  word-break: break-word;
+
+  &.mine {
+    align-self: flex-end;
+    background: #3d2d0a;
+    border: 1px solid rgba($gold, 0.6);
+    color: $white;
+    border-bottom-right-radius: 3px;
+  }
+
+  &.theirs {
+    align-self: flex-start;
+    background: #1e1e1e;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: $white;
+    border-bottom-left-radius: 3px;
+  }
+}
+
+// barre d'input
+
+.msg-input-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-top: 1px solid $border;
+  flex-shrink: 0;
+}
+
+.msg-input {
+  flex: 1;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid $border;
+  border-radius: 20px;
+  padding: 6px 12px;
+  color: $white;
+  font-family: $font;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+
+  &::placeholder { color: $muted; }
+  &:focus { border-color: rgba($gold, 0.5); }
+}
+
+.msg-send {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid $border;
+  background: #3d2d0a;
+  color: $gold;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.2s;
+
+  &:hover { background: rgba($gold, 0.3); }
+}
+
+// vue mobile
+
+  .mobile-chat-header {
+    display: none;
+  }
+
+@media (max-width: 768px) {
+
+  .floating-piece {
+    display: none;
+  }
+
+  .chessboard-bg {
+    opacity: 0.03;
+  }
+
+  // le component chat prend la page entiere
+  .dm-page {
+    height: 100vh;
+    padding: 0;
+  }
+
+  .dm-list {
+    max-height: none;
+    height: 100vh;
+    border: none;
+  }
+
+  // la conversation ouverte prend la page entiere
+  .dm-chat {
+    height: 100vh;
+    border: none;
+  }
+
+  .mobile-hidden {
+    display: none;
+  }
+
+  .mobile-chat-header {
+    height: 55px;
+    border-bottom: 1px solid $border;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    background: rgba(0,0,0,0.4);
+  }
+
+  .back-btn {
+    background: transparent;
+    border: none;
+    color: $gold;
+    font-size: 1.6rem;
+    cursor: pointer;
+    margin-right: 10px;
+  }
+
+  .mobile-avatar-wrap {
+  width: 34px;
+  height: 34px;
+  margin-right: 10px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid $border;
+}
+
+.mobile-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+  .mobile-title {
+    font-size: 1.2rem;
+    color: $white;
+  }
+
+  .dm-messages {
+    padding: 12px;
+    height: calc(100vh - 110px);
+  }
+
+  .msg-input-row {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: $black;
+    border-top: 1px solid $border;
+    padding: 10px;
+  }
+
+  .msg-input {
+    padding: 10px 14px;
+    font-size: 1rem;
+  }
+
+  .msg-send {
+    width: 40px;
+    height: 40px;
+    font-size: 1.3rem;
+  }
+
+  .user-item {
+    padding: 14px;
+  }
+
+  .user-avatar-wrap .user-avatar {
+    width: 42px;
+    height: 42px;
+  }
+
+  .user-name {
+    font-size: 1.15rem;
+  }
+
+  .msg-bubble {
+    max-width: 85%;
+    font-size: 1.05rem;
+  }
+}

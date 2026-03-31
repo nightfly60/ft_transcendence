@@ -54,19 +54,6 @@ CREATE TABLE IF NOT EXISTS Profile (
     FOREIGN KEY(id_user) REFERENCES \`User\`(id) ON DELETE CASCADE
 );
 
--- Table Game
-CREATE TABLE IF NOT EXISTS Game (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    id_player_one INT NOT NULL,
-    id_player_second INT DEFAULT NULL,
-    nb_cuts BIGINT,
-    timestamp DATETIME,
-    id_winner INT DEFAULT NULL,
-    FOREIGN KEY(id_winner) REFERENCES \`User\`(id) ON DELETE CASCADE,
-    FOREIGN KEY(id_player_one) REFERENCES \`User\`(id) ON DELETE CASCADE,
-    FOREIGN KEY(id_player_second) REFERENCES \`User\`(id) ON DELETE CASCADE
-);
-
 -- Table Achievements
 CREATE TABLE IF NOT EXISTS Achievements (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -113,6 +100,43 @@ INSERT INTO Achievements (name, objective, description, type) VALUES
 ('Elite',          1500,  'Atteindre un elo de 1500', 'elo'),
 ('Clutch',         20,   'Jouer une partie de plus de 20 coups', 'upper_cut'),
 ('Marathonien',    80,  'Jouer une partie de plus de 80 coups', 'upper_cut');
+
+-- Table Conversation
+CREATE TABLE IF NOT EXISTS Conversation (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_user_1 INT NOT NULL,
+    id_user_2 INT NOT NULL,
+    type ENUM('game', 'dm'),
+    created_at TIMESTAMP,
+    FOREIGN KEY(id_user_1) REFERENCES \`User\`(id),
+    FOREIGN KEY(id_user_2) REFERENCES \`User\`(id)
+);
+
+-- Table Message
+CREATE TABLE IF NOT EXISTS Message (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_conversation INT NOT NULL,
+    id_sender INT NOT NULL,
+    content VARCHAR(255),
+    sent_at TIMESTAMP,
+    FOREIGN KEY(id_conversation) REFERENCES \`Conversation\`(id),
+    FOREIGN KEY(id_sender) REFERENCES \`User\`(id)
+);
+
+-- Table Game
+CREATE TABLE IF NOT EXISTS Game (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nb_cuts BIGINT,
+    timestamp DATETIME,
+    id_player_one INT NOT NULL,
+    id_player_second INT,
+    id_winner INT,
+    id_conversation INT NULL,
+    FOREIGN KEY(id_player_one) REFERENCES \`User\`(id),
+    FOREIGN KEY(id_player_second) REFERENCES \`User\`(id),
+    FOREIGN KEY(id_winner) REFERENCES \`User\`(id),
+    FOREIGN KEY(id_conversation) REFERENCES \`Conversation\`(id)
+);
 EOSQL
 
     # Arrêter le serveur temporaire

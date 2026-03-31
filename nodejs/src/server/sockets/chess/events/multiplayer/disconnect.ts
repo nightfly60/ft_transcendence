@@ -1,7 +1,7 @@
 import { Server, Socket } from 'socket.io';
 import { PieceColor } from '../../types.js';
 import { buildGameState } from '../../game.js';
-import { DISCONNECT_TIMEOUT_MS, waitingPlayer, setWaitingPlayer, multiGames, disconnectTimers, disconnectTimerStarts } from './state.js';
+import { DISCONNECT_TIMEOUT_MS, waitingPlayer, setWaitingPlayer, multiGames, disconnectTimers } from './state.js';
 import { finalizeGame } from './db.js';
 
 /**
@@ -16,13 +16,12 @@ import { finalizeGame } from './db.js';
  * @param gameId  Identifiant de la partie.
  * @param userId  Id du joueur absent.
  */
-export function startForfeitTimer(io: Server, socket: Socket, gameId: string, userId: number): void {
+function startForfeitTimer(io: Server, socket: Socket, gameId: string, userId: number): void {
   const timerKey = `${gameId}:${userId}`;
   if (disconnectTimers.has(timerKey)) return;
 
   const timer = setTimeout(async () => {
     disconnectTimers.delete(timerKey);
-    disconnectTimerStarts.delete(timerKey);
     const currentGame = multiGames.get(gameId);
     if (!currentGame || currentGame.gameStatus === 'checkmate' || currentGame.gameStatus === 'stalemate' || currentGame.gameStatus === 'draw' || currentGame.gameStatus === 'resign') return;
 
@@ -36,7 +35,6 @@ export function startForfeitTimer(io: Server, socket: Socket, gameId: string, us
   }, DISCONNECT_TIMEOUT_MS);
 
   disconnectTimers.set(timerKey, timer);
-  disconnectTimerStarts.set(timerKey, Date.now());
   socket.to(gameId).emit('opponent_left', { seconds: DISCONNECT_TIMEOUT_MS / 1000 });
 }
 
@@ -52,25 +50,18 @@ export function startForfeitTimer(io: Server, socket: Socket, gameId: string, us
  */
 export function registerLeaveGame(io: Server, socket: Socket): void {
   socket.on('leave_game', ({ gameId }: { gameId: string }) => {
-    const userId = socket.data.userId as number;
-
-    const game = gameId ? multiGames.get(gameId) : null;
-    const isActiveGame = game && game.gameStatus !== 'checkmate' && game.gameStatus !== 'stalemate' && game.gameStatus !== 'draw' && game.gameStatus !== 'resign';
-
-    if (isActiveGame) {
-      if (waitingPlayer === socket.id) {
-        setWaitingPlayer(null);
-        return;
-      }
-      startForfeitTimer(io, socket, gameId, userId);
+    if (waitingPlayer === socket.id) {
+      setWaitingPlayer(null);
+      console.log(`[leave_game] userId=${socket.data.userId} était en attente, retiré de la file`);
       return;
     }
 
-    if (gameId) socket.leave(gameId);
+    const game = multiGames.get(gameId);
+    if (!game || game.gameStatus === 'checkmate' || game.gameStatus === 'stalemate' || game.gameStatus === 'draw' || game.gameStatus === 'resign') return;
 
-    if (!game && waitingPlayer === socket.id) {
-      setWaitingPlayer(null);
-    }
+    const userId = socket.data.userId as number;
+    startForfeitTimer(io, socket, gameId, userId);
+    console.log(`[leave_game] userId=${userId} a quitté la page, timer 60s démarré`);
   });
 }
 
@@ -99,38 +90,6 @@ export function registerDisconnect(io: Server, socket: Socket): void {
     if (disconnectTimers.has(timerKey)) return;
 
     startForfeitTimer(io, socket, gameId, userId);
-  });
-}
-
-/**
- * @brief Enregistre les événements de visibilité de page.
- *
- * `player_hidden` : l'utilisateur a changé d'onglet sans fermer le tab.
- *   → démarre le timer de forfait si une partie est en cours.
- * `player_visible` : l'utilisateur est revenu sur l'onglet.
- *   → annule le timer de forfait.
- */
-export function registerPlayerVisibility(io: Server, socket: Socket): void {
-  socket.on('player_hidden', () => {
-    const gameId = socket.data.id_game as string | undefined;
-    if (!gameId) return;
-    const userId = socket.data.userId as number;
-    const game = multiGames.get(gameId);
-    if (!game || game.gameStatus === 'checkmate' || game.gameStatus === 'stalemate' || game.gameStatus === 'draw' || game.gameStatus === 'resign') return;
-    startForfeitTimer(io, socket, gameId, userId);
-  });
-
-  socket.on('player_visible', () => {
-    const gameId = socket.data.id_game as string | undefined;
-    if (!gameId) return;
-    const userId = socket.data.userId as number;
-    const timerKey = `${gameId}:${userId}`;
-    const existing = disconnectTimers.get(timerKey);
-    if (existing) {
-      clearTimeout(existing);
-      disconnectTimers.delete(timerKey);
-      disconnectTimerStarts.delete(timerKey);
-      socket.to(gameId).emit('opponent_back');
-    }
+    console.log(`[disconnect] userId=${userId} déconnecté de gameId=${gameId}, timer 60s démarré`);
   });
 }

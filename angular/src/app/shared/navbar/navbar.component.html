@@ -10,6 +10,7 @@
       <li><a [routerLink]="['/leaderboard']" routerLinkActive="active">Classement</a></li>
       <li><a [routerLink]="['/profile', auth.getUserId()]" routerLinkActive="active">Mon Profil</a></li>
       <li><a [routerLink]="['/settings']" routerLinkActive="active">Parametres</a></li>
+      <li><a [routerLink]="['/direct-messages']" routerLinkActive="active">Messages</a></li>
     }
   </ul>
 
@@ -45,6 +46,7 @@
     <a [routerLink]="['/leaderboard']" routerLinkActive="active" (click)="menuOpen = false">Classement</a>
     <a [routerLink]="['/profile', auth.getUserId()]" routerLinkActive="active" (click)="menuOpen = false">Mon Profil</a>
     <a [routerLink]="['/settings']" routerLinkActive="active" (click)="menuOpen = false">Parametres</a>
+    <a [routerLink]="['/direct-messages']" routerLinkActive="active" (click)="menuOpen = false">Messages</a>
   }
   @if (auth.isLoggedIn()) {
     <a [routerLink]="['/profile', auth.getUserId()]" class="mobile-user" (click)="menuOpen = false">
