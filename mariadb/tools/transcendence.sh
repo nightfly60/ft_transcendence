@@ -81,8 +81,8 @@ CREATE TABLE IF NOT EXISTS Conversation (
     id_user_2 INT NOT NULL,
     type ENUM('game', 'dm'),
     created_at TIMESTAMP,
-    FOREIGN KEY(id_user_1) REFERENCES \`User\`(id),
-    FOREIGN KEY(id_user_2) REFERENCES \`User\`(id)
+    FOREIGN KEY(id_user_1) REFERENCES \`User\`(id) ON DELETE CASCADE,
+    FOREIGN KEY(id_user_2) REFERENCES \`User\`(id) ON DELETE CASCADE
 );
 
 -- Table Message
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS Message (
     content VARCHAR(255),
     sent_at TIMESTAMP,
     FOREIGN KEY(id_conversation) REFERENCES \`Conversation\`(id),
-    FOREIGN KEY(id_sender) REFERENCES \`User\`(id)
+    FOREIGN KEY(id_sender) REFERENCES \`User\`(id) ON DELETE CASCADE
 );
 
 -- Table Game
@@ -105,11 +105,11 @@ CREATE TABLE IF NOT EXISTS Game (
     id_player_second INT,
     id_winner INT,
     id_conversation INT NULL,
-    FOREIGN KEY(id_player_one) REFERENCES \`User\`(id),
-    FOREIGN KEY(id_player_second) REFERENCES \`User\`(id),
-    FOREIGN KEY(id_winner) REFERENCES \`User\`(id),
+    FOREIGN KEY(id_player_one) REFERENCES \`User\`(id) ON DELETE CASCADE,
+    FOREIGN KEY(id_player_second) REFERENCES \`User\`(id) ON DELETE CASCADE,
+    FOREIGN KEY(id_winner) REFERENCES \`User\`(id) ON DELETE CASCADE,
     FOREIGN KEY(id_conversation) REFERENCES \`Conversation\`(id)
-);
+
 EOSQL
 
 

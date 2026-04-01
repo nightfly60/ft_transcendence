@@ -15,10 +15,10 @@ import { FriendsComponent } from './friends/friends';
 import { DirectMessages } from './direct-messages/direct-messages';
 
 export const routes: Routes = [
-	{ path: '', component: Home },
+	{ path: '', component: Home, canActivate: [authGuard] },
 	{ path: 'login', component: LoginPage },
 	{ path: 'game', component: GameComponent, canActivate: [authGuard] },
-	{ path: 'chat-box', component: ChatBox},
+	{ path: 'chat-box', component: ChatBox, canActivate: [authGuard]},
 	{ path: 'profile/:id', component: ProfileComponent, canActivate: [authGuard] },
 	{ path: 'profile/:id/friends', component: FriendsComponent, canActivate: [authGuard] },
 	{ path: 'profile/edit/:id', component: ProfileEditComponent, canActivate: [authGuard] },

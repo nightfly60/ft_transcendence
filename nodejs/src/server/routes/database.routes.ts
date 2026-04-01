@@ -98,6 +98,13 @@ router.post('/users', async (req, res) => {
 router.delete('/users/:id', async (req, res) => {
 	try
 	{
+		const [user]: any = await pool.query(
+			'SELECT * FROM User WHERE id = ?',
+			[req.params['id']]
+		);
+		if (user.length === 0)
+			return res.status(404).json({ error: 'Utilisateur Non Trouve' })
+
 		await pool.query(
 			`DELETE FROM User WHERE id = ?`,
 			[req.params['id']]
@@ -107,12 +114,11 @@ router.delete('/users/:id', async (req, res) => {
 			`DELETE FROM Profile WHERE id_user = ?`,
 			[req.params['id']]
 		);
-	
+
 		return res.status(200).json({ message: 'Utilisateur Supprime' });
 	}
 	catch (err: any)
 	{
-		console.log(err);
 		return res.status(500).json({ error: 'Erreur serveur' });
 	}
 })
@@ -137,7 +143,7 @@ router.put('/users/:id', async (req, res) => {
 			);
 		}
 
-		if (bio)
+		if (bio)	
 		{
 			await pool.query(
 				'UPDATE `Profile` SET bio = ? WHERE id_user = ?',

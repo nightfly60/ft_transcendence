@@ -40,6 +40,9 @@ app.use('/avatars', (req, res, next) => {
 	next();
 }, express.static(path.join(__dirname, 'public/avatars')));
 
+app.get('/home', requireAuth, (req, res) => {
+  res.json({ message: 'ok' });
+});
 
 app.use(cors());
 app.use(express.json({ limit: '5mb' }));
@@ -51,10 +54,11 @@ app.use('/profile-edit', requireAuth, profileEditRouter);
 app.use('/friends', requireAuth, friendsRouter)
 app.use('/2fa', requireAuth, two_faRouter)
 app.use('/leaderboard', requireAuth, leaderboardRouter)
-app.use('/ia', iaRouter);
 app.use('/public_api', requireAuth, publicAPIRouter);
-app.use('/database', checkAPI, databaseRouter);
 app.use('/conversation', requireAuth, chatRouter);
+app.use('/ia', requireAuth, iaRouter);
+
+app.use('/database', checkAPI, databaseRouter);
 
 app.use('/auth', authRouter);
 initSockets(httpServer);
