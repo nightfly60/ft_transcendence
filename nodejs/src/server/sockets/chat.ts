@@ -38,6 +38,8 @@ export function registerChatEvents(io: Server, socket: Socket) {
 	socket.on('chat:send', async (data: { chatId: string, message: string, conversationId: number}) =>
 	{
 		const userId: number = socket.data.userId;
+		if (data.message.length > 255)
+			data.message = data.message.substring(0, 254);
 		const messageId = await saveMessage(data.conversationId, userId, data.message);
 		const enriched: ChatMessage = {
 			id: messageId,
