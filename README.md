@@ -227,6 +227,11 @@ Used MariaDB/MySQL in a containerized environment. Chosen for reliability, relat
 ### Renaud (rcini-ha)
 
 ### Anas (aabouyaz)
+- **User management**: Implemented log system with email+password and added 2FA and OAuth2.0 with 42Intra and Google.
+- **Database API**: Implemented a system of API linked in settings to address requests directly to the database on 5 endpoints.
+- **Gamification system**: Co-Implemented XP, ELO, achievements and progress bars on profile to provide visual feedback and reward users.
+- **Game Statistics and History**: Implemented the last parties played on the user profile and linked statistics by game.
+- **Challenges overcome**: Learning how to implemente 2FA and OAuth2.0 with documentation from Google, and how to implemente on a well designed webpage
 
 ### Elena (edurance)
 - **User interaction module**: Implemented profile system and friends system.
