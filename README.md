@@ -65,7 +65,7 @@ AI tools were not used to automatically generate the complete project or major a
 
 ## 4. Usage Documentation
 The following documentation provides information to use and configure the website:
-- [.env example](.env.example.md) - Setup the website
+- [.env example](.env.example) - Setup the website
 - [API documentation](API-Documentation.md) - Public API usage
 
 ## 5. Team Information
@@ -132,7 +132,6 @@ Used MariaDB/MySQL in a containerized environment. Chosen for reliability, relat
 
 ### Social features
 - Basic game chat and private messages (Gaël)
-- Invite users to play games (Gaël)
 - Access to user profiles (Elena)
 - Friends (view, add and remove) (Elena)
 - Leaderboard integration (Renaud)
@@ -174,7 +173,7 @@ Used MariaDB/MySQL in a containerized environment. Chosen for reliability, relat
 - The public API provides GET, POST, PUT, and DELETE endpoints to interact with the database. You can see the documentation [here](#4-usage-documentation).
 - We wanted to provide a secure and reliable way for external users or applications access and manage database efficiently.
 
-### [WEB]Aadvanced search functionality with filters, sorting, and pagination (Renaud)
+### [WEB]Advanced search functionality with filters, sorting, and pagination (Renaud)
 - Minor module (1 pt)
 - On the leaderboard page, advanced search functionality was implemented to allow users to search for a player, filter by ELO or XP, and navigate results efficiently with sorting pagination.
 - This helps users quickly find specific players and compare rankings, improving overall usability of the leaderboard.
@@ -214,17 +213,12 @@ Used MariaDB/MySQL in a containerized environment. Chosen for reliability, relat
 - We implemented this module with WebSockets.
 - This module allows players to have a smooth and enjoyable gameplay.
 
-### [Gaming and user experience] Advanced chat features (Gaël)
-- Minor module (1 pt)
-- The advanced chat module enhances basic chat by allowing users to block others, invite players to games, receive game or tournament notifications, access user profiles directly from chat, persist chat history, and see typing indicators and read receipts.
-- These features improve communication, provide seamless game interactions, and enhance the overall user experience in the platform.
-
 ### [Gaming and user experience] Gamification system to reward users for their actions (Anas and Elena)
 - Minor module (1 pt)
 - This system tracks ELO, XP, and achievements, displays a level progress bar on the user profile, and provides visual feedback for progression. All data is stored persistently in the database and clearly integrated into the profile interface.
 - These features motivate users, provide clear progression, and make the platform more engaging through visible rewards and achievements.
 
-### Total score : 22 points 🎉
+### Total score : 21 points 🎉
 
 ## 11. Individual Contributions
 

@@ -52,9 +52,7 @@ export class Leaderboard implements AfterViewInit {
           this.data[i].xp = this.data[i].xp / 1000;
         this.cd.detectChanges();
       },
-      error: (err) => {
-        console.log("ERROR", err);
-      }
+      error: (err) => {}
     });
   }
 

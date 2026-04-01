@@ -40,7 +40,6 @@ export class LoginPage {
 				this.router.navigate(['/']);
 			},
 			error: (err) => {
-				console.log("ERROR", err);
 				const msg: string = err.error?.error ?? 'Erreur serveur';
 				if (msg.includes('Email'))
 					this.emailError = msg;
@@ -68,7 +67,7 @@ export class LoginPage {
 				this.cd.detectChanges();
 			},
 			error: (err) => {
-				console.log("ERROR", err);
+				// console.log("ERROR", err);
 				const msg: string = err.error?.error ?? 'Erreur serveur';
 				if (msg.includes('Email'))
 					this.emailError = msg;

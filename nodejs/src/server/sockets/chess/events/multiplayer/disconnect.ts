@@ -52,7 +52,7 @@ export function registerLeaveGame(io: Server, socket: Socket): void {
   socket.on('leave_game', ({ gameId }: { gameId: string }) => {
     if (waitingPlayer === socket.id) {
       setWaitingPlayer(null);
-      console.log(`[leave_game] userId=${socket.data.userId} était en attente, retiré de la file`);
+    //   console.log(`[leave_game] userId=${socket.data.userId} était en attente, retiré de la file`);
       return;
     }
 
@@ -61,7 +61,7 @@ export function registerLeaveGame(io: Server, socket: Socket): void {
 
     const userId = socket.data.userId as number;
     startForfeitTimer(io, socket, gameId, userId);
-    console.log(`[leave_game] userId=${userId} a quitté la page, timer 60s démarré`);
+    // console.log(`[leave_game] userId=${userId} a quitté la page, timer 60s démarré`);
   });
 }
 
@@ -90,6 +90,6 @@ export function registerDisconnect(io: Server, socket: Socket): void {
     if (disconnectTimers.has(timerKey)) return;
 
     startForfeitTimer(io, socket, gameId, userId);
-    console.log(`[disconnect] userId=${userId} déconnecté de gameId=${gameId}, timer 60s démarré`);
+    // console.log(`[disconnect] userId=${userId} déconnecté de gameId=${gameId}, timer 60s démarré`);
   });
 }

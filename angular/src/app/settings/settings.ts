@@ -31,7 +31,7 @@ export class Settings {
 				this.cd.detectChanges();
 			},
 			error: (err) => {
-				console.log("ERROR", err);
+				// console.log("ERROR", err);
 			}
 		})
 	}
@@ -53,7 +53,7 @@ export class Settings {
 				this.cd.detectChanges();
 			},
 			error: (err) => {
-				console.log("ERROR", err);
+				// console.log("ERROR", err);
 				const msg: string = err.error?.error ?? 'Erreur serveur';
 				this.tokenErrorEnable = msg;
 				this.cd.detectChanges();
@@ -76,7 +76,7 @@ export class Settings {
 				window.location.reload();
 			},
 			error: (err) => {
-				console.log("ERROR", err);
+				// console.log("ERROR", err);
 				const msg: string = err.error?.error ?? 'Erreur serveur';
 				this.tokenErrorConfirm = msg;
 				this.cd.detectChanges();
@@ -99,7 +99,7 @@ export class Settings {
 				this.cd.detectChanges();
 			},
 			error: (err: any) => {
-				console.log("ERROR", err);
+				// console.log("ERROR", err);
 				const msg: string = err.error?.error ?? 'Erreur serveur';
 				this.apiError = msg;
 				this.cd.detectChanges();

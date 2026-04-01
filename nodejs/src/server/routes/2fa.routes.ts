@@ -41,7 +41,7 @@ router.post('/enable', async (req, res) => {
 	}
 	catch (error: any)
 	{
-		console.log(error);
+		// console.log(error);
 		res.status(500).json({message: error.message})
 	}
 })
@@ -68,7 +68,7 @@ router.post('/confirm', async (req, res) => {
 	}
 	catch (error: any)
 	{
-		console.log(error);
+		// console.log(error);
 		res.status(500).json({message: error.message})
 	}
 

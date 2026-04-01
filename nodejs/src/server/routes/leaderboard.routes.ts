@@ -17,7 +17,7 @@ router.get('/index', async (req, res) => {
 			ORDER BY p.elo DESC`,
 		);
 
-		console.log(list);
+		// console.log(list);
 		res.status(200).json(list);
 	}
 	catch (err: any)

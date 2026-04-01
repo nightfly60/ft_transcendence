@@ -89,7 +89,7 @@ export const checkAPI = async (req: any, res: Response, next: NextFunction) => {
 
 		next();
 	} catch (err: any) {
-		console.log(err)
+		// console.log(err)
 		res.status(401).json({ error: 'Clé Invalide (ERROR)' });
 	}
 };
