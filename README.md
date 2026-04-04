@@ -118,8 +118,7 @@ Used MariaDB/MySQL in a containerized environment. Chosen for reliability, relat
 - **MariaDB/MySQL**: Provides robust relational database support and easy container deployment for testing and production.
 
 ## 8. Database Schema:
-
-
+![Schema de la db](schema.png)
 
 ## 9. Features List
 
