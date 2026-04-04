@@ -13,7 +13,7 @@ services:
   nginx:
     build:
       context: ./nginx
-      target: production  # ou development
+      target: development
     container_name: nginx
     env_file:
       - .env
@@ -22,7 +22,6 @@ services:
       - "${NGINX_PORT}:443"
     volumes:
       - certs:/etc/ssl
-      - angular_dist:/usr/share/nginx/html
     restart: always
     depends_on:
       - angular
@@ -32,14 +31,13 @@ services:
   nodejs:
     build:
       context: ./nodejs
-      target: production
+      target: development
     container_name: nodejs
     env_file:
       - .env
     restart: always
     volumes:
       - ./nodejs/src:/app/src
-      - avatars:/app/dist/server/public/avatars
       - avatars:/app/src/server/public/avatars
       - vite_cache:/app/node_modules/.vite
       - certs:/etc/ssl:ro
@@ -51,11 +49,10 @@ services:
   angular:
     build:
       context: ./angular
-      target: production
+      target: development
     container_name: angular
     volumes:
-      # - ./angular/src:/app/src
-      - angular_dist:/app/dist
+      - ./angular/src:/app/src
     networks:
       - transcendence_network
     env_file:
@@ -86,13 +83,6 @@ volumes:
       type: none
       o: bind
       device: /home/${LOGIN}/volumes/certs
-  angular_dist:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/${LOGIN}/volumes/angular_dist
-
 
 networks:
   transcendence_network:
