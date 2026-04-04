@@ -10,6 +10,20 @@ export class AuthService {
 	isLoggedIn = signal(!!localStorage.getItem('token'));
 	username = signal(this.getUsername());
 
+	/*fonction pour decoder le UTF-8 (les accents)*/
+	private decodeToken(token: string): any {
+		try
+		{
+			const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+			const res = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+			return JSON.parse(res);
+		}
+		catch
+		{
+			return null;
+		}
+	}
+
 	login(token: string): void {
 		localStorage.removeItem('token');
 		localStorage.setItem('token', token);
@@ -19,10 +33,6 @@ export class AuthService {
 	}
 
 	updateUsername(newUsername: string): void { // mettre a jour quand le username change
-		const token = localStorage.getItem('token');
-		if (!token) return;
-		const payload = JSON.parse(atob(token.split('.')[1]));
-		payload.username = newUsername;
 		this.username.set(newUsername);
 	}
 
@@ -34,29 +44,29 @@ export class AuthService {
 	getUsername(): string {
 		const token = localStorage.getItem('token');
 		if (!token) return '';
-		const payload = JSON.parse(atob(token.split('.')[1]));
-		return payload.username ?? '';
+		const payload = this.decodeToken(token);
+		return payload?.username ?? '';
 	}
 
 	getUserId(): string {
 		const token = localStorage.getItem('token');
 		if (!token) return '';
-		const payload = JSON.parse(atob(token.split('.')[1]));
+		const payload = this.decodeToken(token);
 		return payload.id ?? '';
 	}
 
 	getUserMail(): string {
 		const token = localStorage.getItem('token');
 		if (!token) return '';
-		const payload = JSON.parse(atob(token.split('.')[1]));
-		return payload.email ?? '';
+		const payload = this.decodeToken(token);
+		return payload?.email ?? '';
 	}
 
 	getAvatarUrl(): string {
 		const token = localStorage.getItem('token');
 		if (!token) return '/avatars/default-avatar.png';
-		const payload = JSON.parse(atob(token.split('.')[1]));
-		return payload.path_img ?? '/avatars/default-avatar.png';
+		const payload = this.decodeToken(token);
+		return payload?.path_img ?? '/avatars/default-avatar.png';
 	}
 
 	handleTokenFromUrl() {

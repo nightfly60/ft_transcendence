@@ -4,10 +4,12 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../services/auth.service';
+import { Observable, map } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-settings',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, AsyncPipe],
   templateUrl: './settings.html',
   styleUrl: './settings.scss',
 })
@@ -22,6 +24,8 @@ export class Settings {
 	api_key = '';
 	apiError = '';
 
+	username$: Observable<string> | null = null;
+
 	constructor(private http: HttpClient, private router: Router, public auth: AuthService, private cd: ChangeDetectorRef) {}
 
 	ngOnInit() {
@@ -33,7 +37,9 @@ export class Settings {
 			error: (err) => {
 				// console.log("ERROR", err);
 			}
-		})
+		});
+		this.username$ = this.http.get(`/api/profile/${this.auth.getUserId()}`).pipe(
+ 			map((data: any) => data.username));
 	}
 
 	cells = Array.from({ length: 144 }, (_, i) => ({
