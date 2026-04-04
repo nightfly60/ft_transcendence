@@ -8,15 +8,15 @@ let soloGameCounter = 0;
 export function registerSoloEvents(_io: Server, socket: Socket): void {
 
   socket.on('start_solo', () => {
-    console.log(`[solo] start_solo reçu userId=${socket.data.userId}`);
+    // console.log(`[solo] start_solo reçu userId=${socket.data.userId}`);
     const gameId = `solo_${++soloGameCounter}_${socket.id}`;
-    console.log(`[solo] game créée gameId=${gameId}`);
+    // console.log(`[solo] game créée gameId=${gameId}`);
     const game = makeGame();
     soloGames.set(gameId, game);
     socket.join(gameId);
     socket.emit('solo_ready', { gameId });
     socket.emit('game_state', buildGameState(game));
-    console.log(`[solo] solo_ready + game_state envoyés gameId=${gameId}`);
+    // console.log(`[solo] solo_ready + game_state envoyés gameId=${gameId}`);
   });
 
   socket.on('solo_move', ({

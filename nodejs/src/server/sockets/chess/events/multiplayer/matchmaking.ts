@@ -4,6 +4,7 @@ import pool from '../../../../db.js';
 import { MultiGame } from '../../types.js';
 import { makeGame, buildGameState } from '../../game.js';
 import { waitingPlayer, setWaitingPlayer, multiGames, playerGames, disconnectTimers } from './state.js';
+import { createGameConversation } from '../../../../services/conversation.service.js';
 
 /**
  * @brief Récupère les noms d'utilisateur depuis la base de données.
@@ -43,7 +44,7 @@ async function rejoinGame(socket: Socket, gameId: string, game: MultiGame, userI
     clearTimeout(existing);
     disconnectTimers.delete(timerKey);
     socket.to(gameId).emit('opponent_back');
-    console.log(`[find_game] timer annulé pour timerKey=${timerKey}`);
+    // console.log(`[find_game] timer annulé pour timerKey=${timerKey}`);
   }
 
   socket.join(gameId);
@@ -56,7 +57,7 @@ async function rejoinGame(socket: Socket, gameId: string, game: MultiGame, userI
     blackUsername: userMap[game.blackUserId] ?? 'Noir',
   });
   socket.emit('game_state', buildGameState(game));
-  console.log(`[find_game] userId=${userId} rejoint gameId=${gameId} en tant que ${color}`);
+//   console.log(`[find_game] userId=${userId} rejoint gameId=${gameId} en tant que ${color}`);
 }
 
 /**
@@ -78,7 +79,7 @@ async function createGame(io: Server, socket: Socket, waitingSocketId: string): 
   const blackSocket = io.sockets.sockets.get(black)!;
   const whiteUserId = whiteSocket.data.userId as number;
   const blackUserId = blackSocket.data.userId as number;
-  console.log(`[find_game] match: white=${white}(userId=${whiteUserId}) vs black=${black}(userId=${blackUserId})`);
+//   console.log(`[find_game] match: white=${white}(userId=${whiteUserId}) vs black=${black}(userId=${blackUserId})`);
 
   let result: ResultSetHeader;
   try {
@@ -111,8 +112,10 @@ async function createGame(io: Server, socket: Socket, waitingSocketId: string): 
   io.to(black).emit('game_ready', { gameId, color: 'b', whiteUsername, blackUsername });
   io.to(gameId).emit('game_state', buildGameState(game));
 
+  createGameConversation(whiteUserId, blackUserId, result.insertId);
+  
   setWaitingPlayer(null);
-  console.log(`[find_game] partie créée gameId=${gameId}`);
+//   console.log(`[find_game] partie créée gameId=${gameId}`);
 }
 
 /**
@@ -128,18 +131,18 @@ async function createGame(io: Server, socket: Socket, waitingSocketId: string): 
 export function registerFindGame(io: Server, socket: Socket): void {
   socket.on('find_game', async () => {
     const userId = socket.data.userId as number;
-    console.log(`[find_game] socket=${socket.id} userId=${userId} | waitingPlayer=${waitingPlayer} | playerGames=${JSON.stringify([...playerGames])}`);
+    // console.log(`[find_game] socket=${socket.id} userId=${userId} | waitingPlayer=${waitingPlayer} | playerGames=${JSON.stringify([...playerGames])}`);
     const existingGameId = playerGames.get(userId);
-    console.log(`[find_game] existingGameId pour userId=${userId}: ${existingGameId ?? 'aucun'}`);
+    // console.log(`[find_game] existingGameId pour userId=${userId}: ${existingGameId ?? 'aucun'}`);
 
     if (existingGameId) {
       const game = multiGames.get(existingGameId);
-      console.log(`[find_game] game trouvé: ${game ? `status=${game.gameStatus}` : 'introuvable dans multiGames'}`);
+    //   console.log(`[find_game] game trouvé: ${game ? `status=${game.gameStatus}` : 'introuvable dans multiGames'}`);
       if (game && game.gameStatus !== 'checkmate' && game.gameStatus !== 'stalemate' && game.gameStatus !== 'draw' && game.gameStatus !== 'resign') {
         await rejoinGame(socket, existingGameId, game, userId);
         return;
       }
-      console.log(`[find_game] partie terminée ou introuvable, suppression playerGames userId=${userId}`);
+    //   console.log(`[find_game] partie terminée ou introuvable, suppression playerGames userId=${userId}`);
       playerGames.delete(userId);
     }
 
@@ -150,7 +153,7 @@ export function registerFindGame(io: Server, socket: Socket): void {
     } else {
       setWaitingPlayer(socket.id);
       socket.emit('waiting');
-      console.log(`[find_game] userId=${userId} mis en attente`);
+    //   console.log(`[find_game] userId=${userId} mis en attente`);
     }
   });
 }

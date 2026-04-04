@@ -1,196 +1,218 @@
-// ── Design tokens (shared with chess components) ─────────────────────────────
-$black:     #0a0a0a;
-$white:     #f0d9b5;   // matches endgame-title / promotion square color
-$gold:      #c9a84c;
-$font-body: 'Cormorant Garamond', serif;
+$black:    #0a0a0a;
+$surface:  #141414;
+$border:   rgba(201, 168, 76, 0.2);
+$gold:     #c9a84c;
+$gold-l:   #e8c060;
+$white:    #f5f0e8;
+$muted:    #a09070;
+$green:    #4caf7d;
+$font:     'Cormorant Garamond', serif;
 
-// ── Surface scale (solid, matching chessboard component) ─────────────────────
-$surface-0: #111111;   // deepest — window background
-$surface-1: #1a1a1a;   // base panel  — mirrors .endgame-dialog
-$surface-2: #1e1e1e;   // raised panel — mirrors .promotion-dialog
-$surface-3: #252520;   // subtle lift for header / input bar
-
-// ── Border & accent colours ───────────────────────────────────────────────────
-$border-soft:   #333;
-$border-mid:    #444;   // mirrors .endgame-dialog border
-$border-strong: #555;   // mirrors .promotion-dialog border
-$gold-dim:      rgba($gold, 0.30);
-$gold-mid:      rgba($gold, 0.60);
-$gold-bright:   $gold;
-
-// ── Text scale ────────────────────────────────────────────────────────────────
-$text-primary:  $white;          // #f0d9b5 — matches endgame-title
-$text-secondary: #aaa;           // mirrors .endgame-sub
-$text-muted:    #666;
-
-// ── Host ──────────────────────────────────────────────────────────────────────
-:host {
-  display: block;
+.chat-widget {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 999;
+  font-family: $font;
 }
 
-// ── Chat window ───────────────────────────────────────────────────────────────
-.chat-window {
+// ── Bouton flottant ──────────────────────────────────────────────────────────
+.chat-fab {
   position: relative;
-  width: 420px;
-  height: 600px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid $border;
+  background: rgba($black, 0.92);
+  backdrop-filter: blur(12px);
+  cursor: pointer;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:hover, &.open {
+	border-color: rgba($gold, 0.6);
+	box-shadow: 0 0 12px rgba($gold, 0.2);
+  }
+
+  .fab-icon { font-size: 1.4rem; line-height: 1; }
+
+  .fab-badge {
+	position: absolute;
+	top: 2px;
+	right: 2px;
+	min-width: 18px;
+	height: 18px;
+	padding: 0 4px;
+	border-radius: 9px;
+	background: $gold;
+	color: $black;
+	font-size: 0.65rem;
+	font-weight: 700;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+  }
+}
+
+// ── Panneau ──────────────────────────────────────────────────────────────────
+.chat-panel {
+  position: absolute;
+  bottom: 64px;
+  right: 0;
+  width: 300px;
+  background: rgba($black, 0.96);
+  backdrop-filter: blur(20px);
+  border: 1px solid $border;
+  border-radius: 12px;
   overflow: hidden;
-  font-family: $font-body;
-  color: $text-primary;
-
-  background: $surface-1;
-  border: 1px solid $border-mid;
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);  // mirrors .endgame-dialog shadow
-
-  // Thin gold rule along the top edge
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 10%;
-    right: 10%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, $gold-mid, transparent);
-    pointer-events: none;
-    z-index: 10;
-  }
-}
-
-// ── Messages area ─────────────────────────────────────────────────────────────
-.chat-messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px 18px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  scrollbar-width: thin;
-  scrollbar-color: $gold-dim transparent;
-
-  &::-webkit-scrollbar        { width: 3px; }
-  &::-webkit-scrollbar-track  { background: transparent; }
-  &::-webkit-scrollbar-thumb  { background: $gold-dim; border-radius: 2px; }
 }
 
-// ── Individual message ────────────────────────────────────────────────────────
-.message {
-  max-width: 75%;
+// ── Header ───────────────────────────────────────────────────────────────────
+.panel-header {
   display: flex;
-  flex-direction: column;
-  gap: 5px;
-  animation: fadeUp 0.22s ease;
-
-  &.incoming { align-self: flex-start; }
-  &.outgoing { align-self: flex-end; }
-}
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(7px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-// ── Bubble ────────────────────────────────────────────────────────────────────
-.bubble {
-  padding: 10px 15px;
-  font-family: $font-body;
-  font-size: 1rem;
-  line-height: 1.65;
-  border-radius: 0;   // hard-edged, matching board square geometry
-}
-
-.incoming .bubble {
-  background: $surface-3;
-  color: #ddd;                      // mirrors .promotion-dialog p colour
-  border-left: 2px solid $gold-dim;
-}
-
-.outgoing .bubble {
-  background: #b58863;              // mirrors .mobile-reset-btn / promotion squares
-  color: #fff;
-  border-right: 2px solid #7a5a3f;
-}
-
-// ── Timestamp ─────────────────────────────────────────────────────────────────
-.timestamp {
-  font-family: $font-body;
-  font-size: 0.65rem;
-  font-style: italic;
-  color: $text-muted;
-  letter-spacing: 0.04em;
-}
-
-.incoming .timestamp { padding-left: 4px; }
-.outgoing .timestamp { text-align: right; padding-right: 4px; }
-
-// ── Input area ────────────────────────────────────────────────────────────────
-.chat-input-area {
-  padding: 12px 14px;
-  border-top: 1px solid $border-mid;
-  display: flex;
-  gap: 10px;
   align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 1px solid $border;
   flex-shrink: 0;
-  background: $surface-3;
+
+  .panel-title {
+	flex: 1;
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: $gold;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+  }
+
+  .back-btn {
+	background: none;
+	border: none;
+	color: $muted;
+	cursor: pointer;
+	font-size: 1.1rem;
+	padding: 0 4px;
+	line-height: 1;
+	transition: color 0.2s;
+	flex-shrink: 0;
+	&:hover { color: $white; }
+  }
+
+  .panel-close {
+	background: none;
+	border: none;
+	color: $muted;
+	cursor: pointer;
+	font-size: 0.85rem;
+	padding: 2px 4px;
+	line-height: 1;
+	transition: color 0.2s;
+	flex-shrink: 0;
+	&:hover { color: $white; }
+  }
 }
 
-.input-wrap {
+// ── Fenêtre de chat ──────────────────────────────────────────────────────────
+.messages-list {
   flex: 1;
-  background: $surface-0;
-  border: 1px solid $border-strong;
-  border-radius: 0;
+  min-height: 240px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 12px 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: rgba($gold, 0.3); border-radius: 2px; }
+}
+
+.msg-bubble {
+  max-width: 80%;
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  word-break: break-word;
+
+  &.mine {
+	align-self: flex-end;
+	background: rgba($gold, 0.2);
+	border: 1px solid rgba($gold, 0.3);
+	color: $white;
+	border-bottom-right-radius: 3px;
+  }
+
+  &.theirs {
+	align-self: flex-start;
+	background: rgba(255,255,255,0.06);
+	border: 1px solid rgba(255,255,255,0.08);
+	color: $white;
+	border-bottom-left-radius: 3px;
+  }
+}
+
+// ── Input ────────────────────────────────────────────────────────────────────
+.msg-input-row {
   display: flex;
   align-items: center;
-  padding: 0 14px;
-  transition: border-color 0.18s ease;
-
-  &.focused {
-    border-color: $gold;
-    box-shadow: 0 0 0 1px rgba($gold, 0.15);
-  }
+  gap: 6px;
+  padding: 8px 10px;
+  border-top: 1px solid $border;
+  flex-shrink: 0;
 }
 
-.chat-input {
-  width: 100%;
-  background: transparent;
-  border: none;
+.msg-input {
+  flex: 1;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid $border;
+  border-radius: 20px;
+  padding: 6px 12px;
+  color: $white;
+  font-family: $font;
+  font-size: 0.88rem;
   outline: none;
-  color: $text-primary;
-  font-family: $font-body;
-  font-size: 1rem;
-  padding: 11px 0;
+  transition: border-color 0.2s;
 
-  &::placeholder {
-    color: $text-muted;
-    font-style: italic;
-    letter-spacing: 0.03em;
-  }
+  &::placeholder { color: $muted; }
+  &:focus { border-color: rgba($gold, 0.5); }
 }
 
-// ── Send button ───────────────────────────────────────────────────────────────
-.send-btn {
-  width: 42px;
-  height: 42px;
-  border-radius: 0;
-  background: #b58863;              // mirrors .mobile-reset-btn
-  border: 2px solid #b58863;       // mirrors .promotion-choices button border
+.msg-send {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid $border;
+  background: rgba($gold, 0.15);
+  color: $gold;
+  font-size: 1.2rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: #fff;
-  transition:
-    background   0.18s ease,
-    border-color 0.18s ease,
-    transform    0.10s ease;
+  transition: background 0.2s;
 
-  svg { width: 15px; height: 15px; }
+  &:hover { background: rgba($gold, 0.3); }
+}
 
-  &:hover {
-    background: #a07050;            // mirrors .mobile-reset-btn:hover
-    border-color: #a07050;
+.msg-input-row {
+  > div {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
   }
 
-  &:active { transform: scale(0.93); }
+  .char-count {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+  }
 }

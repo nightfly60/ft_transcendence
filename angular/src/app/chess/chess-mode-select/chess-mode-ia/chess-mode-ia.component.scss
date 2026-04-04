@@ -16,6 +16,7 @@ $font-body: 'Cormorant Garamond', serif;
   width: 100%;
   text-align: center;
   cursor: pointer;
+  user-select: none;
   font-family: $font-body;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
   transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;

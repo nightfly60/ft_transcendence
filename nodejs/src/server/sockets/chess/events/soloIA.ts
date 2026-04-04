@@ -12,14 +12,14 @@ const soloIAGames = new Map<string, SoloIAGame>();
 export function registerSoloIAEvents(io: Server, socket: Socket): void {
 	socket.on('start_solo_ia', async (data: {level?: string} = {}) => {
 		const level = data.level ?? 'intermediaire';
-		console.log(`[soloIA] start_solo_ia reçu userId=${socket.data.userId}`);
+		// console.log(`[soloIA] start_solo_ia reçu userId=${socket.data.userId}`);
 		try {
 		const [result] = await pool.query<ResultSetHeader>(
 			'INSERT INTO Game (timestamp, id_player_one) VALUES (NOW(), ?)',
 			[socket.data.userId]
 		);
 		const gameId = String(result.insertId);
-		console.log(`[soloIA] game créée gameId=${gameId}`);
+		// console.log(`[soloIA] game créée gameId=${gameId}`);
 		const game: SoloIAGame = { ...makeGame(), iaLevel: level };
 		soloIAGames.set(gameId, game);
 		socket.join(gameId);

@@ -41,7 +41,7 @@ router.post('/register', async (req, res) => {
 
 		const [profile_result]: any = await pool.query(
 			'INSERT INTO `Profile` (id_user, elo, xp) VALUES (?, ?, ?)',
-			[user_result.insertId, Number(process.env.BASE_ELO) || 400, 0]
+			[user_result.insertId, 400, 0]
 		);
 
 		res.status(201).json({ message: 'Nouvel utilisateur enregistré' });
@@ -90,7 +90,7 @@ router.post('/login', async (req, res) => {
 
 		const user = result[0];
 		const isPasswordValid = await bcrypt.compare(password, user.password);
-		console.log(`[login] tentative userId=${user.id} username=${user.username} email=${email} -> ${isPasswordValid ? 'OK' : 'ECHEC'}`);
+		// console.log(`[login] tentative userId=${user.id} username=${user.username} email=${email} -> ${isPasswordValid ? 'OK' : 'ECHEC'}`);
 		if (isPasswordValid)
 		{
 			const [profile]: any = await pool.query(
@@ -147,27 +147,34 @@ router.get('/google', passport.authenticate('google'), (req, res) => {
 router.get('/google/redirect', passport.authenticate('google', {session: false}), (req, res) => {
 	const user = req.user;
 
-	if (user.id == null)
+	try
 	{
-		res.send(500);
+		if (user.id == null)
+		{
+			res.send(500);
+			return ;
+		}
+
+		const token = jwt.sign(
+		{
+			id: user.id,
+			email: user.mail,
+			username: user.username,
+			language: user.language || 'fr',
+			path_img: user.profile_image
+		},
+		process.env.JWT_SECRET!,
+		{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
+		);
+
+		res.redirect(`/?token=${token}`);
 		return ;
-	}
-
-	const token = jwt.sign(
+	}  catch (error: any)
 	{
-		id: user.id,
-		email: user.mail,
-		username: user.username,
-		language: user.language || 'fr',
-		path_img: user.profile_image
-	},
-	process.env.JWT_SECRET!,
-	{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
-	);
-
-	res.redirect(`/?token=${token}`);
+		console.log(error);
+		res.status(500).json({message: error.message})
+	}
 	// res.status(200).json({ message: 'Connecté', token: token});
-	return ;
 })
 
 router.get('/intra42', passport.authenticate('intra42'), (req, res) => {
@@ -177,26 +184,33 @@ router.get('/intra42', passport.authenticate('intra42'), (req, res) => {
 router.get('/intra42/redirect', passport.authenticate('intra42', {session: false}), (req, res) => {
 	const user = req.user;
 
-	if (user.id == null)
+	try
 	{
-		res.send(500);
+		if (user.id == null)
+		{
+			res.send(500);
+			return ;
+		}
+
+		const token = jwt.sign(
+		{
+			id: user.id,
+			email: user.mail,
+			username: user.username,
+			language: user.language || 'fr',
+			path_img: user.profile_image
+		},
+		process.env.JWT_SECRET!,
+		{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
+		);
+
+		res.redirect(`/?token=${token}`);
 		return ;
-	}
-
-	const token = jwt.sign(
+	} catch (error: any)
 	{
-		id: user.id,
-		email: user.mail,
-		username: user.username,
-		language: user.language || 'fr',
-		path_img: user.profile_image
-	},
-	process.env.JWT_SECRET!,
-	{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
-	);
-
-	res.redirect(`/?token=${token}`);
-	return ;
+		console.log(error);
+		res.status(500).json({message: error.message})
+	}
 })
 
 

@@ -35,6 +35,9 @@ import { ChatBox } from '../../chat-box/chat-box';
     .draw-accept:hover { background: #a07050; }
     .draw-refuse { background: transparent; color: #aaa; border-color: rgba(170,170,170,0.4); }
     .draw-refuse:hover { background: rgba(170,170,170,0.1); }
+    :host {
+      user-select: none;
+    }
     .draw-refused-banner {
       padding: 6px 16px;
       font-family: 'Cormorant Garamond', serif;
@@ -77,6 +80,11 @@ export class ChessMultiComponent implements OnInit, OnDestroy {
   drawRefused    = signal<boolean>(false);
 
   private countdownInterval: ReturnType<typeof setInterval> | null = null;
+  private readonly onVisibilityChange = () => {
+    if (!this.gameId()) return;
+    if (document.hidden) this.socket.notifyHidden();
+    else this.socket.notifyVisible();
+  };
 
   ngOnInit() {
     this.socket.onWaiting(() => {
@@ -93,14 +101,15 @@ export class ChessMultiComponent implements OnInit, OnDestroy {
 
     this.socket.onOpponentLeft(({ seconds }) => {
       this.countdown.set(seconds);
+      const endTime = Date.now() + seconds * 1000;
       this.countdownInterval = setInterval(() => {
-        const current = this.countdown();
-        if (current === null || current <= 1) {
+        const remaining = Math.ceil((endTime - Date.now()) / 1000);
+        if (remaining <= 0) {
           clearInterval(this.countdownInterval!);
           this.countdownInterval = null;
           this.countdown.set(null);
         } else {
-          this.countdown.set(current - 1);
+          this.countdown.set(remaining);
         }
       }, 1000);
     });
@@ -122,6 +131,8 @@ export class ChessMultiComponent implements OnInit, OnDestroy {
           this.countdownInterval = null;
         }
         this.countdown.set(null);
+        this.drawProposed.set(false);
+        this.drawRefused.set(false);
         this.socket.leaveGame(this.gameId());
       }
     });
@@ -136,6 +147,7 @@ export class ChessMultiComponent implements OnInit, OnDestroy {
     });
 
     this.socket.findGame();
+    document.addEventListener('visibilitychange', this.onVisibilityChange);
   }
 
   onProposeDraw() {
@@ -170,7 +182,6 @@ export class ChessMultiComponent implements OnInit, OnDestroy {
   onAbandon() {
     const id = this.gameId();
     if (id) this.socket.resignMulti(id);
-    // Le serveur renverra game_state checkmate → la popup s'affichera
   }
 
   onReplay() {
@@ -182,11 +193,11 @@ export class ChessMultiComponent implements OnInit, OnDestroy {
   }
 
   onQuit() {
-    this.socket.offMultiListeners();
     this.quit.emit();
   }
 
   ngOnDestroy() {
+    document.removeEventListener('visibilitychange', this.onVisibilityChange);
     if (this.countdownInterval) clearInterval(this.countdownInterval);
     this.socket.leaveGame(this.gameId());
     this.socket.offMultiListeners();

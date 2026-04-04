@@ -11,11 +11,11 @@ export const requireAuth = async (req: any, res: Response, next: NextFunction) =
 	}
 
 	try {
-		req.user = jwt.verify(token, process.env.JWT_SECRET || "...");
-		
+		const payload: any = jwt.verify(token, process.env.JWT_SECRET || "...");
+
 		const [rows]: any = await pool.query(
 			`SELECT * FROM User WHERE id = ?`,
-			[(req.user as any).id]
+			[payload.id]
 		);
 
 		if (rows.length === 0) {
@@ -24,8 +24,10 @@ export const requireAuth = async (req: any, res: Response, next: NextFunction) =
 
 		await pool.query(
 			`UPDATE User SET last_seen = NOW() WHERE id = ?`,
-			[(req.user as any).id]
+			[payload.id]
 		);
+
+		req.user = rows[0];
 
 		next();
 	} catch (err: any) {
@@ -61,9 +63,11 @@ export const checkAPI = async (req: any, res: Response, next: NextFunction) => {
 
 		var usages = rows[0].usages;
 		var reset_time = new Date(rows[0].reset_date);
+
 		if (reset_time.getTime() < Date.now())
 		{
 			var datetime = new Date(Date.now() + requestRate * 1000);
+			reset_time = datetime;
 
 			await pool.query(
 				"UPDATE User_API SET reset_date = ?, usages = 0 WHERE secret_key = ?",
@@ -72,16 +76,20 @@ export const checkAPI = async (req: any, res: Response, next: NextFunction) => {
 			usages = 0;
 		}
 
-		if (usages >= requestMax)
+		res.header('X-API-Usages', usages + 1);
+		res.header('X-API-Reset-Time', (reset_time.getTime()).toString());
+
+		if (usages + 1 >= requestMax)
 			return res.status(401).json({ error: 'Rate Limite Atteinte (ERROR)' });
 
 		await pool.query(
 			`UPDATE User_API SET usages = usages + 1 WHERE secret_key = ?`,
 			[key]
 		);
+
 		next();
 	} catch (err: any) {
-		console.log(err)
+		// console.log(err)
 		res.status(401).json({ error: 'Clé Invalide (ERROR)' });
 	}
 };

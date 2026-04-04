@@ -12,12 +12,13 @@ import { TermsComponent } from './terms/terms';
 import { Settings } from './settings/settings';
 import { Leaderboard } from './leaderboard/leaderboard';
 import { FriendsComponent } from './friends/friends';
+import { DirectMessages } from './direct-messages/direct-messages';
 
 export const routes: Routes = [
-	{ path: '', component: Home },
+	{ path: '', component: Home, canActivate: [authGuard] },
 	{ path: 'login', component: LoginPage },
 	{ path: 'game', component: GameComponent, canActivate: [authGuard] },
-	{ path: 'chat-box', component: ChatBox},
+	{ path: 'chat-box', component: ChatBox, canActivate: [authGuard]},
 	{ path: 'profile/:id', component: ProfileComponent, canActivate: [authGuard] },
 	{ path: 'profile/:id/friends', component: FriendsComponent, canActivate: [authGuard] },
 	{ path: 'profile/edit/:id', component: ProfileEditComponent, canActivate: [authGuard] },
@@ -25,6 +26,7 @@ export const routes: Routes = [
 	{ path: 'policies/terms-of-use', component: TermsComponent },
 	{ path: 'settings', component: Settings, canActivate: [authGuard]},
 	{ path: 'leaderboard', component: Leaderboard, canActivate: [authGuard]},
+	{ path: 'direct-messages', component: DirectMessages, canActivate: [authGuard]},
 
 	{ path: '404', component: ErrorPageComponent, data: { code: 404 } },
 	{ path: '403', component: ErrorPageComponent, data: { code: 403 } },

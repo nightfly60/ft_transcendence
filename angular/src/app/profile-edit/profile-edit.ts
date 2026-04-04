@@ -128,7 +128,7 @@ export class ProfileEditComponent implements OnInit {
 				else
 					this.username_error = msg;
 				this.saving = false;
-				console.log('Erreur de sauvegarde');
+				// console.log('Erreur de sauvegarde');
 				this.cdr.markForCheck();
 			}
 		});
