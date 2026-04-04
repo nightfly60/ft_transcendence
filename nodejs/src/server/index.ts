@@ -32,6 +32,14 @@ const httpServer = createServer(options, app);
 const PORT = process.env.APP_PORT || 3000;
 
 app.use(passport.initialize());
+app.use(cors());
+
+app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ limit: '5mb', extended: true }));
+app.use((req, res, next) => {
+	res.setHeader('Content-Type', 'application/json; charset=utf-8');
+	next();
+});
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -43,10 +51,6 @@ app.use('/avatars', (req, res, next) => {
 app.get('/home', requireAuth, (req, res) => {
   res.json({ message: 'ok' });
 });
-
-app.use(cors());
-app.use(express.json({ limit: '5mb' }));
-app.use(express.urlencoded({ limit: '5mb', extended: true }));
 
 app.use('/users', requireAuth, userRouter);
 app.use('/profile', requireAuth, profileRouter); 
