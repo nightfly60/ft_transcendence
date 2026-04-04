@@ -48,6 +48,7 @@ router.post('/enable', async (req, res) => {
 
 router.post('/confirm', async (req, res) => {
 	const {token, secret} = req.body;
+	if (!req.user) return res.status(401).json({ error: 'Utilisateur Invalide' });
 
 	try
 	{

@@ -229,6 +229,11 @@ Used MariaDB/MySQL in a containerized environment. Chosen for reliability, relat
 - **Challenges overcome**: Learning Angular and database interactions through Node.js, re-evaluating design choices mid-development to meet deadlines while maintaining a working chat system.
 
 ### Renaud (rcini-ha)
+- **Gameplay core**: Implemented the complete 2D chess board rendering and enforced all chess rules, including valid move generation, check/checkmate detection and win/loss conditions.
+- **Real-time multiplayer**: Built the real-time game system using WebSockets, enabling two players to play against each other, handling network latency.
+- **Reconnection logic**: Designed and implemented a reconnection system allowing players to seamlessly resume an ongoing game after a connection loss, preserving game state server-side.
+- **Leaderboard and search**: Implemented the leaderboard page with advanced search functionality, including player filtering by ELO and XP, sorting options and pagination for efficient navigation.
+- **Challenges overcome**: Designing a robust game state synchronization model over WebSockets while managing edge cases such as simultaneous moves, disconnections and race conditions; implementing chess rule enforcement from scratch with correctness and performance in mind.
 
 ### Anas (aabouyaz)
 - **User management**: Implemented log system with email+password and added 2FA and OAuth2.0 with 42Intra and Google.

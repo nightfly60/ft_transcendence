@@ -2,6 +2,7 @@ all:
 	mkdir -p /home/$(USER)/volumes
 	mkdir -p /home/$(USER)/volumes/db_data
 	mkdir -p /home/$(USER)/volumes/vite_cache
+	mkdir -p /home/$(USER)/volumes/angular_dist
 	mkdir -p /home/$(USER)/volumes/avatars
 	mkdir -p /home/$(USER)/volumes/certs
 	cd nodejs && npm install

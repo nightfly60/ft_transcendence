@@ -1,7 +1,7 @@
 import { Server, Socket } from 'socket.io';
 import pool from '../db.js';
 import { RowDataPacket } from "mysql2";
-import { saveMessage } from '../services/message.service';
+import { saveMessage } from '../services/message.service.js';
 import { createDMConversation } from '../services/conversation.service.js';
 
  interface ChatMessage {

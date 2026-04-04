@@ -28,9 +28,9 @@ passport.use('intra42', new OAuth2Strategy(
 	{
 		authorizationURL: 'https://api.intra.42.fr/oauth/authorize',
 		tokenURL: 'https://api.intra.42.fr/oauth/token',
-		clientID: process.env.FT_CLIENT_ID,
-		clientSecret: process.env.FT_SECRET_ID,
-		callbackURL: process.env.FT_AUTH_REDIRECT,
+		clientID: process.env.FT_CLIENT_ID!,
+		clientSecret: process.env.FT_SECRET_ID!,
+		callbackURL: process.env.FT_AUTH_REDIRECT!,
 		scope: ['public'],
 	},
 	async (accessToken: string, refreshToken: string, profile: Profile,done: VerifyCallback) => {

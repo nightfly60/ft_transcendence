@@ -6,7 +6,7 @@ import userRouter from './routes/user.js';
 import profileRouter from './routes/profile.routes.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import authRouter from './routes/auth.routes';
+import authRouter from './routes/auth.routes.js';
 import { requireAuth, checkAPI } from './middleware/auth.middleware.js';
 import profileEditRouter from './routes/profile-edit.routes.js';
 import friendsRouter from './routes/friends.routes.js';
@@ -24,8 +24,8 @@ const options = {
 	cert: fs.readFileSync('/etc/ssl/certs/selfsigned-cert.pem'),
 };
 
-await import('./strategies/google');
-await import('./strategies/intra42');
+await import('./strategies/google.js');
+await import('./strategies/intra42.js');
 
 const app = express();
 const httpServer = createServer(options, app);
@@ -36,17 +36,15 @@ app.use(passport.initialize());
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use('/avatars', (req, res, next) => {
-	next();
-}, express.static(path.join(__dirname, 'public/avatars')));
+app.use(cors());
+app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ limit: '5mb', extended: true }));
+
+app.use('/avatars', express.static(path.join(__dirname, 'public/avatars')));
 
 app.get('/home', requireAuth, (req, res) => {
   res.json({ message: 'ok' });
 });
-
-app.use(cors());
-app.use(express.json({ limit: '5mb' }));
-app.use(express.urlencoded({ limit: '5mb', extended: true }));
 
 app.use('/users', requireAuth, userRouter);
 app.use('/profile', requireAuth, profileRouter); 

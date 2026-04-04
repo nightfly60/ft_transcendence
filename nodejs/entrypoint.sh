@@ -1,6 +1,7 @@
 #!/bin/sh
 # Tourne en root, fix les permissions, puis drop vers nodejs
 chown -R nodejs:nodejs /app/src/server/public/avatars
+chmod -R 755 /app/src/server/public/avatars
 
 # Dans entrypoint.sh, avant le exec "$@"
 if [ ! -f /app/src/server/ia/ia_engine/ia_engine ]; then

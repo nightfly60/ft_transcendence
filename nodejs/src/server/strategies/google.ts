@@ -25,12 +25,7 @@ async function downloadImage(url: string, userId: string): Promise<string> {
 	return `/avatars/avatar_${userId}${ext}`;
 }
 
-passport.use(new Strategy({
-	clientID: process.env.GOOGLE_CLIENT_ID!,
-	clientSecret: process.env.GOOGLE_SECRET_ID!,
-	callbackURL: process.env.GOOGLE_AUTH_REDIRECT!,
-	scope: ['email', 'profile'],
-}, async (accessToken: string, refreshToken: string, profile: Profile,done: VerifyCallback ) => {
+const googleCallBack = async (accessToken: string, refreshToken: string, profile: Profile, done: VerifyCallback) => {
 	const email = profile._json.email;
 	const username = profile._json.name;
 	const image_url = profile._json.picture || null;
@@ -103,4 +98,11 @@ passport.use(new Strategy({
 
 	done(null, user);
 	return ;
-}))
+}
+
+passport.use(new Strategy({
+    clientID: process.env.GOOGLE_CLIENT_ID!,
+    clientSecret: process.env.GOOGLE_SECRET_ID!,
+    callbackURL: process.env.GOOGLE_AUTH_REDIRECT!,
+    scope: ['email', 'profile'],
+} as any, googleCallBack as any));

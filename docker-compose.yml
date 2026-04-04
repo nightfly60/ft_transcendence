@@ -11,7 +11,9 @@ services:
       - transcendence_network
 
   nginx:
-    build: ./nginx
+    build:
+      context: ./nginx
+      target: production  # ou development
     container_name: nginx
     env_file:
       - .env
@@ -20,33 +22,40 @@ services:
       - "${NGINX_PORT}:443"
     volumes:
       - certs:/etc/ssl
+      - angular_dist:/usr/share/nginx/html
     restart: always
     depends_on:
-      - nodejs
+      - angular
     networks:
       - transcendence_network
 
   nodejs:
     build:
       context: ./nodejs
-      target: development
+      target: production
     container_name: nodejs
     env_file:
       - .env
     restart: always
     volumes:
       - ./nodejs/src:/app/src
+      - avatars:/app/dist/server/public/avatars
       - avatars:/app/src/server/public/avatars
       - vite_cache:/app/node_modules/.vite
       - certs:/etc/ssl:ro
+    depends_on:
+      - nginx
     networks:
       - transcendence_network
 
   angular:
-    build: ./angular
+    build:
+      context: ./angular
+      target: production
     container_name: angular
     volumes:
-      - ./angular/src:/app/src
+      # - ./angular/src:/app/src
+      - angular_dist:/app/dist
     networks:
       - transcendence_network
     env_file:
@@ -77,6 +86,13 @@ volumes:
       type: none
       o: bind
       device: /home/${LOGIN}/volumes/certs
+  angular_dist:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/${LOGIN}/volumes/angular_dist
+
 
 networks:
   transcendence_network:

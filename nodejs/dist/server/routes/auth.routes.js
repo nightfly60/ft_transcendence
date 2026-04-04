@@ -1,0 +1,148 @@
+import { Router } from 'express';
+import pool from '../db.js';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import passport from 'passport';
+import { verify, generate } from "otplib";
+const router = Router();
+function validateEmail(mail) {
+    var re = /\S+@\S+\.\S+/;
+    return re.test(mail);
+}
+router.post('/register', async (req, res) => {
+    const { username, password, email } = req.body;
+    if (!validateEmail(email)) {
+        res.status(400).json({ error: 'Adresse Email incorrecte' });
+        return;
+    }
+    if (password.length < 3) {
+        res.status(400).json({ error: 'Mot de passe trop court' });
+        return;
+    }
+    if (username.length < 3) {
+        res.status(400).json({ error: 'Username trop court' });
+        return;
+    }
+    try {
+        const hash = await bcrypt.hash(password, Number(process.env.BCRYPT_SALT_ROUNDS) || 10);
+        const [user_result] = await pool.query('INSERT INTO `User` (mail, password, username, language) VALUES (?, ?, ?, ?)', [email, hash, username, 'fr']);
+        const [profile_result] = await pool.query('INSERT INTO `Profile` (id_user, elo, xp) VALUES (?, ?, ?)', [user_result.insertId, 400, 0]);
+        res.status(201).json({ message: 'Nouvel utilisateur enregistré' });
+    }
+    catch (err) {
+        if (err.code === 'ER_DUP_ENTRY') {
+            res.status(400).json({ error: 'Email déjà utilisé' });
+            return;
+        }
+        await pool.query('DELETE FROM `User` WHERE mail=?', [email]);
+        console.error(err);
+        res.status(500).json({ error: 'Erreur Serveur' });
+    }
+});
+router.post('/login', async (req, res) => {
+    const { password, email, token } = req.body;
+    if (!validateEmail(email)) {
+        res.status(400).json({ error: 'Adresse Email incorrecte' });
+        return;
+    }
+    if (password.length < 3) {
+        res.status(400).json({ error: 'Mot de passe invalide' });
+        return;
+    }
+    try {
+        const [result] = await pool.query('SELECT id, mail, password, username, language, two_fa, two_fa_secret FROM `User` WHERE mail = ?', [email]);
+        if (result.length === 0) {
+            res.status(404).json({ error: 'Utilisateur non trouvé' });
+            return;
+        }
+        const user = result[0];
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        // console.log(`[login] tentative userId=${user.id} username=${user.username} email=${email} -> ${isPasswordValid ? 'OK' : 'ECHEC'}`);
+        if (isPasswordValid) {
+            const [profile] = await pool.query('SELECT path_img FROM `Profile` WHERE id_user = ?', [user.id]);
+            if (user.two_fa) {
+                if (!token)
+                    return res.status(400).json({ error: 'Token 2FA necessaire' });
+                const cleanToken = token.replace(/\s/g, '');
+                const secret = user.two_fa_secret;
+                const expectedToken = await generate({ secret, strategy: 'totp' });
+                const isValid = await verify({ secret, token: cleanToken, strategy: 'totp' });
+                if (!isValid.valid)
+                    return res.status(400).json({ error: 'Token 2FA invalide' });
+            }
+            const tokenUser = jwt.sign({
+                id: user.id,
+                email: user.mail,
+                username: user.username,
+                language: user.language,
+                path_img: profile[0].path_img
+            }, process.env.JWT_SECRET, { expiresIn: (process.env.JWT_EXPIRES_IN || "24h") });
+            res.status(200).json({ message: 'Connecté', token: tokenUser });
+            return;
+        }
+        else {
+            res.status(400).json({ error: 'Mot de passe Incorrect' });
+            return;
+        }
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Erreur Serveur' });
+    }
+});
+router.get('/google', passport.authenticate('google'), (req, res) => {
+    res.send(200);
+});
+router.get('/google/redirect', passport.authenticate('google', { session: false }), (req, res) => {
+    if (!req.user)
+        return res.status(401).json({ error: 'Utilisateur Invalide' });
+    const user = req.user;
+    try {
+        if (user.id == null) {
+            res.send(500);
+            return;
+        }
+        const token = jwt.sign({
+            id: user.id,
+            email: user.mail,
+            username: user.username,
+            language: user.language || 'fr',
+            path_img: user.profile_image
+        }, process.env.JWT_SECRET, { expiresIn: (process.env.JWT_EXPIRES_IN || "24h") });
+        res.redirect(`/?token=${token}`);
+        return;
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ message: error.message });
+    }
+    // res.status(200).json({ message: 'Connecté', token: token});
+});
+router.get('/intra42', passport.authenticate('intra42'), (req, res) => {
+    res.send(200);
+});
+router.get('/intra42/redirect', passport.authenticate('intra42', { session: false }), (req, res) => {
+    if (!req.user)
+        return res.status(401).json({ error: 'Utilisateur Invalide' });
+    const user = req.user;
+    try {
+        if (user.id == null) {
+            res.send(500);
+            return;
+        }
+        const token = jwt.sign({
+            id: user.id,
+            email: user.mail,
+            username: user.username,
+            language: user.language || 'fr',
+            path_img: user.profile_image
+        }, process.env.JWT_SECRET, { expiresIn: (process.env.JWT_EXPIRES_IN || "24h") });
+        res.redirect(`/?token=${token}`);
+        return;
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ message: error.message });
+    }
+});
+export default router;

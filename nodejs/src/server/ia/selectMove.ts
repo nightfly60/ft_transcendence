@@ -1,4 +1,4 @@
-import { levelIA } from "../routes/ia.routes";
+import { levelIA } from "../routes/ia.routes.js";
 
 // en fonction du niveau, on regarde si on envoie le meilleur coup ou un coup random
 export function selectMove(move: string, level: string)

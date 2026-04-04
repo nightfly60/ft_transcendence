@@ -1,4 +1,4 @@
-import { ChessGame, PieceType, PieceColor } from "./types";
+import { ChessGame, PieceType, PieceColor } from "./types.js";
 
 const FEN_MAP: Record<PieceType, string> = {
   K: 'K', Q: 'Q', R: 'R', B: 'B', N: 'N', P: 'P'
