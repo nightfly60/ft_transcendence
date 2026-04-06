@@ -90,6 +90,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 
 		res.status(200).json({
 			...profileRows[0], // .. = spread operator pour envoyer chaque elem
+			id: userId,
 			nb_parties: statsRows[0].nb_parties ?? 0,
 			winrate: statsRows[0].winrate ?? 0,
 			// ...statsRows[0],

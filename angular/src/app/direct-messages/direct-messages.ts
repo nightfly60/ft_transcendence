@@ -108,7 +108,7 @@ export class DirectMessages implements OnInit{
   //cree ou ouvre une conversation
   openDm(otherUserId: number) { 
     if (!this.userId || this.userId === otherUserId) {
-      console.error('invalid dm target - same user or userId not set yet');
+    //   console.error('invalid dm target - same user or userId not set yet');
       return;
     }
     const existing = this.dmConversations().find(c =>Number(c.otherUserId) === Number(otherUserId));

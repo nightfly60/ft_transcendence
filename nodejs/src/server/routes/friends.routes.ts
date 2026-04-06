@@ -89,7 +89,7 @@ router.get('/online/:targetId', requireAuth, async (req, res) => {
 			[targetId]
 		);
 		if (!rows.length)
-			return res.status(500).json({error: 'Utilisateur non trouve'});
+			return res.status(404).json({error: 'Utilisateur non trouve'});
 
 		const last_seen = new Date(rows[0].last_seen);
 		if (last_seen)

@@ -61,6 +61,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
 	ngOnInit() {
 		this.routeSub = this.route.params.subscribe(params => {
 		const id = params['id'];
+		if (this.pollingInterval) {
+			clearInterval(this.pollingInterval);
+			this.pollingInterval = null;
+		}
+
 		if (!id) { this.router.navigate(['/404']); return; }
 		this.id = id;
 		this.data = null;
@@ -68,14 +73,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
 		this.isFriend = false;
 
 			this.http.get(`/api/profile/${id}`).subscribe({
-				next: (data: any) => {
-					this.data = data;
-					if (this.auth.getUserId() !== data.id) {
-						this.checkFriendStatus(data.id);
-					}
-					this.startPolling(data.id);
-					this.cdr.markForCheck();
-				},
+			next: (data: any) => {
+				this.data = data;
+				if (this.auth.getUserId() !== data.id) {
+					this.checkFriendStatus(data.id);
+				}
+				this.startPolling(data.id);
+				this.cdr.markForCheck();
+			},
 				error: (err) => { this.router.navigate([`/${err.status}`]); this.cdr.markForCheck(); },
 			});
 		});

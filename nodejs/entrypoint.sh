@@ -3,8 +3,7 @@
 chown -R nodejs:nodejs /app/src/server/public/avatars
 chmod -R 755 /app/src/server/public/avatars
 
-# Dans entrypoint.sh, avant le exec "$@"
-if [ ! -f /app/src/server/ia/ia_engine/ia_engine ]; then
+if [ -f /app/src/server/ia/ia_engine/main.cpp ]; then
     echo "Compilation du moteur IA..."
     g++ -std=c++17 -O2 -o /app/src/server/ia/ia_engine/ia_engine \
         /app/src/server/ia/ia_engine/main.cpp \
@@ -12,4 +11,12 @@ if [ ! -f /app/src/server/ia/ia_engine/ia_engine ]; then
     chmod +x /app/src/server/ia/ia_engine/ia_engine
 fi
 
-exec su-exec nodejs "$@"  # su-exec est dispo sur Alpine
+if [ -f /app/dist/server/ia/ia_engine/main.cpp ]; then
+    echo "Compilation du moteur IA..."
+    g++ -std=c++17 -O2 -o /app/dist/server/ia/ia_engine/ia_engine \
+        /app/dist/server/ia/ia_engine/main.cpp \
+        /app/dist/server/ia/ia_engine/minimax.cpp
+    chmod +x /app/dist/server/ia/ia_engine/ia_engine
+fi
+
+exec su-exec nodejs "$@"

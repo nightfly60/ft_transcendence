@@ -90,6 +90,13 @@ export class ProfileEditComponent implements OnInit {
 	save() {
 		this.bio_error = '';
 		this.username_error = '';
+
+		if (this.username.length < 3) {
+			this.username_error = 'Username trop court';
+			this.cdr.markForCheck();
+			return;
+		}
+
 		this.saving = true;
 		this.cdr.markForCheck();
 		this.http.patch<{ token: string }>(`/api/profile-edit/${this.id}`, {
@@ -111,7 +118,7 @@ export class ProfileEditComponent implements OnInit {
 				},
 				error: (err) => {
 					this.saving = false;
-					console.error('Erreur sauvegarde', err);
+					// console.error('Erreur sauvegarde', err);
 					this.cdr.markForCheck();
 				}
 				});

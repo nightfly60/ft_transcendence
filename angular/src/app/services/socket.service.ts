@@ -28,6 +28,7 @@ export interface OnlineUser {
 @Injectable({ providedIn: 'root' })
 export class SocketService {
   private socket: Socket = io(`${window.location.protocol}//${window.location.host}`, {
+	reconnection: false,
     path: '/socket.io/',
     auth: { token: localStorage.getItem('token') ?? '' },
   });
@@ -48,6 +49,7 @@ export class SocketService {
     this.socket.on('user_offline', ({ userId }: { userId: number }) => {
       this.onlineUsers.update(list => list.filter(u => u.id !== userId));
     });
+	this.socket.on('connect_error', () => {});
   }
 
   isUserOnline(userId: number): boolean {

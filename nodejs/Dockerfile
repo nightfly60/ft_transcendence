@@ -102,7 +102,7 @@ RUN addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001 -G nodejs && \
     chown -R nodejs:nodejs /app
 
-RUN apk add --no-cache su-exec
+RUN apk add --no-cache su-exec g++
 
 ENV NODE_ENV=production \
     NODE_OPTIONS="--max-old-space-size=256 --no-warnings" \
