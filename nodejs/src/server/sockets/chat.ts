@@ -27,14 +27,19 @@ export function registerChatEvents(io: Server, socket: Socket) {
 		try {
 			const chatId = socket.data.id_game;
 			const [rows] = await pool.execute<RowDataPacket[]>(
-				`SELECT id_conversation FROM Game WHERE id = ?`,
-				[Number(chatId)]
-			);
+					`SELECT id_conversation, id_player_one, id_player_second FROM Game WHERE id = ?`,
+					[Number(chatId)]
+				);
 			if (!rows.length) {
 				console.error('[chat:find] partie introuvable', { chatId });
 				return;
 			}
-			socket.data.conversationId = rows[0].id_conversation;
+			const row = rows[0] as any;
+			if (row.id_conversation == null) {
+				console.error('[chat:find] conversation manquante', { chatId, id_player_one: row.id_player_one, id_player_second: row.id_player_second });
+				return;
+			}
+			socket.data.conversationId = row.id_conversation;
 			socket.emit('chat:ready', chatId, socket.data.userId, socket.data.conversationId);
 		} catch (err) {
 			console.error('[chat:find] erreur', err);

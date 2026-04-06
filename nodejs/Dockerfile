@@ -115,6 +115,9 @@ COPY --from=build --chown=nodejs:nodejs /app/dist ./dist
 # Copy avatars folder to the correct location for the compiled code
 COPY --chown=nodejs:nodejs src/server/public/avatars /app/dist/server/public/avatars
 
+# Copy IA engine binary for move calculation
+COPY --chown=nodejs:nodejs src/server/ia /app/dist/server/ia
+
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 

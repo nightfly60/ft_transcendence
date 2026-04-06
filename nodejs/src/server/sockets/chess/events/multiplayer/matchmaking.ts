@@ -112,7 +112,11 @@ async function createGame(io: Server, socket: Socket, waitingSocketId: string): 
   io.to(black).emit('game_ready', { gameId, color: 'b', whiteUsername, blackUsername });
   io.to(gameId).emit('game_state', buildGameState(game));
 
-  createGameConversation(whiteUserId, blackUserId, result.insertId);
+  try {
+    await createGameConversation(whiteUserId, blackUserId, result.insertId);
+  } catch (err) {
+    console.error('[find_game] impossible de créer la conversation de jeu', err);
+  }
   
   setWaitingPlayer(null);
 //   console.log(`[find_game] partie créée gameId=${gameId}`);
