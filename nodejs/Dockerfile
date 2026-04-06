@@ -96,31 +96,29 @@ CMD ["npm", "run", "dev:docker"]
 # ========================================
 ARG NODE_VERSION=24.11.1-alpine
 FROM node:${NODE_VERSION} AS production
-
-# Set working directory
 WORKDIR /app
 
-# Create non-root user for security
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001 -G nodejs && \
     chown -R nodejs:nodejs /app
 
-# Set optimized environment variables
+RUN apk add --no-cache su-exec
+
 ENV NODE_ENV=production \
     NODE_OPTIONS="--max-old-space-size=256 --no-warnings" \
     NPM_CONFIG_LOGLEVEL=silent
 
-# Copy production dependencies from deps stage
 COPY --from=deps --chown=nodejs:nodejs /app/node_modules ./node_modules
 COPY --from=deps --chown=nodejs:nodejs /app/package*.json ./
-# Copy built application from build stage
 COPY --from=build --chown=nodejs:nodejs /app/dist ./dist
 
-# Switch to non-root user for security
-USER nodejs
+# Copy avatars folder to the correct location for the compiled code
+COPY --chown=nodejs:nodejs src/server/public/avatars /app/dist/server/public/avatars
 
-# Expose port
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Pas de USER nodejs ici, c'est l'entrypoint qui fait le switch
 EXPOSE 3000
-
-# Start production server
-CMD ["node", "dist/server.js"]
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["node", "dist/server/index.js"]

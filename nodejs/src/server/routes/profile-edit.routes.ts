@@ -63,7 +63,7 @@ router.post('/avatar/:id', upload.single('avatar'), async (req: Request, res: Re
 			path_img: `/avatars/${filename}`
 		},
 		process.env.JWT_SECRET!,
-		{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
+		{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h") as any}
 		);
 
 		res.status(200).json({ path_img: `/avatars/${filename}` , token: new_token});
@@ -125,7 +125,7 @@ router.patch('/:id', async (req: Request, res: Response) => {
 			path_img: profile[0].path_img ?? null
 		},
 		process.env.JWT_SECRET!,
-		{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
+		{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h") as any}
 		);
 
 		res.status(200).json({message: 'Profil mis à jour', token: tokens});

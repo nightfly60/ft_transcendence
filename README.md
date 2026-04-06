@@ -51,6 +51,7 @@ The following ressources were used during the developpement of the project:
 - [JSON Web Tokens](https://www.jwt.io/introduction#what-is-json-web-token-structure) - JWT autentification token
 - [Bonjour-Angular](https://apprendre.bonjour-angular.com/cest-quoi/angular/) - Angular community documentation
 - [Stack Overflow](https://stackoverflow.com) - Forum for dev support
+- [Socket.io](https://socket.io/docs/v4/) - Socket.io library documentation
 
 ### Use of Artificial Intelligence
 
@@ -117,21 +118,20 @@ Used MariaDB/MySQL in a containerized environment. Chosen for reliability, relat
 - **MariaDB/MySQL**: Provides robust relational database support and easy container deployment for testing and production.
 
 ## 8. Database Schema:
-
-
+![Schema de la db](schema.png)
 
 ## 9. Features List
 
 ### User Experience
 - Custom error pages (Elena)
 - Privacy and Terms policies (Elena)
-- Responsive rending
+- Responsive rendering
 - Public API to interact with the database (Anas)
 - Gamification system with Elo, XP and achievements (Anas and Elena)
 - Game statistics and match history (wins, losses, rankings, match details) (Anas)
 
 ### Social features
-- Basic game chat and private messages (Gaël)
+- Basic multiplayer game chat and private messages (Gaël)
 - Access to user profiles (Elena)
 - Friends (view, add and remove) (Elena)
 - Leaderboard integration (Renaud)
@@ -223,8 +223,16 @@ Used MariaDB/MySQL in a containerized environment. Chosen for reliability, relat
 ## 11. Individual Contributions
 
 ### Gaël (lemarian)
+- **User interaction**: Implemented chat widget for multiplayer games, as well as a direct messaging system to communicate outside of games.
+- **Real-time features**: Implemented a hybrid Websocket/REST architecture, allowing for real-time message delivery and room management, with full data persistence for both direct messages and game chat conversations.
+- **Challenges overcome**: Learning Angular and database interactions through Node.js, re-evaluating design choices mid-development to meet deadlines while maintaining a working chat system.
 
 ### Renaud (rcini-ha)
+- **Gameplay core**: Implemented the complete 2D chess board rendering and enforced all chess rules, including valid move generation, check/checkmate detection and win/loss conditions.
+- **Real-time multiplayer**: Built the real-time game system using WebSockets, enabling two players to play against each other, handling network latency.
+- **Reconnection logic**: Designed and implemented a reconnection system allowing players to seamlessly resume an ongoing game after a connection loss, preserving game state server-side.
+- **Leaderboard and search**: Implemented the leaderboard page with advanced search functionality, including player filtering by ELO and XP, sorting options and pagination for efficient navigation.
+- **Challenges overcome**: Designing a robust game state synchronization model over WebSockets while managing edge cases such as simultaneous moves, disconnections and race conditions; implementing chess rule enforcement from scratch with correctness and performance in mind.
 
 ### Anas (aabouyaz)
 - **User management**: Implemented log system with email+password and added 2FA and OAuth2.0 with 42Intra and Google.

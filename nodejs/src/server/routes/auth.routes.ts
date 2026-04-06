@@ -122,7 +122,7 @@ router.post('/login', async (req, res) => {
 					path_img: profile[0].path_img
 				},
 				process.env.JWT_SECRET!,
-				{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
+				{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h") as any}
 			);
 			res.status(200).json({ message: 'Connecté', token: tokenUser});
 			return ;
@@ -145,6 +145,7 @@ router.get('/google', passport.authenticate('google'), (req, res) => {
 })
 
 router.get('/google/redirect', passport.authenticate('google', {session: false}), (req, res) => {
+	if (!req.user) return res.status(401).json({ error: 'Utilisateur Invalide' });
 	const user = req.user;
 
 	try
@@ -164,7 +165,7 @@ router.get('/google/redirect', passport.authenticate('google', {session: false})
 			path_img: user.profile_image
 		},
 		process.env.JWT_SECRET!,
-		{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
+		{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h") as any}
 		);
 
 		res.redirect(`/?token=${token}`);
@@ -182,6 +183,7 @@ router.get('/intra42', passport.authenticate('intra42'), (req, res) => {
 })
 
 router.get('/intra42/redirect', passport.authenticate('intra42', {session: false}), (req, res) => {
+	if (!req.user) return res.status(401).json({ error: 'Utilisateur Invalide' });
 	const user = req.user;
 
 	try
@@ -201,7 +203,7 @@ router.get('/intra42/redirect', passport.authenticate('intra42', {session: false
 			path_img: user.profile_image
 		},
 		process.env.JWT_SECRET!,
-		{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h")}
+		{ expiresIn: (process.env.JWT_EXPIRES_IN || "24h") as any}
 		);
 
 		res.redirect(`/?token=${token}`);

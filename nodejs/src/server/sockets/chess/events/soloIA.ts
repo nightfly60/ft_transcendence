@@ -20,7 +20,7 @@ export function registerSoloIAEvents(io: Server, socket: Socket): void {
 		);
 		const gameId = String(result.insertId);
 		// console.log(`[soloIA] game créée gameId=${gameId}`);
-		const game: SoloIAGame = { ...makeGame(), iaLevel: level };
+		const game: SoloIAGame = { ...makeGame(), iaLevel: level, playerColor: 'w' };
 		soloIAGames.set(gameId, game);
 		socket.join(gameId);
 		socket.emit('solo_ready', { gameId });
@@ -42,7 +42,8 @@ export function registerSoloIAEvents(io: Server, socket: Socket): void {
 
 		const updated: SoloIAGame = {
 			...applyMoveToGame(game, coords.fromR, coords.fromC, coords.toR, coords.toC, toPromotionPiece(promotion)),
-			iaLevel: game.iaLevel
+			iaLevel: game.iaLevel,
+			playerColor: game.playerColor
 		};
 		soloIAGames.set(gameId, updated);
 		socket.emit('game_state', buildGameState(updated));
@@ -73,7 +74,8 @@ async function playIAMove(gameId: string, game: SoloIAGame, socket: Socket) {
 		if (!coords) return;
 		const updated: SoloIAGame = {
 		...applyMoveToGame(game, coords.fromR, coords.fromC, coords.toR, coords.toC, undefined),
-		iaLevel: game.iaLevel
+		iaLevel: game.iaLevel,
+		playerColor: game.playerColor
 		};
 		soloIAGames.set(gameId, updated);
 		socket.emit('game_state', buildGameState(updated));

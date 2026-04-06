@@ -32,27 +32,27 @@ $font:     'Cormorant Garamond', serif;
   transition: border-color 0.2s, box-shadow 0.2s;
 
   &:hover, &.open {
-    border-color: rgba($gold, 0.6);
-    box-shadow: 0 0 12px rgba($gold, 0.2);
+	border-color: rgba($gold, 0.6);
+	box-shadow: 0 0 12px rgba($gold, 0.2);
   }
 
   .fab-icon { font-size: 1.4rem; line-height: 1; }
 
   .fab-badge {
-    position: absolute;
-    top: 2px;
-    right: 2px;
-    min-width: 18px;
-    height: 18px;
-    padding: 0 4px;
-    border-radius: 9px;
-    background: $gold;
-    color: $black;
-    font-size: 0.65rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+	position: absolute;
+	top: 2px;
+	right: 2px;
+	min-width: 18px;
+	height: 18px;
+	padding: 0 4px;
+	border-radius: 9px;
+	background: $gold;
+	color: $black;
+	font-size: 0.65rem;
+	font-weight: 700;
+	display: flex;
+	align-items: center;
+	justify-content: center;
   }
 }
 
@@ -82,38 +82,38 @@ $font:     'Cormorant Garamond', serif;
   flex-shrink: 0;
 
   .panel-title {
-    flex: 1;
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: $gold;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+	flex: 1;
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: $gold;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
   }
 
   .back-btn {
-    background: none;
-    border: none;
-    color: $muted;
-    cursor: pointer;
-    font-size: 1.1rem;
-    padding: 0 4px;
-    line-height: 1;
-    transition: color 0.2s;
-    flex-shrink: 0;
-    &:hover { color: $white; }
+	background: none;
+	border: none;
+	color: $muted;
+	cursor: pointer;
+	font-size: 1.1rem;
+	padding: 0 4px;
+	line-height: 1;
+	transition: color 0.2s;
+	flex-shrink: 0;
+	&:hover { color: $white; }
   }
 
   .panel-close {
-    background: none;
-    border: none;
-    color: $muted;
-    cursor: pointer;
-    font-size: 0.85rem;
-    padding: 2px 4px;
-    line-height: 1;
-    transition: color 0.2s;
-    flex-shrink: 0;
-    &:hover { color: $white; }
+	background: none;
+	border: none;
+	color: $muted;
+	cursor: pointer;
+	font-size: 0.85rem;
+	padding: 2px 4px;
+	line-height: 1;
+	transition: color 0.2s;
+	flex-shrink: 0;
+	&:hover { color: $white; }
   }
 }
 
@@ -142,19 +142,19 @@ $font:     'Cormorant Garamond', serif;
   word-break: break-word;
 
   &.mine {
-    align-self: flex-end;
-    background: rgba($gold, 0.2);
-    border: 1px solid rgba($gold, 0.3);
-    color: $white;
-    border-bottom-right-radius: 3px;
+	align-self: flex-end;
+	background: rgba($gold, 0.2);
+	border: 1px solid rgba($gold, 0.3);
+	color: $white;
+	border-bottom-right-radius: 3px;
   }
 
   &.theirs {
-    align-self: flex-start;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.08);
-    color: $white;
-    border-bottom-left-radius: 3px;
+	align-self: flex-start;
+	background: rgba(255,255,255,0.06);
+	border: 1px solid rgba(255,255,255,0.08);
+	color: $white;
+	border-bottom-left-radius: 3px;
   }
 }
 
@@ -200,4 +200,19 @@ $font:     'Cormorant Garamond', serif;
   transition: background 0.2s;
 
   &:hover { background: rgba($gold, 0.3); }
+}
+
+.msg-input-row {
+  > div {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .char-count {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+  }
 }

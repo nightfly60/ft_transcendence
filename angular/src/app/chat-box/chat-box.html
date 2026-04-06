@@ -31,6 +31,7 @@
 		</div>
 		<!-- Input -->
 		<div class="msg-input-row">
+		<div>
 		<input
 			class="msg-input"
 			type="text"
@@ -39,7 +40,13 @@
 			(keyup.enter)="sendMessage()"
 			placeholder="Message..."
 			autocomplete="off"
+			  minlength="1"
+			  maxlength="255"
 		/>
+		<span class="char-count">
+			{{ message.length || 0 }} / 255
+		</span>
+		</div>
 		<button class="msg-send" (click)="sendMessage()">›</button>
 		</div>
 	</div>

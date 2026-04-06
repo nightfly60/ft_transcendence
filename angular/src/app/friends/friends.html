@@ -38,9 +38,9 @@
 			<div class="friend-avatar-ring">
 			<img
 				class="friend-avatar"
-				[src]="f.path_img || '/avatars/default-avatar.png'"
+				[src]="f.path_img || '/api/avatars/default-avatar.png'"
 				alt="Avatar"
-				(error)="$any($event.target).src = '/avatars/default-avatar.png'"
+				(error)="$any($event.target).src = '/api/avatars/default-avatar.png'"
 			/>
 			</div>
 			<div class="friend-info">

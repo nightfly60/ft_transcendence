@@ -28,6 +28,7 @@ export const requireAuth = async (req: any, res: Response, next: NextFunction) =
 		);
 
 		req.user = rows[0];
+		if (!req.user) return res.status(401).json({ error: 'Utilisateur Invalide' });
 
 		next();
 	} catch (err: any) {

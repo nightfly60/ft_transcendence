@@ -11,7 +11,9 @@ services:
       - transcendence_network
 
   nginx:
-    build: ./nginx
+    build:
+      context: ./nginx
+      target: development
     container_name: nginx
     env_file:
       - .env
@@ -22,7 +24,7 @@ services:
       - certs:/etc/ssl
     restart: always
     depends_on:
-      - nodejs
+      - angular
     networks:
       - transcendence_network
 
@@ -39,11 +41,15 @@ services:
       - avatars:/app/src/server/public/avatars
       - vite_cache:/app/node_modules/.vite
       - certs:/etc/ssl:ro
+    depends_on:
+      - nginx
     networks:
       - transcendence_network
 
   angular:
-    build: ./angular
+    build:
+      context: ./angular
+      target: development
     container_name: angular
     volumes:
       - ./angular/src:/app/src

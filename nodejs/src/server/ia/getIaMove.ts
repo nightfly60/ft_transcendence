@@ -1,5 +1,5 @@
 import { Chess } from "chess.js";
-import { minimax } from "./minimax";
+import { minimax } from "./minimax.js";
 
 /* on regarde pour tous les coups, lequel est le meilleur */
 export function getIaMove(fen: string, depth: number)

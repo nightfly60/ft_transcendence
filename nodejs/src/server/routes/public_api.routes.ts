@@ -5,6 +5,7 @@ import crypto from 'crypto';
 const router = Router();
 
 router.get('/getKey', async (req, res) => {
+	if (!req.user) return res.status(401).json({ error: 'Utilisateur Invalide' });
 	const user = req.user;
 
 	try
@@ -26,6 +27,7 @@ router.get('/getKey', async (req, res) => {
 })
 
 router.post('/genKey', async (req, res) => {
+	if (!req.user) return res.status(401).json({ error: 'Utilisateur Invalide' });
 	const user = req.user;
 	// requestTime in seconds
 	const requestRate = 60 * 5;

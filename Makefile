@@ -1,9 +1,22 @@
 all:
 	mkdir -p /home/$(USER)/volumes
 	mkdir -p /home/$(USER)/volumes/db_data
+# 	mkdir -p /home/$(USER)/volumes/vite_cache
+	mkdir -p /home/$(USER)/volumes/angular_dist
+	mkdir -p /home/$(USER)/volumes/avatars
+	mkdir -p /home/$(USER)/volumes/certs
+	cp docker-composes/docker-compose_prod.yml docker-compose.yml
+	cd nodejs && npm install
+	cd angular && npm install
+	docker compose up --build
+
+dev:
+	mkdir -p /home/$(USER)/volumes
+	mkdir -p /home/$(USER)/volumes/db_data
 	mkdir -p /home/$(USER)/volumes/vite_cache
 	mkdir -p /home/$(USER)/volumes/avatars
 	mkdir -p /home/$(USER)/volumes/certs
+	cp docker-composes/docker-compose_dev.yml docker-compose.yml
 	cd nodejs && npm install
 	cd angular && npm install
 	docker compose up --build
@@ -22,6 +35,7 @@ fclean:
 	rm -rf nodejs/node_modules angular/node_modules
 	docker run --rm -v /home/$(USER):/data alpine sh -c "rm -rf /data/volumes"
 	docker rmi alpine 2>/dev/null || true
+	rm -f docker-compose.yml
 
 re: fclean all
 

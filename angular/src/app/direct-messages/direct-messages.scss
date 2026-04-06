@@ -404,3 +404,18 @@ min-height: 100vh;
     font-size: 1.05rem;
   }
 }
+
+.msg-input-row {
+  > div {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .char-count {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+  }
+}
