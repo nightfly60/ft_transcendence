@@ -173,7 +173,7 @@ Used MariaDB/MySQL in a containerized environment. Chosen for reliability, relat
 - The public API provides GET, POST, PUT, and DELETE endpoints to interact with the database. You can see the documentation [here](#4-usage-documentation).
 - We wanted to provide a secure and reliable way for external users or applications access and manage database efficiently.
 
-### [WEB]Advanced search functionality with filters, sorting, and pagination (Renaud)
+### [WEB] Advanced search functionality with filters, sorting, and pagination (Renaud)
 - Minor module (1 pt)
 - On the leaderboard page, advanced search functionality was implemented to allow users to search for a player, filter by ELO or XP, and navigate results efficiently with sorting pagination.
 - This helps users quickly find specific players and compare rankings, improving overall usability of the leaderboard.
