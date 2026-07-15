@@ -2,23 +2,28 @@
 
 # Summary
 [1. Description](#1-description)\
-[2. Instructions](#2-instructions)\
-[3. Resources](#3-resources)\
-[4. Usage Documentation](#4-usage-documentation)\
-[5. Team Information](#5-team-information)\
-[6. Project Management](#6-project-management)\
-[7. Technical Stack](#7-technical-stack)\
-[8. Database Schema](#8-database-schema)\
-[9. Features List](#9-features-list)\
-[10. Modules](#10-modules)\
-[11. Individual Contributions](#11-individual-contributions)
+[2. Preview](#2-preview)\
+[3. Instructions](#3-instructions)\
+[4. Resources](#4-resources)\
+[5. Usage Documentation](#5-usage-documentation)\
+[6. Team Information](#6-team-information)\
+[7. Project Management](#7-project-management)\
+[8. Technical Stack](#8-technical-stack)\
+[9. Database Schema](#9-database-schema)\
+[10. Features List](#10-features-list)\
+[11. Modules](#11-modules)\
+[12. Individual Contributions](#12-individual-contributions)
 
 ## 1. Description
 Our Transcendence is about developing an interactive web platorm based on the game of chess. Chess42 allows users to play in different modes: solo, against AI or against other players.
 It also includes progression elements and social features to enhance user experience.
 To simplify access, authentification is supported through services such as Google and the 42 intranet.
 
-## 2. Instructions
+## 2. Preview
+
+![Preview du site](preview.gif)
+
+## 3. Instructions
 
 ### Prerequisites
 Make sure you have at least the following installed on your system:
@@ -39,7 +44,7 @@ make fclean # docker compose down & cleans volumes (images and databse)
 make re # make fclean & make
 ```
 
-## 3. Resources
+## 4. Resources
 
 ### Documentation and References
 
@@ -64,12 +69,12 @@ They were mainly used to:
 
 AI tools were not used to automatically generate the complete project or major architectural components. All core design decisions, implementation, and interaction were carried out by the projects members.
 
-## 4. Usage Documentation
+## 5. Usage Documentation
 The following documentation provides information to use and configure the website:
 - [.env example](.env.example) - Setup the website
 - [API documentation](API-Documentation.md) - Public API usage
 
-## 5. Team Information
+## 6. Team Information
 
 ### edurance - Product Owner and developer
 - Sets product direction and decides which features matter most.
@@ -90,7 +95,7 @@ The following documentation provides information to use and configure the websit
 - Guides team on technical choices.
 - Implements assigned features and contributes to overall system development.
 
-## 6. Project Management
+## 7. Project Management
 
 ### How the team organized the work ?
 We devided the tasks based on roles and interests, assigning features and responsabilities individually. Regular check-ins were held during in-person meetings at school to coordinate progress.
@@ -101,7 +106,7 @@ We used Git/Github to manage our code, track changes and collaborate on developm
 ### Communication channels used
 Daily communication was done via Discord, while important planning and discussions were held during school meetings.
 
-## 7. Technical Stack
+## 8. Technical Stack
 
 ### Frontend:
 Built with Angular, using TypeScript, HTML and CSS for structure and styling. Angular was chosen for its modularity, two-way data biding, and strong community support.
@@ -117,10 +122,10 @@ Used MariaDB/MySQL in a containerized environment. Chosen for reliability, relat
 - **Node.js/Express**: Enables fast server-side development with JavaScript consistency across frontend and backend.
 - **MariaDB/MySQL**: Provides robust relational database support and easy container deployment for testing and production.
 
-## 8. Database Schema:
+## 9. Database Schema:
 ![Schema de la db](schema.png)
 
-## 9. Features List
+## 10. Features List
 
 ### User Experience
 - Custom error pages (Elena)
@@ -152,7 +157,7 @@ Used MariaDB/MySQL in a containerized environment. Chosen for reliability, relat
 - AI engine implemented in C++ for fast move computation (Elena)
 - Adjustable difficulty levels (Elena)
 
-## 10. Modules
+## 11. Modules
 
 ### [WEB] Use a framework for both the frontend and backend (everyone)
 - Major module (2 pts)
@@ -220,7 +225,7 @@ Used MariaDB/MySQL in a containerized environment. Chosen for reliability, relat
 
 ### Total score : 21 points 🎉
 
-## 11. Individual Contributions
+## 12. Individual Contributions
 
 ### Gaël (lemarian)
 - **User interaction**: Implemented chat widget for multiplayer games, as well as a direct messaging system to communicate outside of games.
