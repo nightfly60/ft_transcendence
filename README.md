@@ -21,7 +21,11 @@ To simplify access, authentification is supported through services such as Googl
 
 ## 2. Preview
 
-![Preview du site](preview.gif)
+### Le site
+![Preview du site](preview/preview.gif)
+
+### Le chat
+![Preview du chat en jeu](preview/chatjeu.png) ![Preview du chat en prive](preview/chatprive.png)
 
 ## 3. Instructions
 
